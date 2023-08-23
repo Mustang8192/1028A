@@ -1,0 +1,7 @@
+#include "comp/auton.h"
+#include "comp/driver.h"
+#include "logger.h"
+#include "misc.h"
+#include "robot.h"
+#include "task.h"
+#include "vars.h"
