@@ -3,6 +3,8 @@
 #include "1028A/logger.h"
 #include "1028A/robot.h"
 #include "1028A/vars.h"
+#include "display/lv_core/lv_obj.h"
+ASSET(intro_gif);
 
 /*omit
  * @brief Slew rate limiter
@@ -268,7 +270,7 @@ void _1028A::utils::checks() {
   }
 }
 void _1028A::utils::init() {
-  static Gif gif("/usd/Ui/intro.gif", lv_scr_act());
+  Gif gif(intro_gif, lv_scr_act());
   pros::delay(11400);
   gif.pause();
   gif.clean();

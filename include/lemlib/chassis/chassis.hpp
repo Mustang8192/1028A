@@ -13,6 +13,7 @@
 
 #include "pros/motors.hpp"
 #include "pros/imu.hpp"
+#include "lemlib/asset.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "lemlib/pose.hpp"
 
@@ -71,14 +72,14 @@ typedef struct {
  * @param leftMotors pointer to the left motors
  * @param rightMotors pointer to the right motors
  * @param trackWidth the track width of the robot
- * @param wheelDiameter the diameter of the wheels (2.75, 3.25, 4, 4.125)
+ * @param wheelType the type of omni-wheel used for the drivetrain
  * @param rpm the rpm of the wheels
  */
 typedef struct {
         pros::Motor_Group* leftMotors;
         pros::Motor_Group* rightMotors;
         float trackWidth;
-        float wheelDiameter;
+        Omniwheel wheelType;
         float rpm;
 } Drivetrain_t;
 
@@ -154,7 +155,7 @@ class Chassis {
         /**
          * @brief Move the chassis along a path
          *
-         * @param filePath file path to the path. No need to preface it with /usd/
+         * @param filePath the filename of the path to follow
          * @param timeout the maximum time the robot can spend moving
          * @param lookahead the lookahead distance. Units in inches. Larger values will make the robot move faster but
          * will follow the path less accurately
@@ -162,8 +163,38 @@ class Chassis {
          * @param maxSpeed the maximum speed the robot can move at
          * @param log whether the chassis should log the path on a log file. false by default.
          */
-        void follow(const char* filePath, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127,
+        void follow(asset path, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127,
                     bool log = false);
+        /**
+         * @brief Control the robot during the driver control period using the tank drive control scheme. In this
+         * control scheme one joystick axis controls one half of the robot, and another joystick axis controls another.
+         * @param left speed of the left side of the drivetrain. Takes an input from -127 to 127.
+         * @param right speed of the right side of the drivetrain. Takes an input from -127 to 127.
+         * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
+         * of 0 disables the curve entirely.
+         */
+        void tank(int left, int right, float curveGain = 0.0);
+        /**
+         * @brief Control the robot during the driver using the arcade drive control scheme. In this control scheme one
+         * joystick axis controls the forwards and backwards movement of the robot, while the other joystick axis
+         * controls  the robot's turning
+         * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
+         * @param turn speed to turn. Takes an input from -127 to 127.
+         * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
+         * of 0 disables the curve entirely.
+         */
+        void arcade(int throttle, int turn, float curveGain = 0.0);
+        /**
+         * @brief Control the robot during the driver using the curvature drive control scheme. This control scheme is
+         * very similar to arcade drive, except the second joystick axis controls the radius of the curve that the
+         * drivetrain makes, rather than the speed. This means that the driver can accelerate in a turn without changing
+         * the radius of that turn. This control scheme defaults to arcade when forward is zero.
+         * @param throttle speed to move forward or backward. Takes an input from -127 to 127.
+         * @param turn speed to turn. Takes an input from -127 to 127.
+         * @param curveGain control how steep the drive curve is. The larger the number, the steeper the curve. A value
+         * of 0 disables the curve entirely.
+         */
+        void curvature(int throttle, int turn, float cureGain = 0.0);
     private:
         ChassisController_t lateralSettings;
         ChassisController_t angularSettings;

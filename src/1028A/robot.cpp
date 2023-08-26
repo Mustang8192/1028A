@@ -32,16 +32,19 @@ pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 
 lemlib::Drivetrain_t _1028A::robot::drivetrain{
-    &left,  // left drivetrain motors
-    &right, // right drivetrain motors
-    10,     // track width
-    2.75,   // wheel diameter
-    600     // wheel rpm
-
+    &left,                      // left drivetrain motors
+    &right,                     // right drivetrain motors
+    10,                         // track width
+    lemlib::Omniwheel::NEW_275, // wheel diameter
+    600                         // wheel rpm
 };
 
-lemlib::TrackingWheel _1028A::robot::verticalTracker(&verticalEnc, 2.75, -4.6);
-lemlib::TrackingWheel _1028A::robot::horizontalTracker(&horizontalEnc, 2.75, 0);
+lemlib::TrackingWheel _1028A::robot::verticalTracker(&verticalEnc,
+                                                     lemlib::Omniwheel::NEW_275,
+                                                     -4.6);
+lemlib::TrackingWheel
+    _1028A::robot::horizontalTracker(&horizontalEnc, lemlib::Omniwheel::NEW_275,
+                                     0);
 
 lemlib::OdomSensors_t _1028A::robot::odomSensors{
     &verticalTracker, // vertical tracking wheel
