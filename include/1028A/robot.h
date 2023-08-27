@@ -1,3 +1,4 @@
+#include "1028A/sensors.h"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
@@ -16,6 +17,8 @@
 #define horizontalEncpt 12
 #define inertialpt 13
 #define inertialOdompt 14
+#define gps1pt 15
+#define gps2pt 16
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -34,6 +37,9 @@ extern pros::Rotation verticalEnc;
 extern pros::Rotation horizontalEnc;
 extern pros::IMU inertial;
 extern pros::IMU inertialOdom;
+extern pros::GPS gps1;
+extern pros::GPS gps2;
+extern _1028A::GPSRedundantSensor gps;
 extern pros::Controller master;
 
 extern lemlib::Drivetrain_t drivetrain;

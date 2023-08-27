@@ -29,6 +29,10 @@ pros::Rotation _1028A::robot::verticalEnc(verticalEncpt);
 pros::Rotation _1028A::robot::horizontalEnc(horizontalEncpt);
 pros::IMU _1028A::robot::inertial(inertialpt);
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
+pros::GPS _1028A::robot::gps1(gps1pt);
+pros::GPS _1028A::robot::gps2(gps2pt);
+_1028A::GPSRedundantSensor gps(&_1028A::robot::gps1, &_1028A::robot::gps2, 1);
+
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 
 lemlib::Drivetrain_t _1028A::robot::drivetrain{
