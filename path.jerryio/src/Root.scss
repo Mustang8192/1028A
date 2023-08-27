@@ -1,0 +1,145 @@
+@use "style/Essential.scss";
+@use "style/ConfirmationDialog.scss";
+@use "style/DragDropBackdrop.scss";
+@use "style/HelpDialog.scss";
+@use "style/PathTree.scss";
+@use "style/PreferencesDialog.scss";
+
+#root {
+  overflow: hidden; // UX: Fix potential issue on device emulator
+
+  > * {
+    display: flex;
+    width: 100svw;
+    height: 100svh;
+    box-sizing: border-box;
+
+    &[data-layout="classic"] {
+      @import "style/ClassicLayout.scss";
+    }
+
+    &[data-layout="exclusive"] {
+      @import "style/ExclusiveLayout.scss";
+    }
+
+    &.light-theme {
+      --bg-body-color: #ffffff;
+      --bg-default-color: #ffffff;
+      --bg-paper-color: #ffffff;
+      --text-primary-color: rgba(0, 0, 0, 0.87);
+      --text-disabled-color: rgba(0, 0, 0, 0.6);
+      --link-color: rgba(0, 0, 0, 0.87);
+      --hover-color: rgba(0, 0, 0, 0.08);
+      --focused-color: rgba(0, 0, 0, 0.12);
+      background-color: var(--bg-body-color);
+
+      code {
+        background-color: #e3e3e3;
+      }
+
+      td,
+      th {
+        border: 1px solid #e3e3e3;
+      }
+
+      th {
+        background-color: #f6f6f6;
+      }
+    }
+
+    &.dark-theme {
+      --bg-body-color: #292929;
+      --bg-default-color: #1e1e1e;
+      --bg-paper-color: #353535;
+      --text-primary-color: rgba(255, 255, 255, 1);
+      --text-disabled-color: rgba(255, 255, 255, 0.5);
+      --link-color: rgba(255, 255, 255, 0.87);
+      --hover-color: rgba(255, 255, 255, 0.04);
+      --focused-color: rgba(255, 255, 255, 0.12);
+      background-color: var(--bg-body-color);
+
+      code {
+        background-color: var(--bg-default-color);
+      }
+
+      td,
+      th {
+        border: 1px solid #444444;
+      }
+
+      th {
+        background-color: #3c3c3c;
+      }
+    }
+  }
+}
+
+.flex-editor-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-item.MuiMenuItem-root {
+  padding-left: 4px !important;
+
+  svg.menu-item-done {
+    height: 16px;
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+  }
+
+  svg.menu-item-next {
+    height: 24px;
+    position: relative;
+    top: -1px;
+    right: -8px;
+  }
+}
+
+.menu-item.MuiMenuItem-root.Mui-disabled {
+  pointer-events: auto !important;
+}
+
+.menu-item.MuiMenuItem-root.Mui-disabled:hover {
+  // UX: don't change background color on hover
+  background-color: transparent !important;
+}
+
+.menu-item.MuiMenuItem-root.Mui-disabled:active {
+  // https://moshfeu.github.io/show-tooltip-on-pointer-events-none-element/
+
+  pointer-events: none !important;
+}
+
+// For menu list
+.MuiPaper-root {
+  transition: none !important;
+}
+
+// For accordion
+.MuiPaper-root {
+  background-image: none !important; // remove tiny dot pattern in accordion
+}
+
+.notistack-SnackbarContainer {
+  // cspell:disable-line
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+.canvas-tooltip {
+  user-select: none;
+  pointer-events: none !important;
+}
+
+.canvas-tooltip-label {
+  padding: 8px 12px;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+}
