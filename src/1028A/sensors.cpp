@@ -4,11 +4,11 @@ _1028A::GPSRedundantSensor::GPSRedundantSensor(pros::GPS *s1, pros::GPS *s2,
                                                double maxDiff)
     : sensor1(s1), sensor2(s2), maxDifference(maxDiff) {}
 
-void _1028A::GPSRedundantSensor::getXCoordinate(double &result) {
+double _1028A::GPSRedundantSensor::getXCoordinate() {
   pros::c::gps_status_s_t data1, data2;
   data1 = sensor1->get_status();
   data2 = sensor2->get_status();
-
+  double result;
   double difference = fabs(data1.x - data2.x);
 
   if (difference <= maxDifference) {
@@ -20,13 +20,14 @@ void _1028A::GPSRedundantSensor::getXCoordinate(double &result) {
   } else {
     result = NAN; // Or any other value to indicate unreliable data
   }
+  return result;
 }
 
-void _1028A::GPSRedundantSensor::getYCoordinate(double &result) {
+double _1028A::GPSRedundantSensor::getYCoordinate() {
   pros::c::gps_status_s_t data1, data2;
   data1 = sensor1->get_status();
   data2 = sensor2->get_status();
-
+  double result;
   double difference = fabs(data1.y - data2.y);
 
   if (difference <= maxDifference) {
@@ -38,13 +39,14 @@ void _1028A::GPSRedundantSensor::getYCoordinate(double &result) {
   } else {
     result = NAN; // Or any other value to indicate unreliable data
   }
+  return result;
 }
 
-void _1028A::GPSRedundantSensor::getTheta(double &result) {
+double _1028A::GPSRedundantSensor::getTheta() {
   pros::c::gps_status_s_t data1, data2;
   data1 = sensor1->get_status();
   data2 = sensor2->get_status();
-
+  double result;
   double difference = fabs(data1.yaw - data2.yaw);
 
   if (difference <= maxDifference) {
@@ -56,4 +58,5 @@ void _1028A::GPSRedundantSensor::getTheta(double &result) {
   } else {
     result = NAN; // Or any other value to indicate unreliable data
   }
+  return result;
 }

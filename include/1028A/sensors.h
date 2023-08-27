@@ -9,8 +9,8 @@ private:
 
 public:
   GPSRedundantSensor(pros::GPS *s1, pros::GPS *s2, double maxDiff);
-  void getXCoordinate(double &result);
-  void getYCoordinate(double &result);
-  void getTheta(double &result);
+  double getXCoordinate();
+  double getYCoordinate();
+  double getTheta();
 };
 } // namespace _1028A

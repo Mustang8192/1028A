@@ -39,7 +39,7 @@ extern pros::IMU inertial;
 extern pros::IMU inertialOdom;
 extern pros::GPS gps1;
 extern pros::GPS gps2;
-extern _1028A::GPSRedundantSensor gps;
+extern GPSRedundantSensor gps;
 extern pros::Controller master;
 
 extern lemlib::Drivetrain_t drivetrain;
