@@ -3,7 +3,6 @@
 #include "1028A/logger.h"
 #include "1028A/robot.h"
 #include "1028A/vars.h"
-#include "display/lv_core/lv_obj.h"
 ASSET(intro_gif);
 
 /*omit

@@ -40,7 +40,6 @@ std::vector<std::string> readElement(const std::string& input, std::string delim
         s.erase(0, pos + delimiter.length()); // remove the read substring
     }
 
-    if (s.length() > 1) s.pop_back(); // delete the endline character at the end of the string
     output.push_back(s); // add the last element to the returned string
 
     return output;
