@@ -3,6 +3,7 @@
 #include "1028A/logger.h"
 #include "1028A/robot.h"
 #include "1028A/vars.h"
+#include "lemlib/chassis/odom.hpp"
 ASSET(intro_gif);
 
 /*omit
@@ -165,6 +166,12 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((inertialpt - 1));
   pros::c::v5_device_e_t InertialOdomcheck =
       pros::c::registry_get_plugged_type((inertialOdompt - 1));
+  pros::c::v5_device_e_t GPS1check =
+      pros::c::registry_get_plugged_type((gps1pt - 1));
+  pros::c::v5_device_e_t GPS2check =
+      pros::c::registry_get_plugged_type((gps2pt - 1));
+  pros::c::v5_device_e_t Opticalcheck =
+      pros::c::registry_get_plugged_type((opticalpt - 1));
   if (LeftFrontcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Left Front Motor not found");
     ports = false;
@@ -221,6 +228,18 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Inertial Odom Sensor not found");
     ports = false;
   }
+  if (GPS1check != pros::c::E_DEVICE_GPS) {
+    _1028A::logger::fatal("GPS 1 not found");
+    ports = false;
+  }
+  if (GPS2check != pros::c::E_DEVICE_GPS) {
+    _1028A::logger::fatal("GPS 2 not found");
+    ports = false;
+  }
+  if (Opticalcheck != pros::c::E_DEVICE_OPTICAL) {
+    _1028A::logger::fatal("Optical Sensor not found");
+    ports = false;
+  }
 
   if (_1028A::robot::leftfront.is_over_temp()) {
     _1028A::logger::fatal("Left Front Motor overheating");
@@ -275,4 +294,6 @@ void _1028A::utils::init() {
   gif.clean();
   _1028A::logger::init();
   _1028A::utils::checks();
+  _1028A::robot::chassis.calibrate();
+  lemlib::init();
 }

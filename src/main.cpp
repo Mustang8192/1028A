@@ -1,11 +1,7 @@
 #include "main.h"
 #include "1028A/api.h"
 
-void initialize() {
-  _1028A::utils::init();
-  _1028A::robot::chassis.calibrate();
-  _1028A::robot::chassis.setPose({0, 0, 0});
-}
+void initialize() { _1028A::utils::init(); }
 
 void disabled() { _1028A::logger::info("Robot Disabled"); }
 

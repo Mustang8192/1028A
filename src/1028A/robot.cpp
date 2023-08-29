@@ -2,6 +2,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
+#include "pros/optical.hpp"
 
 pros::Motor _1028A::robot::leftfront(leftfrontpt, pros::E_MOTOR_GEARSET_18,
                                      false, pros::E_MOTOR_ENCODER_DEGREES);
@@ -31,6 +32,7 @@ pros::IMU _1028A::robot::inertial(inertialpt);
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::GPS _1028A::robot::gps1(gps1pt);
 pros::GPS _1028A::robot::gps2(gps2pt);
+pros::Optical _1028A::robot::optical(opticalpt);
 _1028A::GPSRedundantSensor _1028A::robot::gps(&_1028A::robot::gps1,
                                               &_1028A::robot::gps2, 1);
 

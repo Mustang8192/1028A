@@ -3,6 +3,7 @@
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
 #include "pros/motors.hpp"
+#include "pros/optical.hpp"
 #define leftfrontpt 1
 #define leftmidpt 2
 #define leftbackpt 3
@@ -19,6 +20,7 @@
 #define inertialOdompt 14
 #define gps1pt 15
 #define gps2pt 16
+#define opticalpt 17
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -40,6 +42,7 @@ extern pros::IMU inertialOdom;
 extern pros::GPS gps1;
 extern pros::GPS gps2;
 extern GPSRedundantSensor gps;
+extern pros::Optical optical;
 extern pros::Controller master;
 
 extern lemlib::Drivetrain_t drivetrain;
