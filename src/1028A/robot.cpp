@@ -38,6 +38,7 @@ pros::Motor _1028A::robot::intake(inakept, pros::E_MOTOR_GEARSET_18, false,
                                   pros::E_MOTOR_ENCODER_DEGREES);
 pros::Rotation _1028A::robot::verticalEnc(verticalEncpt);
 pros::Rotation _1028A::robot::horizontalEnc(horizontalEncpt);
+pros::Rotation _1028A::robot::cataEnc(cataEncpt);
 pros::IMU _1028A::robot::inertial(inertialpt);
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::GPS _1028A::robot::gps1(gps1pt);
@@ -45,6 +46,11 @@ pros::GPS _1028A::robot::gps2(gps2pt);
 pros::Optical _1028A::robot::optical(opticalpt);
 _1028A::GPSRedundantSensor _1028A::robot::gps(&_1028A::robot::gps1,
                                               &_1028A::robot::gps2, 1);
+pros::ADIDigitalOut pto('a');
+pros::ADIDigitalOut flapL('b');
+pros::ADIDigitalOut flapR('c');
+pros::ADIDigitalOut intakeL('d');
+pros::ADIDigitalOut intakeR('e');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

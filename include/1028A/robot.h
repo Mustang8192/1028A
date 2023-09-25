@@ -2,6 +2,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
+#include "pros/adi.hpp"
 #include "pros/motors.hpp"
 #include "pros/optical.hpp"
 #define leftfrontpt 1
@@ -22,6 +23,7 @@
 #define gps2pt 16
 #define opticalpt 17
 #define inakept 18
+#define cataEncpt 19
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -41,6 +43,7 @@ extern pros::Motor auxR55;
 extern pros::Motor intake;
 extern pros::Rotation verticalEnc;
 extern pros::Rotation horizontalEnc;
+extern pros::Rotation cataEnc;
 extern pros::IMU inertial;
 extern pros::IMU inertialOdom;
 extern pros::GPS gps1;
@@ -48,6 +51,11 @@ extern pros::GPS gps2;
 extern GPSRedundantSensor gps;
 extern pros::Optical optical;
 extern pros::Controller master;
+extern pros::ADIDigitalOut pto;
+extern pros::ADIDigitalOut flapL;
+extern pros::ADIDigitalOut flapR;
+extern pros::ADIDigitalOut intakeL;
+extern pros::ADIDigitalOut intakeR;
 
 extern lemlib::Drivetrain_t drivetrain;
 extern lemlib::TrackingWheel verticalTracker;
