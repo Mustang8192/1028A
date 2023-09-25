@@ -11,12 +11,14 @@
 
 #pragma once
 
+#include <functional>
+#include "pros/rtos.hpp"
 #include "pros/motors.hpp"
 #include "pros/imu.hpp"
-#include <functional>
 #include "lemlib/asset.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "lemlib/pose.hpp"
+#include "lemlib/logger.hpp"
 
 namespace lemlib {
 /**
@@ -73,15 +75,17 @@ typedef struct {
  * @param leftMotors pointer to the left motors
  * @param rightMotors pointer to the right motors
  * @param trackWidth the track width of the robot
- * @param wheelType the type of omni-wheel used for the drivetrain
+ * @param wheelDiameter the diameter of the wheel used on the drivetrain
  * @param rpm the rpm of the wheels
+ * @param chasePower higher values make the robot move faster but causes more overshoot on turns
  */
 typedef struct {
         pros::Motor_Group* leftMotors;
         pros::Motor_Group* rightMotors;
         float trackWidth;
-        Omniwheel wheelType;
+        float wheelDiameter;
         float rpm;
+        float chasePower;
 } Drivetrain_t;
 
 /**
@@ -90,7 +94,7 @@ typedef struct {
  * @param scale The scaling factor, which can be optionally ignored.
  * @return The new value to be used.
  */
-typedef std::function<double(double, double)> DriveCurveFunction_t;
+typedef std::function<float(float, float)> DriveCurveFunction_t;
 
 /**
  * @brief  Default drive curve. Modifies  the input with an exponential curve. If the input is 127, the function
@@ -100,7 +104,7 @@ typedef std::function<double(double, double)> DriveCurveFunction_t;
  * @param scale how steep the curve should be.
  * @return The new value to be used.
  */
-double defaultDriveCurve(double input, double scale);
+float defaultDriveCurve(float input, float scale);
 
 /**
  * @brief Chassis class
@@ -132,7 +136,7 @@ class Chassis {
          * @param theta new theta value
          * @param radians true if theta is in radians, false if not. False by default
          */
-        void setPose(double x, double y, double theta, bool radians = false);
+        void setPose(float x, float y, float theta, bool radians = false);
         /**
          * @brief Set the pose of the chassis
          *
@@ -148,6 +152,36 @@ class Chassis {
          */
         Pose getPose(bool radians = false);
         /**
+         * @brief Get the speed of the robot
+         *
+         * @param radians true for theta in radians, false for degrees. False by default
+         * @return lemlib::Pose
+         */
+        Pose getSpeed(bool radians = false);
+        /**
+         * @brief Get the local speed of the robot
+         *
+         * @param radians true for theta in radians, false for degrees. False by default
+         * @return lemlib::Pose
+         */
+        Pose getLocalSpeed(bool radians = false);
+        /**
+         * @brief Estimate the pose of the robot after a certain amount of time
+         *
+         * @param time time in seconds
+         * @param radians False for degrees, true for radians. False by default
+         * @return lemlib::Pose
+         */
+        Pose estimatePose(float time, bool radians = false);
+        /**
+         * @brief Wait until the robot has traveled a certain distance along the path
+         *
+         * @note Units are in inches if curret motion is moveTo or follow, degrees if using turnTo
+         *
+         * @param dist the distance the robot needs to travel before returning
+         */
+        void waitUntilDist(float dist);
+        /**
          * @brief Turn the chassis so it is facing the target point
          *
          * The PID logging id is "angularPID"
@@ -155,23 +189,33 @@ class Chassis {
          * @param x x location
          * @param y y location
          * @param timeout longest time the robot can spend moving
-         * @param reversed whether the robot should turn in the opposite direction. false by default
+         * @param async whether the function should be run asynchronously. false by default
+         * @param reversed whether the robot should turn to face the point with the back of the robot. false by default
          * @param maxSpeed the maximum speed the robot can turn at. Default is 200
          * @param log whether the chassis should log the turnTo function. false by default
          */
-        void turnTo(float x, float y, int timeout, bool reversed = false, float maxSpeed = 127, bool log = false);
+        void turnTo(float x, float y, int timeout, bool async = false, bool reversed = false, float maxSpeed = 127,
+                    bool log = false);
         /**
-         * @brief Move the chassis towards the target point
+         * @brief Move the chassis towards the target pose
          *
-         * The PID logging ids are "angularPID" and "lateralPID"
+         * Uses the boomerang controller
          *
          * @param x x location
          * @param y y location
+         * @param theta theta (in degrees). Target angle
          * @param timeout longest time the robot can spend moving
-         * @param maxSpeed the maximum speed the robot can move at
+         * @param async whether the function should be run asynchronously. false by default
+         * @param forwards whether the robot should move forwards or backwards. true for forwards (default), false for
+         * backwards
+         * @param lead the lead parameter. Determines how curved the robot will move. 0.6 by default (0 < lead < 1)
+         * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
+         * default to global value
+         * @param maxSpeed the maximum speed the robot can move at. 127 at default
          * @param log whether the chassis should log the turnTo function. false by default
          */
-        void moveTo(float x, float y, int timeout, float maxSpeed = 200, bool log = false);
+        void moveTo(float x, float y, float theta, int timeout, bool async = false, bool forwards = true,
+                    float chasePower = 0, float lead = 0.6, float maxSpeed = 127, bool log = false);
         /**
          * @brief Move the chassis along a path
          *
@@ -179,12 +223,13 @@ class Chassis {
          * @param timeout the maximum time the robot can spend moving
          * @param lookahead the lookahead distance. Units in inches. Larger values will make the robot move faster but
          * will follow the path less accurately
-         * @param reverse whether the robot should follow the path in reverse. false by default
+         * @param async whether the function should be run asynchronously. false by default
+         * @param forwards whether the robot should follow the path going forwards. true by default
          * @param maxSpeed the maximum speed the robot can move at
          * @param log whether the chassis should log the path on a log file. false by default.
          */
-        void follow(asset path, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127,
-                    bool log = false);
+        void follow(const asset& path, int timeout, float lookahead, bool async = false, bool forwards = true,
+                    float maxSpeed = 127, bool log = false);
         /**
          * @brief Control the robot during the driver control period using the tank drive control scheme. In this
          * control scheme one joystick axis controls one half of the robot, and another joystick axis controls another.
@@ -216,6 +261,9 @@ class Chassis {
          */
         void curvature(int throttle, int turn, float cureGain = 0.0);
     private:
+        pros::Mutex mutex;
+        float distTravelled = 0;
+
         ChassisController_t lateralSettings;
         ChassisController_t angularSettings;
         Drivetrain_t drivetrain;

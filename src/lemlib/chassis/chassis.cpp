@@ -8,14 +8,15 @@
  * @copyright Copyright (c) 2023
  *
  */
+#include <math.h>
+#include "main.h"
+#include "pros/motors.hpp"
+#include "pros/misc.hpp"
+#include "lemlib/util.hpp"
+#include "lemlib/pid.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/odom.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
-#include "lemlib/pid.hpp"
-#include "lemlib/util.hpp"
-#include "pros/misc.hpp"
-#include "pros/motors.hpp"
-#include <math.h>
 
 /**
  * @brief Construct a new Chassis
@@ -26,16 +27,13 @@
  * @param sensors sensors to be used for odometry
  * @param driveCurve drive curve to be used. defaults to `defaultDriveCurve`
  */
-lemlib::Chassis::Chassis(Drivetrain_t drivetrain,
-                         ChassisController_t lateralSettings,
-                         ChassisController_t angularSettings,
-                         OdomSensors_t sensors,
-                         DriveCurveFunction_t driveCurve) {
-  this->drivetrain = drivetrain;
-  this->lateralSettings = lateralSettings;
-  this->angularSettings = angularSettings;
-  this->odomSensors = sensors;
-  this->driveCurve = driveCurve;
+lemlib::Chassis::Chassis(Drivetrain_t drivetrain, ChassisController_t lateralSettings,
+                         ChassisController_t angularSettings, OdomSensors_t sensors, DriveCurveFunction_t driveCurve) {
+    this->drivetrain = drivetrain;
+    this->lateralSettings = lateralSettings;
+    this->angularSettings = angularSettings;
+    this->odomSensors = sensors;
+    this->driveCurve = driveCurve;
 }
 
 /**
@@ -43,35 +41,31 @@ lemlib::Chassis::Chassis(Drivetrain_t drivetrain,
  *
  */
 void lemlib::Chassis::calibrate() {
-  // calibrate the imu if it exists
-  if (odomSensors.imu != nullptr) {
-    odomSensors.imu->reset(true);
-    // keep on calibrating until it calibrates successfully
-    while (errno == PROS_ERR || errno == ENODEV || errno == ENXIO) {
-      pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "---");
-      odomSensors.imu->reset(true);
-      pros::delay(10);
+    // calibrate the imu if it exists
+    if (odomSensors.imu != nullptr) {
+        odomSensors.imu->reset(true);
+        // keep on calibrating until it calibrates successfully
+        while (errno == PROS_ERR || errno == ENODEV || errno == ENXIO) {
+            pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, "---");
+            odomSensors.imu->reset(true);
+            pros::delay(10);
+        }
     }
-  }
-  // initialize odom
-  if (odomSensors.vertical1 == nullptr)
-    odomSensors.vertical1 =
-        new lemlib::TrackingWheel(drivetrain.leftMotors, drivetrain.wheelType,
-                                  -(drivetrain.trackWidth / 2), drivetrain.rpm);
-  if (odomSensors.vertical2 == nullptr)
-    odomSensors.vertical2 =
-        new lemlib::TrackingWheel(drivetrain.rightMotors, drivetrain.wheelType,
-                                  drivetrain.trackWidth / 2, drivetrain.rpm);
-  odomSensors.vertical1->reset();
-  odomSensors.vertical2->reset();
-  if (odomSensors.horizontal1 != nullptr)
-    odomSensors.horizontal1->reset();
-  if (odomSensors.horizontal2 != nullptr)
-    odomSensors.horizontal2->reset();
-  lemlib::setSensors(odomSensors, drivetrain);
-  lemlib::init();
-  // rumble to controller to indicate success
-  pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
+    // initialize odom
+    if (odomSensors.vertical1 == nullptr)
+        odomSensors.vertical1 = new lemlib::TrackingWheel(drivetrain.leftMotors, drivetrain.wheelDiameter,
+                                                          -(drivetrain.trackWidth / 2), drivetrain.rpm);
+    if (odomSensors.vertical2 == nullptr)
+        odomSensors.vertical2 = new lemlib::TrackingWheel(drivetrain.rightMotors, drivetrain.wheelDiameter,
+                                                          drivetrain.trackWidth / 2, drivetrain.rpm);
+    odomSensors.vertical1->reset();
+    odomSensors.vertical2->reset();
+    if (odomSensors.horizontal1 != nullptr) odomSensors.horizontal1->reset();
+    if (odomSensors.horizontal2 != nullptr) odomSensors.horizontal2->reset();
+    lemlib::setSensors(odomSensors, drivetrain);
+    lemlib::init();
+    // rumble to controller to indicate success
+    pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".");
 }
 
 /**
@@ -82,30 +76,62 @@ void lemlib::Chassis::calibrate() {
  * @param theta new theta value
  * @param radians true if theta is in radians, false if not. False by default
  */
-void lemlib::Chassis::setPose(double x, double y, double theta, bool radians) {
-  lemlib::setPose(lemlib::Pose(x, y, theta), radians);
+void lemlib::Chassis::setPose(float x, float y, float theta, bool radians) {
+    lemlib::setPose(lemlib::Pose(x, y, theta), radians);
 }
 
 /**
  * @brief Set the pose of the chassis
  *
  * @param Pose the new pose
- * @param radians whether pose theta is in radians (true) or not (false). false
- * by default
+ * @param radians whether pose theta is in radians (true) or not (false). false by default
  */
-void lemlib::Chassis::setPose(Pose pose, bool radians) {
-  lemlib::setPose(pose, radians);
-}
+void lemlib::Chassis::setPose(Pose pose, bool radians) { lemlib::setPose(pose, radians); }
 
 /**
  * @brief Get the pose of the chassis
  *
- * @param radians whether theta should be in radians (true) or degrees (false).
- * false by default
+ * @param radians whether theta should be in radians (true) or degrees (false). false by default
  * @return Pose
  */
-lemlib::Pose lemlib::Chassis::getPose(bool radians) {
-  return lemlib::getPose(radians);
+lemlib::Pose lemlib::Chassis::getPose(bool radians) { return lemlib::getPose(radians); }
+
+/**
+ * @brief Get the speed of the robot
+ *
+ * @param radians true for theta in radians, false for degrees. False by default
+ * @return lemlib::Pose
+ */
+lemlib::Pose lemlib::Chassis::getSpeed(bool radians) { return lemlib::getSpeed(radians); }
+
+/**
+ * @brief Get the local speed of the robot
+ *
+ * @param radians true for theta in radians, false for degrees. False by default
+ * @return lemlib::Pose
+ */
+lemlib::Pose lemlib::Chassis::getLocalSpeed(bool radians) { return lemlib::getLocalSpeed(radians); }
+
+/**
+ * @brief Estimate the pose of the robot after a certain amount of time
+ *
+ * @param time time in seconds
+ * @param radians False for degrees, true for radians. False by default
+ * @return lemlib::Pose
+ */
+lemlib::Pose lemlib::Chassis::estimatePose(float time, bool radians) { return lemlib::estimatePose(time, radians); }
+
+/**
+ * @brief Wait until the robot has traveled a certain distance along the path
+ *
+ * @note Units are in inches if curret motion is moveTo or follow, degrees if using turnTo
+ *
+ * @param dist the distance the robot needs to travel before returning
+ */
+void lemlib::Chassis::waitUntilDist(float dist) {
+    // do while to give the thread time to start
+    do pros::delay(10);
+    while (distTravelled <= dist && distTravelled != -1);
 }
 
 /**
@@ -116,161 +142,181 @@ lemlib::Pose lemlib::Chassis::getPose(bool radians) {
  * @param x x location
  * @param y y location
  * @param timeout longest time the robot can spend moving
- * @param reversed whether the robot should turn in the opposite direction.
- * false by default
+ * @param async whether the function should be run asynchronously. false by default
+ * @param reversed whether the robot should turn to face the point with the back of the robot. false by default
  * @param maxSpeed the maximum speed the robot can turn at. Default is 200
- * @param log whether the chassis should log the turnTo function. false by
- * default
+ * @param log whether the chassis should log the turnTo function. false by default
  */
-void lemlib::Chassis::turnTo(float x, float y, int timeout, bool reversed,
-                             float maxSpeed, bool log) {
-  Pose pose(0, 0);
-  float targetTheta;
-  float deltaX, deltaY, deltaTheta;
-  float motorPower;
-  std::uint8_t compState = pros::competition::get_status();
+void lemlib::Chassis::turnTo(float x, float y, int timeout, bool async, bool reversed, float maxSpeed, bool log) {
+    // try to take the mutex
+    // if its unsuccessful after 10ms, return
+    if (!mutex.take(10)) return;
+    // if the function is async, run it in a new task
+    if (async) {
+        pros::Task task([&]() { turnTo(x, y, timeout, false, reversed, maxSpeed, log); });
+        mutex.give();
+        pros::delay(10); // delay to give the task time to start
+        return;
+    }
+    float targetTheta;
+    float deltaX, deltaY, deltaTheta;
+    float motorPower;
+    float startTheta = getPose().theta;
+    std::uint8_t compState = pros::competition::get_status();
+    distTravelled = 0;
 
-  // create a new PID controller
-  FAPID pid =
-      FAPID(0, 0, angularSettings.kP, 0, angularSettings.kD, "angularPID");
-  pid.setExit(angularSettings.largeError, angularSettings.smallError,
-              angularSettings.largeErrorTimeout,
-              angularSettings.smallErrorTimeout, timeout);
+    // create a new PID controller
+    FAPID pid = FAPID(0, 0, angularSettings.kP, 0, angularSettings.kD, "angularPID");
+    pid.setExit(angularSettings.largeError, angularSettings.smallError, angularSettings.largeErrorTimeout,
+                angularSettings.smallErrorTimeout, timeout);
 
-  // main loop
-  while (pros::competition::get_status() == compState && !pid.settled()) {
-    // update variables
-    pose = getPose();
-    pose.theta =
-        (reversed) ? fmod(pose.theta - 180, 360) : fmod(pose.theta, 360);
-    deltaX = x - pose.x;
-    deltaY = y - pose.y;
-    targetTheta = fmod(radToDeg(M_PI_2 - atan2(deltaY, deltaX)), 360);
+    // main loop
+    while (pros::competition::get_status() == compState && !pid.settled()) {
+        // update variables
+        Pose pose = getPose();
+        pose.theta = (reversed) ? fmod(pose.theta - 180, 360) : fmod(pose.theta, 360);
 
-    // calculate deltaTheta
-    deltaTheta = angleError(targetTheta, pose.theta);
+        // update completion vars
+        distTravelled = fabs(angleError(pose.theta, startTheta));
 
-    // calculate the speed
-    motorPower = pid.update(0, deltaTheta, log);
+        deltaX = x - pose.x;
+        deltaY = y - pose.y;
+        targetTheta = fmod(radToDeg(M_PI_2 - atan2(deltaY, deltaX)), 360);
 
-    // cap the speed
-    if (motorPower > maxSpeed)
-      motorPower = maxSpeed;
-    else if (motorPower < -maxSpeed)
-      motorPower = -maxSpeed;
+        // calculate deltaTheta
+        deltaTheta = angleError(targetTheta, pose.theta);
 
-    // move the drivetrain
-    drivetrain.leftMotors->move(-motorPower);
-    drivetrain.rightMotors->move(motorPower);
+        // calculate the speed
+        motorPower = pid.update(0, deltaTheta, log);
 
-    pros::delay(10);
-  }
+        // cap the speed
+        if (motorPower > maxSpeed) motorPower = maxSpeed;
+        else if (motorPower < -maxSpeed) motorPower = -maxSpeed;
 
-  // stop the drivetrain
-  drivetrain.leftMotors->move(0);
-  drivetrain.rightMotors->move(0);
+        // move the drivetrain
+        drivetrain.leftMotors->move(-motorPower);
+        drivetrain.rightMotors->move(motorPower);
+
+        pros::delay(10);
+    }
+
+    // stop the drivetrain
+    drivetrain.leftMotors->move(0);
+    drivetrain.rightMotors->move(0);
+    // set distTraveled to -1 to indicate that the function has finished
+    distTravelled = -1;
+    // give the mutex back
+    mutex.give();
 }
 
 /**
- * @brief Move the chassis towards the target point
+ * @brief Move the chassis towards the target pose
  *
- * The PID logging ids are "angularPID" and "lateralPID"
+ * Uses the boomerang controller
  *
  * @param x x location
  * @param y y location
+ * @param theta theta (in degrees). Target angle
  * @param timeout longest time the robot can spend moving
- * @param maxSpeed the maximum speed the robot can move at
- * @param reversed whether the robot should turn in the opposite direction.
- * false by default
- * @param log whether the chassis should log the turnTo function. false by
- * default
+ * @param async whether the function should be run asynchronously. false by default
+ * @param forwards whether the robot should move forwards or backwards. true for forwards (default), false for
+ * backwards
+ * @param lead the lead parameter. Determines how curved the robot will move. 0.6 by default (0 < lead < 1)
+ * @param chasePower higher values make the robot move faster but causes more overshoot on turns. 0 makes it
+ * default to global value
+ * @param maxSpeed the maximum speed the robot can move at. 127 at default
+ * @param log whether the chassis should log the turnTo function. false by default
  */
-void lemlib::Chassis::moveTo(float x, float y, int timeout, float maxSpeed,
-                             bool log) {
-  Pose pose(0, 0);
-  float prevLateralPower = 0;
-  float prevAngularPower = 0;
-  bool close = false;
-  int start = pros::millis();
-  std::uint8_t compState = pros::competition::get_status();
-
-  // create a new PID controller
-  FAPID lateralPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD,
-                   "lateralPID");
-  FAPID angularPID(0, 0, angularSettings.kP, 0, angularSettings.kD,
-                   "angularPID");
-  lateralPID.setExit(lateralSettings.largeError, lateralSettings.smallError,
-                     lateralSettings.largeErrorTimeout,
-                     lateralSettings.smallErrorTimeout, timeout);
-
-  // main loop
-  while (pros::competition::get_status() == compState &&
-         (!lateralPID.settled() || pros::millis() - start < 300)) {
-    // get the current position
-    Pose pose = getPose();
-    pose.theta = std::fmod(pose.theta, 360);
-
-    // update error
-    float deltaX = x - pose.x;
-    float deltaY = y - pose.y;
-    float targetTheta = fmod(radToDeg(M_PI_2 - atan2(deltaY, deltaX)), 360);
-    float hypot = std::hypot(deltaX, deltaY);
-    float diffTheta1 = angleError(pose.theta, targetTheta);
-    float diffTheta2 = angleError(pose.theta, targetTheta + 180);
-    float angularError = (std::fabs(diffTheta1) < std::fabs(diffTheta2))
-                             ? diffTheta1
-                             : diffTheta2;
-    float lateralError = hypot * cos(degToRad(std::fabs(diffTheta1)));
-
-    // calculate speed
-    float lateralPower = lateralPID.update(lateralError, 0, log);
-    float angularPower = -angularPID.update(angularError, 0, log);
-
-    // if the robot is close to the target
-    if (pose.distance(lemlib::Pose(x, y)) < 7.5) {
-      close = true;
-      maxSpeed =
-          (std::fabs(prevLateralPower) < 30) ? 30 : std::fabs(prevLateralPower);
+void lemlib::Chassis::moveTo(float x, float y, float theta, int timeout, bool async, bool forwards, float chasePower,
+                             float lead, float maxSpeed, bool log) {
+    // try to take the mutex
+    // if its unsuccessful after 10ms, return
+    if (!mutex.take(10)) return;
+    // if the function is async, run it in a new task
+    if (async) {
+        pros::Task task([&]() { moveTo(x, y, theta, timeout, false, forwards, chasePower, lead, maxSpeed, log); });
+        mutex.give();
+        pros::delay(10); // delay to give the task time to start
+        return;
     }
 
-    // limit acceleration
-    if (!close)
-      lateralPower =
-          lemlib::slew(lateralPower, prevLateralPower, lateralSettings.slew);
-    if (std::fabs(angularError) > 25)
-      angularPower =
-          lemlib::slew(angularPower, prevAngularPower, angularSettings.slew);
+    Pose target(x, y, M_PI_2 - degToRad(theta)); // target pose in standard form
+    Pose lastPose = getPose(); // last pose
+    FAPID linearPID = FAPID(0, 0, lateralSettings.kP, 0, lateralSettings.kD, "linearPID");
+    FAPID angularPID = FAPID(0, 0, angularSettings.kP, 0, angularSettings.kD, "angularPID");
+    linearPID.setExit(lateralSettings.largeError, lateralSettings.smallError, lateralSettings.smallErrorTimeout,
+                      lateralSettings.smallErrorTimeout, timeout); // exit conditions
+    int compState = pros::competition::get_status();
+    int start = pros::millis();
+    distTravelled = 0;
 
-    // cap the speed
-    if (lateralPower > maxSpeed)
-      lateralPower = maxSpeed;
-    else if (lateralPower < -maxSpeed)
-      lateralPower = -maxSpeed;
-    if (close)
-      angularPower = 0;
+    if (!forwards) target.theta = fmod(target.theta + M_PI, 2 * M_PI); // backwards movement
 
-    prevLateralPower = lateralPower;
-    prevAngularPower = angularPower;
+    bool close = false; // used for settling
+    if (chasePower == 0) chasePower = drivetrain.chasePower; // use global chase power if chase power is 0
 
-    float leftPower = lateralPower + angularPower;
-    float rightPower = lateralPower - angularPower;
+    // main loop
+    while (pros::competition::get_status() == compState && (!linearPID.settled() || pros::millis() - start < 300)) {
+        // get current pose
+        Pose pose = getPose(true);
+        if (!forwards) pose.theta += M_PI;
+        pose.theta = M_PI_2 - pose.theta; // convert to standard form
 
-    // ratio the speeds to respect the max speed
-    float ratio =
-        std::max(std::fabs(leftPower), std::fabs(rightPower)) / maxSpeed;
-    if (ratio > 1) {
-      leftPower /= ratio;
-      rightPower /= ratio;
+        // update completion vars
+        distTravelled += pose.distance(lastPose);
+        lastPose = pose;
+
+        // check if the robot is close enough to the target to start settling
+        if (pose.distance(target) < 7.5) close = true;
+
+        // calculate the carrot point
+        Pose carrot = target - (Pose(cos(target.theta), sin(target.theta)) * lead * pose.distance(target));
+        if (close) carrot = target; // settling behavior
+
+        // calculate error
+        float angularError = angleError(pose.angle(carrot), pose.theta, true); // angular error
+        float linearError = pose.distance(carrot) * cos(angularError); // linear error
+        if (close) angularError = angleError(target.theta, pose.theta, true); // settling behavior
+        if (!forwards) linearError = -linearError;
+
+        // get PID outputs
+        float angularPower = -angularPID.update(radToDeg(angularError), 0, log);
+        float linearPower = linearPID.update(linearError, 0, log);
+
+        // calculate radius of turn
+        float curvature = fabs(getCurvature(pose, carrot));
+        if (curvature == 0) curvature = -1;
+        float radius = 1 / curvature;
+
+        // calculate the maximum speed at which the robot can turn
+        // using the formula v = sqrt( u * r * g )
+        if (radius != -1) {
+            float maxTurnSpeed = sqrt(chasePower * radius * 9.8);
+            // the new linear power is the minimum of the linear power and the max turn speed
+            if (linearPower > maxTurnSpeed && !close) linearPower = maxTurnSpeed;
+            else if (linearPower < -maxTurnSpeed && !close) linearPower = -maxTurnSpeed;
+        }
+
+        // prioritize turning over moving
+        float overturn = fabs(angularPower) + fabs(linearPower) - maxSpeed;
+        if (overturn > 0) linearPower -= linearPower > 0 ? overturn : -overturn;
+
+        // calculate motor powers
+        float leftPower = linearPower + angularPower;
+        float rightPower = linearPower - angularPower;
+
+        // move the motors
+        drivetrain.leftMotors->move(leftPower);
+        drivetrain.rightMotors->move(rightPower);
+
+        pros::delay(10); // delay to save resources
     }
 
-    // move the motors
-    drivetrain.leftMotors->move(leftPower);
-    drivetrain.rightMotors->move(rightPower);
-
-    pros::delay(10);
-  }
-
-  // stop the drivetrain
-  drivetrain.leftMotors->move(0);
-  drivetrain.rightMotors->move(0);
+    // stop the drivetrain
+    drivetrain.leftMotors->move(0);
+    drivetrain.rightMotors->move(0);
+    // set distTraveled to -1 to indicate that the function has finished
+    distTravelled = -1;
+    // give the mutex back
+    mutex.give();
 }
