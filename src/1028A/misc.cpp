@@ -1,10 +1,11 @@
 #include "1028A/misc.h"
-#include "../1028A/addons/gif/gifclass.hpp"
 #include "1028A/logger.h"
 #include "1028A/robot.h"
+#include "1028A/ui/utils.h"
 #include "1028A/vars.h"
 #include "lemlib/chassis/odom.hpp"
-ASSET(intro_gif);
+#include "pros/apix.h"
+#include "pros/motors.hpp"
 
 /*omit
  * @brief Slew rate limiter
@@ -172,6 +173,9 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((gps2pt - 1));
   pros::c::v5_device_e_t Opticalcheck =
       pros::c::registry_get_plugged_type((opticalpt - 1));
+  pros::c::v5_device_e_t Intakecheck =
+      pros::c::registry_get_plugged_type((inakept - 1));
+
   if (LeftFrontcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Left Front Motor not found");
     ports = false;
@@ -240,6 +244,10 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Optical Sensor not found");
     ports = false;
   }
+  if (Intakecheck != pros::c::E_DEVICE_MOTOR) {
+    _1028A::logger::fatal("Intake Motor not found");
+    ports = false;
+  }
 
   if (_1028A::robot::leftfront.is_over_temp()) {
     _1028A::logger::fatal("Left Front Motor overheating");
@@ -281,19 +289,30 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Aux R55 Motor overheating");
     overTemp = true;
   }
+  if (_1028A::robot::intake.is_over_temp()) {
+    _1028A::logger::fatal("Intake Motor overheating");
+    overTemp = true;
+  }
 
   if (pros::battery::get_capacity() < 90) {
     batteryLow = true;
     _1028A::logger::warn("Battery: low");
   }
 }
+
+void _1028A::utils::ptoSwitch() {
+  // change solenoids
+
+  if (PTO == ptoState::drive) {
+    PTO = ptoState::cata;
+  } else if (PTO == ptoState::cata) {
+    PTO = ptoState::drive;
+  }
+}
+
 void _1028A::utils::init() {
-  Gif gif(intro_gif, lv_scr_act());
-  pros::delay(11400);
-  gif.pause();
-  gif.clean();
   _1028A::logger::init();
-  _1028A::utils::checks();
+  _1028A::ui::init();
   _1028A::robot::chassis.calibrate();
   lemlib::init();
 }

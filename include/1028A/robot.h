@@ -21,20 +21,24 @@
 #define gps1pt 15
 #define gps2pt 16
 #define opticalpt 17
+#define inakept 18
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
 extern pros::Motor leftmid;
 extern pros::Motor leftback;
-extern pros::Motor_Group left;
+extern pros::Motor_Group leftMtrs;
+extern pros::Motor_Group leftMtrswPTO;
 extern pros::Motor rightfront;
 extern pros::Motor rightmid;
 extern pros::Motor rightback;
-extern pros::Motor_Group right;
+extern pros::Motor_Group rightMtrs;
+extern pros::Motor_Group rightMtrswPTO;
 extern pros::Motor auxL11;
 extern pros::Motor auxL55;
 extern pros::Motor auxR11;
 extern pros::Motor auxR55;
+extern pros::Motor intake;
 extern pros::Rotation verticalEnc;
 extern pros::Rotation horizontalEnc;
 extern pros::IMU inertial;

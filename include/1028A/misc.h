@@ -80,4 +80,7 @@ float reduce_negative_90_to_90(float angle);
 void init();
 
 void checks();
+
+void ptoSwitch();
+
 } // namespace _1028A::utils

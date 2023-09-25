@@ -2,6 +2,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
+#include "pros/motors.hpp"
 #include "pros/optical.hpp"
 
 pros::Motor _1028A::robot::leftfront(leftfrontpt, pros::E_MOTOR_GEARSET_18,
@@ -10,14 +11,21 @@ pros::Motor _1028A::robot::leftmid(leftmidpt, pros::E_MOTOR_GEARSET_18, false,
                                    pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor _1028A::robot::leftback(leftbackpt, pros::E_MOTOR_GEARSET_18, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor_Group _1028A::robot::left({leftfront, leftmid, leftback});
+pros::Motor_Group _1028A::robot::leftMtrs({leftfrontpt, leftmidpt, leftbackpt});
+
+pros::Motor_Group _1028A::robot::leftMtrswPTO({leftfrontpt, leftmidpt,
+                                               leftbackpt, auxL11pt, auxL55pt});
 pros::Motor _1028A::robot::rightfront(rightfrontpt, pros::E_MOTOR_GEARSET_18,
                                       true, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor _1028A::robot::rightmid(rightmidpt, pros::E_MOTOR_GEARSET_18, true,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor _1028A::robot::rightback(rightbackpt, pros::E_MOTOR_GEARSET_18,
                                      true, pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor_Group _1028A::robot::right({rightfront, rightmid, rightback});
+pros::Motor_Group _1028A::robot::rightMtrs({rightfrontpt, rightmidpt,
+                                            rightbackpt});
+pros::Motor_Group _1028A::robot::rightMtrswPTO({rightfrontpt, rightmidpt,
+                                                rightbackpt, auxR11pt,
+                                                auxR55pt});
 pros::Motor _1028A::robot::auxL11(auxL11pt, pros::E_MOTOR_GEARSET_18, false,
                                   pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor _1028A::robot::auxL55(auxL55pt, pros::E_MOTOR_GEARSET_18, false,
@@ -25,6 +33,8 @@ pros::Motor _1028A::robot::auxL55(auxL55pt, pros::E_MOTOR_GEARSET_18, false,
 pros::Motor _1028A::robot::auxR11(auxR11pt, pros::E_MOTOR_GEARSET_18, true,
                                   pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor _1028A::robot::auxR55(auxR55pt, pros::E_MOTOR_GEARSET_18, true,
+                                  pros::E_MOTOR_ENCODER_DEGREES);
+pros::Motor _1028A::robot::intake(inakept, pros::E_MOTOR_GEARSET_18, false,
                                   pros::E_MOTOR_ENCODER_DEGREES);
 pros::Rotation _1028A::robot::verticalEnc(verticalEncpt);
 pros::Rotation _1028A::robot::horizontalEnc(horizontalEncpt);
@@ -39,8 +49,8 @@ _1028A::GPSRedundantSensor _1028A::robot::gps(&_1028A::robot::gps1,
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 
 lemlib::Drivetrain_t _1028A::robot::drivetrain{
-    &left,                      // left drivetrain motors
-    &right,                     // right drivetrain motors
+    &leftMtrswPTO,              // left drivetrain motors
+    &rightMtrswPTO,             // right drivetrain motors
     10,                         // track width
     lemlib::Omniwheel::NEW_275, // wheel diameter
     600                         // wheel rpm
