@@ -1,0 +1,146 @@
+#include "1028A/old.h"
+#include "1028A/robot.h"
+
+int math(float Error, float lastError, float Kp, float Ki, float Kd,
+         double maxSpd) {
+  float P;
+  float D;
+  float Drive;
+
+  P = (Kp * Error);
+  static float I = 0;
+  I += Error * Ki;
+  if (I > 1) {
+    I = 1;
+  }
+  if (I < -1) {
+    I = -1;
+  }
+  D = (Error - lastError) * Kd;
+  Drive = P + I + D;
+
+  if (Drive > maxSpd) {
+    Drive = maxSpd;
+  }
+  if (Drive < -maxSpd) {
+    Drive = -maxSpd;
+  }
+  return Drive;
+}
+bool exit(float Error, float Threshold, float currTime, float startTime,
+          float timeExit, float powerValue) {
+  if ((Error < Threshold and Error > -Threshold) && powerValue <= 10) {
+    return true;
+  } else if (currTime - startTime >= timeExit) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void turn(double RequestedValue, double spd, double thre, double time,
+          double kpOffset, double kdOffset) {
+  float SensorCurrentValue;
+  float error;
+  float lastError = 0;
+
+  float Kp = 1 + kpOffset;
+  float Ki = 0;
+  float Kd = 0 + kdOffset;
+  double timeExit = 0;
+  double startTime = pros::millis();
+  while (1) {
+    // Reads the sensor value and scale
+    SensorCurrentValue = _1028A::robot::inertial.get_rotation();
+    double currentTime = pros::millis();
+
+    // calculates error
+    error = -(RequestedValue - SensorCurrentValue);
+
+    // calculate drive PID
+    float powerValue = math(error, lastError, Kp, Ki, Kd, spd);
+
+    if (exit(error, thre, currentTime, startTime, time, powerValue)) {
+      _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+      _1028A::robot::leftfront.brake();
+      _1028A::robot::leftmid.brake();
+      _1028A::robot::leftback.brake();
+      _1028A::robot::rightfront.brake();
+      _1028A::robot::rightmid.brake();
+      _1028A::robot::rightback.brake();
+      break;
+    }
+
+    // Move Motors with PID
+    _1028A::robot::leftfront.move((0 * powerValue) + (-1 * powerValue));
+    _1028A::robot::leftback.move((0 * powerValue) + (-1 * powerValue));
+    _1028A::robot::leftmid.move((0 * powerValue) + (-1 * powerValue));
+
+    _1028A::robot::rightfront.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightback.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightmid.move((0 * powerValue) + (1 * powerValue));
+
+    lastError = error;
+    pros::delay(5);
+  }
+}
+
+void forward(double RequestedValue, double spd, double thre, double time,
+             double kpOffset, double kdOffset) {
+  float SensorCurrentValue;
+  float error;
+  float lastError = 0;
+
+  float Kp = 0.5 + kpOffset;
+  float Ki = 0;
+  float Kd = 0.1 + kdOffset;
+  double timeExit = 0;
+  double startTime = pros::millis();
+  _1028A::robot::leftfront.tare_position();
+  while (1) {
+    // Reads the sensor value and scale
+    SensorCurrentValue = _1028A::robot::leftfront.get_position();
+    double currentTime = pros::millis();
+
+    // calculates error
+    error = (RequestedValue - SensorCurrentValue);
+
+    // calculate drive PID
+    float powerValue = math(error, lastError, Kp, Ki, Kd, spd);
+
+    if (exit(error, thre, currentTime, startTime, time, powerValue)) {
+      _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+      _1028A::robot::leftfront.brake();
+      _1028A::robot::leftmid.brake();
+      _1028A::robot::leftback.brake();
+      _1028A::robot::rightfront.brake();
+      _1028A::robot::rightmid.brake();
+      _1028A::robot::rightback.brake();
+      break;
+    }
+
+    // Move Motors with PID
+    _1028A::robot::leftfront.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::leftback.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::leftmid.move((0 * powerValue) + (1 * powerValue));
+
+    _1028A::robot::rightfront.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightback.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightmid.move((0 * powerValue) + (1 * powerValue));
+
+    lastError = error;
+    pros::delay(5);
+  }
+}
