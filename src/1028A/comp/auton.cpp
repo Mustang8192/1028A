@@ -3,5 +3,8 @@
 
 void _1028A::comp::auton::auton() {
   if (autonSelect == 1) {
+  } else if (autonSelect == 2) {
+
+  } else if (autonSelect == 8) {
   }
 }

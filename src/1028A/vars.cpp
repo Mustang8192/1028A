@@ -9,9 +9,6 @@ bool ports = true;
 bool overTemp = false;
 bool batteryLow = false;
 
-// robot
-ptoState PTO = ptoState::drive;
-
 // ui
 bool uiLock = false;
 int autonSelect = 0;

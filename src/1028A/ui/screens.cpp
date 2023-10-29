@@ -1,4 +1,5 @@
 #include "1028A/ui/screens.h"
+#include "1028A/misc.h"
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/utils.h"
 #include "1028A/vars.h"
@@ -28,6 +29,7 @@ void _1028A::ui::screens::macrosScreen() {
 }
 
 void _1028A::ui::screens::homeScreen() {
+  _1028A::utils::checks();
   homePG = lv_obj_create(NULL, NULL);
   if ((autonSelect != 0 && ports && !batteryLow && !overTemp &&
        pros::competition::is_connected())) {

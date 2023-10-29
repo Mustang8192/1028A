@@ -2,6 +2,7 @@
 
 namespace _1028A::comp::driver {
 void driveCTRL();
-void ptoCTRL();
+void flywheelCTRL();
 void intakeCTRL();
+void flapCTRL();
 } // namespace _1028A::comp::driver

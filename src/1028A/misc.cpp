@@ -151,28 +151,12 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((rightmidpt - 1));
   pros::c::v5_device_e_t RightBackcheck =
       pros::c::registry_get_plugged_type((rightbackpt - 1));
-  pros::c::v5_device_e_t AuxL11check =
-      pros::c::registry_get_plugged_type((auxL11pt - 1));
-  pros::c::v5_device_e_t AuxL55check =
-      pros::c::registry_get_plugged_type((auxL55pt - 1));
-  pros::c::v5_device_e_t AuxR11check =
-      pros::c::registry_get_plugged_type((auxR11pt - 1));
-  pros::c::v5_device_e_t AuxR55check =
-      pros::c::registry_get_plugged_type((auxR55pt - 1));
-  pros::c::v5_device_e_t VerticalEnccheck =
-      pros::c::registry_get_plugged_type((verticalEncpt - 1));
-  pros::c::v5_device_e_t HorizontalEnccheck =
-      pros::c::registry_get_plugged_type((horizontalEncpt - 1));
+  // pros::c::v5_device_e_t VerticalEnccheck =
+  //     pros::c::registry_get_plugged_type((verticalEncpt - 1));
+  // pros::c::v5_device_e_t HorizontalEnccheck =
+  //     pros::c::registry_get_plugged_type((horizontalEncpt - 1));
   pros::c::v5_device_e_t Inertialcheck =
       pros::c::registry_get_plugged_type((inertialpt - 1));
-  pros::c::v5_device_e_t InertialOdomcheck =
-      pros::c::registry_get_plugged_type((inertialOdompt - 1));
-  pros::c::v5_device_e_t GPS1check =
-      pros::c::registry_get_plugged_type((gps1pt - 1));
-  pros::c::v5_device_e_t GPS2check =
-      pros::c::registry_get_plugged_type((gps2pt - 1));
-  pros::c::v5_device_e_t Opticalcheck =
-      pros::c::registry_get_plugged_type((opticalpt - 1));
   pros::c::v5_device_e_t Intakecheck =
       pros::c::registry_get_plugged_type((inakept - 1));
 
@@ -200,22 +184,7 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor not found");
     ports = false;
   }
-  if (AuxL11check != pros::c::E_DEVICE_MOTOR) {
-    _1028A::logger::fatal("Aux L11 Motor not found");
-    ports = false;
-  }
-  if (AuxL55check != pros::c::E_DEVICE_MOTOR) {
-    _1028A::logger::fatal("Aux L55 Motor not found");
-    ports = false;
-  }
-  if (AuxR11check != pros::c::E_DEVICE_MOTOR) {
-    _1028A::logger::fatal("Aux R11 Motor not found");
-    ports = false;
-  }
-  if (AuxR55check != pros::c::E_DEVICE_MOTOR) {
-    _1028A::logger::fatal("Aux R55 Motor not found");
-    ports = false;
-  }
+  /*
   if (VerticalEnccheck != pros::c::E_DEVICE_ROTATION) {
     _1028A::logger::fatal("Vertical Encoder not found");
     ports = false;
@@ -224,24 +193,9 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Horizontal Encoder not found");
     ports = false;
   }
+  */
   if (Inertialcheck != pros::c::E_DEVICE_IMU) {
     _1028A::logger::fatal("Inertial Sensor not found");
-    ports = false;
-  }
-  if (InertialOdomcheck != pros::c::E_DEVICE_IMU) {
-    _1028A::logger::fatal("Inertial Odom Sensor not found");
-    ports = false;
-  }
-  if (GPS1check != pros::c::E_DEVICE_GPS) {
-    _1028A::logger::fatal("GPS 1 not found");
-    ports = false;
-  }
-  if (GPS2check != pros::c::E_DEVICE_GPS) {
-    _1028A::logger::fatal("GPS 2 not found");
-    ports = false;
-  }
-  if (Opticalcheck != pros::c::E_DEVICE_OPTICAL) {
-    _1028A::logger::fatal("Optical Sensor not found");
     ports = false;
   }
   if (Intakecheck != pros::c::E_DEVICE_MOTOR) {
@@ -273,40 +227,14 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor overheating");
     overTemp = true;
   }
-  if (_1028A::robot::auxL11.is_over_temp()) {
-    _1028A::logger::fatal("Aux L11 Motor overheating");
-    overTemp = true;
-  }
-  if (_1028A::robot::auxL55.is_over_temp()) {
-    _1028A::logger::fatal("Aux L55 Motor overheating");
-    overTemp = true;
-  }
-  if (_1028A::robot::auxR11.is_over_temp()) {
-    _1028A::logger::fatal("Aux R11 Motor overheating");
-    overTemp = true;
-  }
-  if (_1028A::robot::auxR55.is_over_temp()) {
-    _1028A::logger::fatal("Aux R55 Motor overheating");
-    overTemp = true;
-  }
   if (_1028A::robot::intake.is_over_temp()) {
     _1028A::logger::fatal("Intake Motor overheating");
     overTemp = true;
   }
 
-  if (pros::battery::get_capacity() < 90) {
+  if (pros::battery::get_capacity() < 80) {
     batteryLow = true;
     _1028A::logger::warn("Battery: low");
-  }
-}
-
-void _1028A::utils::ptoSwitch() {
-  // change solenoids
-
-  if (PTO == ptoState::drive) {
-    PTO = ptoState::cata;
-  } else if (PTO == ptoState::cata) {
-    PTO = ptoState::drive;
   }
 }
 

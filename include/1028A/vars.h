@@ -10,9 +10,6 @@ extern bool ports;
 extern bool overTemp;
 extern bool batteryLow;
 
-// robot
-enum class ptoState { drive, cata };
-extern ptoState PTO;
 // ui
 extern bool uiLock;
 extern int autonSelect;

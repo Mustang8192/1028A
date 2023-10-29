@@ -81,6 +81,4 @@ void init();
 
 void checks();
 
-void ptoSwitch();
-
 } // namespace _1028A::utils

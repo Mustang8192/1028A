@@ -22,7 +22,7 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
 
 lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
   if (!uiLock) {
-    autonSelect = 3;
+    autonSelect = 2;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
     lv_obj_align(summary, NULL, LV_ALIGN_CENTER, 130, 0);
