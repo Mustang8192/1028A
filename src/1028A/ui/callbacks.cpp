@@ -1,11 +1,18 @@
 #include "1028A/ui/callbacks.h"
 #include "1028A/logger.h"
+#include "1028A/robot.h"
 #include "1028A/ui/screens.h"
 #include "1028A/vars.h"
+#include "display/lv_core/lv_obj.h"
 
 lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
-  if (!uiLock) {
+  if (selection == goalSide) {
+    lv_obj_del(summary);
+    selection = null;
+    return LV_RES_OK;
+  } else if (!uiLock) {
     autonSelect = 1;
+    selection = goalSide;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
     lv_obj_align(summary, NULL, LV_ALIGN_CENTER, 130, 0);
@@ -13,7 +20,7 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Left Side:\n1 roller\n3 Disks");
+    lv_label_set_text(summaryTxt, "Goal Side:\n4 Triball\nNo WP task");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
@@ -21,8 +28,35 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
 }
 
 lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
-  if (!uiLock) {
+  if (selection == loadingSide) {
+    lv_obj_del(summary);
+    selection = null;
+    return LV_RES_OK;
+  } else if (!uiLock) {
+    autonSelect = 3;
+    selection = loadingSide;
+    summary = lv_page_create(autonPG, NULL);
+    lv_obj_set_size(summary, 150, 200);
+    lv_obj_align(summary, NULL, LV_ALIGN_CENTER, -15, 0);
+    lv_page_set_sb_mode(summary, LV_SB_MODE_OFF);
+    lv_page_set_scrl_fit(summary, false, false);
+    lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
+    summaryTxt = lv_label_create(summary, NULL);
+    lv_label_set_text(summaryTxt, "Loading Side:\nN/A");
+    return LV_RES_OK;
+  } else {
+    return LV_RES_OK;
+  }
+}
+
+lv_res_t _1028A::ui::callbacks::goalwpCB(lv_obj_t *list_btn) {
+  if (selection == goalwp) {
+    lv_obj_del(summary);
+    selection = null;
+    return LV_RES_OK;
+  } else if (!uiLock) {
     autonSelect = 2;
+    selection = goalwp;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
     lv_obj_align(summary, NULL, LV_ALIGN_CENTER, 130, 0);
@@ -30,7 +64,29 @@ lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Win Point:\n2 roller\n6 Disks");
+    lv_label_set_text(summaryTxt, "Goal WP:\nN/A");
+    return LV_RES_OK;
+  } else {
+    return LV_RES_OK;
+  }
+}
+
+lv_res_t _1028A::ui::callbacks::loadingwpCB(lv_obj_t *list_btn) {
+  if (selection == loadingwp) {
+    lv_obj_del(summary);
+    selection = null;
+    return LV_RES_OK;
+  } else if (!uiLock) {
+    autonSelect = 4;
+    selection = loadingwp;
+    summary = lv_page_create(autonPG, NULL);
+    lv_obj_set_size(summary, 150, 200);
+    lv_obj_align(summary, NULL, LV_ALIGN_CENTER, -15, 0);
+    lv_page_set_sb_mode(summary, LV_SB_MODE_OFF);
+    lv_page_set_scrl_fit(summary, false, false);
+    lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
+    summaryTxt = lv_label_create(summary, NULL);
+    lv_label_set_text(summaryTxt, "Loading WP:\nN/A");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
@@ -38,8 +94,13 @@ lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
 }
 
 lv_res_t _1028A::ui::callbacks::skillsCB(lv_obj_t *list_btn) {
-  if (!uiLock) {
+  if (selection == Skills) {
+    lv_obj_del(summary);
+    selection = null;
+    return LV_RES_OK;
+  } else if (!uiLock) {
     autonSelect = 8;
+    selection = Skills;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
     lv_obj_align(summary, NULL, LV_ALIGN_CENTER, 130, 0);
@@ -96,6 +157,7 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
     uiLock = false;
   } else if (!uiLock) {
     uiLock = true;
+    _1028A::robot::chassis.calibrate();
   }
   return LV_RES_OK;
 }

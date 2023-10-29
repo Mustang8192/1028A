@@ -19,6 +19,7 @@ lv_style_t style_ready;
 lv_style_t style_notready;
 lv_style_t style_standby;
 int currentScreen = 0;
+lastAutonSelect selection = null;
 
 // General
 lv_obj_t *List;

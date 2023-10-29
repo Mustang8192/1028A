@@ -241,6 +241,6 @@ void _1028A::utils::checks() {
 void _1028A::utils::init() {
   _1028A::logger::init();
   _1028A::ui::init();
-  //_1028A::robot::chassis.calibrate();
-  // lemlib::init();
+  _1028A::robot::chassis.calibrate();
+  lemlib::init();
 }

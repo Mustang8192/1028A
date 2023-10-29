@@ -1,4 +1,5 @@
 #include "main.h"
+#include <cstddef>
 #include <time.h>
 
 // logger
@@ -20,6 +21,8 @@ extern lv_style_t style_ready;
 extern lv_style_t style_notready;
 extern lv_style_t style_standby;
 extern int currentScreen;
+enum lastAutonSelect { goalSide, goalwp, loadingSide, loadingwp, Skills, null };
+extern lastAutonSelect selection;
 
 // General
 extern lv_obj_t *List;

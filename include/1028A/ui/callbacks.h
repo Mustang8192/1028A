@@ -3,7 +3,11 @@
 namespace _1028A::ui::callbacks {
 extern lv_res_t goalCB(lv_obj_t *list_btn);
 
+extern lv_res_t goalwpCB(lv_obj_t *list_btn);
+
 extern lv_res_t loadingCB(lv_obj_t *list_btn);
+
+extern lv_res_t loadingwpCB(lv_obj_t *list_btn);
 
 extern lv_res_t skillsCB(lv_obj_t *list_btn);
 

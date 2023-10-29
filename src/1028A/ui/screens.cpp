@@ -9,10 +9,14 @@ void _1028A::ui::screens::autonScreen() {
 
   utils::createBtn(goal, autonPG, _1028A::ui::callbacks::goalCB,
                    LV_ALIGN_CENTER, -11, -55, 100, 50, "Goal Side");
-  utils::createBtn(loading, autonPG, _1028A::ui::callbacks::loadingCB,
-                   LV_ALIGN_CENTER, -11, 0, 100, 50, "Loading WP");
+  utils::createBtn(loading, autonPG, _1028A::ui::callbacks::goalwpCB,
+                   LV_ALIGN_CENTER, -11, 0, 100, 50, "Goal WP");
   utils::createBtn(skills, autonPG, _1028A::ui::callbacks::skillsCB,
                    LV_ALIGN_CENTER, -11, 110, 100, 50, "Skills");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::loadingCB,
+                   LV_ALIGN_CENTER, 150, -55, 100, 50, "Loading Side");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::loadingwpCB,
+                   LV_ALIGN_CENTER, 150, 0, 100, 50, "Loading WP");
   utils::listInit(_1028A::ui::callbacks::homeCB,
                   _1028A::ui::callbacks::do_nothingCB,
                   _1028A::ui::callbacks::macrosCB, autonPG, List);
