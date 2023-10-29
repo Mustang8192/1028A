@@ -1,5 +1,4 @@
 #include "1028A/ui/utils.h"
-#include "../../1028A/addons/gif/gifclass.hpp"
 #include "1028A/logger.h"
 #include "1028A/misc.h"
 #include "1028A/ui/callbacks.h"
@@ -105,28 +104,18 @@ void _1028A::ui::utils::createLabel(lv_obj_t *label, lv_obj_t *location,
 
 void _1028A::ui::utils::listInit(lv_res_t homeCB(lv_obj_t *list_btn),
                                  lv_res_t autonCB(lv_obj_t *list_btn),
-                                 lv_res_t motorsCB(lv_obj_t *list_btn),
-                                 lv_res_t sensorsCB(lv_obj_t *list_btn),
-                                 lv_res_t settingsCB(lv_obj_t *list_btn),
+                                 lv_res_t macrosCB(lv_obj_t *list_btn),
                                  lv_obj_t *parent, lv_obj_t *list) {
   list = lv_list_create(parent, NULL);
   lv_list_add(list, SYMBOL_HOME, "HOME", homeCB);
   autonBtn = lv_list_add(list, SYMBOL_PLAY, "AUTONS", autonCB);
-  motorsBtn = lv_list_add(list, SYMBOL_WARNING, "MOTORS", motorsCB);
-  sensorsBtn = lv_list_add(list, SYMBOL_REFRESH, "SENSORS", sensorsCB);
-  settingsBtn = lv_list_add(list, SYMBOL_SETTINGS, "SETTINGS", settingsCB);
+  macrosBtn = lv_list_add(list, SYMBOL_REFRESH, "MACROS", macrosCB);
   lv_obj_set_width(list, 130);
 }
 void _1028A::ui::utils::doNothing() {}
 
 void _1028A::ui::init() {
   _1028A::logger::info("Starting UI");
-  if (!pros::competition::is_connected()) {
-    Gif gif(intro_gif, lv_scr_act());
-    pros::delay(11400);
-    gif.pause();
-    gif.clean();
-  }
   _1028A::utils::checks();
   pros::delay(1000);
   utils::stylesInit();

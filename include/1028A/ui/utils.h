@@ -24,9 +24,7 @@ extern void createBox(lv_obj_t *box, lv_obj_t *label, lv_obj_t *location,
 
 extern void listInit(lv_res_t homeCB(lv_obj_t *list_btn),
                      lv_res_t autonCB(lv_obj_t *list_btn),
-                     lv_res_t motorsCB(lv_obj_t *list_btn),
-                     lv_res_t sensorsCB(lv_obj_t *list_btn),
-                     lv_res_t settingsCB(lv_obj_t *list_btn), lv_obj_t *parent,
+                     lv_res_t macrosCB(lv_obj_t *list_btn), lv_obj_t *parent,
                      lv_obj_t *list);
 
 extern void doNothing();

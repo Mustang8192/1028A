@@ -28,6 +28,7 @@ void _1028A::comp::driver::ptoCTRL() {
   while (1) {
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
       _1028A::utils::ptoSwitch();
+      pros::delay(1000);
     }
     pros::delay(20);
   }

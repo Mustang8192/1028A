@@ -5,9 +5,5 @@ extern void homeScreen();
 
 extern void autonScreen();
 
-extern void motorsScreen();
-
-extern void sensorsScreen();
-
-extern void settingsScreen();
+extern void macrosScreen();
 } // namespace _1028A::ui::screens
