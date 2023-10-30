@@ -27,7 +27,7 @@ lv_obj_t *autonBtn;
 lv_obj_t *logsBtn;
 lv_obj_t *macrosBtn;
 
-// Auton Screen
+// Macros Screen
 lv_obj_t *autonPG;
 lv_obj_t *summary;
 lv_obj_t *summaryTxt;
@@ -37,15 +37,6 @@ lv_obj_t *skills;
 
 // Sensor Screen
 lv_obj_t *macrosPG;
-
-// Settings Screen
-lv_obj_t *settingsPG;
-lv_obj_t *grafanaBtn;
-lv_obj_t *autonRecorderBtn;
-lv_obj_t *tensorflowliteBtn;
-lv_obj_t *odomDebugBtn;
-lv_obj_t *graphingBtn;
-lv_obj_t *rosBtn;
 
 // Home Screen
 lv_obj_t *homePG;

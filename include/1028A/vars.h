@@ -38,17 +38,8 @@ extern lv_obj_t *goal;
 extern lv_obj_t *loading;
 extern lv_obj_t *skills;
 
-// Sensor Screen
+// Macros Screen
 extern lv_obj_t *macrosPG;
-
-// Settings Screen
-extern lv_obj_t *settingsPG;
-extern lv_obj_t *grafanaBtn;
-extern lv_obj_t *autonRecorderBtn;
-extern lv_obj_t *tensorflowliteBtn;
-extern lv_obj_t *odomDebugBtn;
-extern lv_obj_t *graphingBtn;
-extern lv_obj_t *rosBtn;
 
 // Home Screen
 extern lv_obj_t *homePG;
