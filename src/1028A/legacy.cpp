@@ -1,8 +1,8 @@
 #include "1028A/legacy.h"
 #include "1028A/robot.h"
 
-int math(float Error, float lastError, float Kp, float Ki, float Kd,
-         double maxSpd) {
+int _1028A::legacy::math(float Error, float lastError, float Kp, float Ki,
+                         float Kd, double maxSpd) {
   float P;
   float D;
   float Drive;
@@ -27,8 +27,8 @@ int math(float Error, float lastError, float Kp, float Ki, float Kd,
   }
   return Drive;
 }
-bool exit(float Error, float Threshold, float currTime, float startTime,
-          float timeExit, float powerValue) {
+bool _1028A::legacy::exit(float Error, float Threshold, float currTime,
+                          float startTime, float timeExit, float powerValue) {
   if ((Error < Threshold and Error > -Threshold) && powerValue <= 10) {
     return true;
   } else if (currTime - startTime >= timeExit) {
@@ -38,8 +38,8 @@ bool exit(float Error, float Threshold, float currTime, float startTime,
   }
 }
 
-void turn(double RequestedValue, double spd, double thre, double time,
-          double kpOffset, double kdOffset) {
+void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
+                          double time, double kpOffset, double kdOffset) {
   float SensorCurrentValue;
   float error;
   float lastError = 0;
@@ -91,8 +91,8 @@ void turn(double RequestedValue, double spd, double thre, double time,
   }
 }
 
-void forward(double RequestedValue, double spd, double thre, double time,
-             double kpOffset, double kdOffset) {
+void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
+                             double time, double kpOffset, double kdOffset) {
   float SensorCurrentValue;
   float error;
   float lastError = 0;
