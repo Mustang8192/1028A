@@ -15,7 +15,8 @@ void opcontrol() {
   _1028A::task::Async intakeCTRL(_1028A::comp::driver::intakeCTRL);
   _1028A::task::Async flywheelCTRL(_1028A::comp::driver::flywheelCTRL);
   _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
+  _1028A::task::Async climbCTRL(_1028A::comp::driver::climbCTRL);
   while (1) {
-    pros::delay(20);
+    pros::delay(200);
   }
 }

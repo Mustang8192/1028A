@@ -1,5 +1,6 @@
 #include "1028A/vars.h"
 
+int flywheelon = 0;
 // logger
 bool fileLog = false;
 time_t robotStartTime = 0;

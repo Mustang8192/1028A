@@ -157,7 +157,6 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
     uiLock = false;
   } else if (!uiLock) {
     uiLock = true;
-    _1028A::robot::chassis.calibrate();
   }
   return LV_RES_OK;
 }

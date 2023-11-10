@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <time.h>
 
+extern int flywheelon;
 // logger
 extern bool fileLog;
 extern time_t robotStartTime;

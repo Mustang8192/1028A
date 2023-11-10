@@ -15,7 +15,7 @@
 #define horizontalEncpt 12
 #define inertialpt 13
 #define inakept 10
-#define flywheelpt 11
+#define flywheelpt 16
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -34,6 +34,7 @@ extern pros::IMU inertial;
 extern pros::Controller master;
 extern pros::ADIDigitalOut flapL;
 extern pros::ADIDigitalOut flapR;
+extern pros::ADIDigitalOut climb;
 
 extern lemlib::Drivetrain_t drivetrain;
 extern lemlib::TrackingWheel verticalTracker;

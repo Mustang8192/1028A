@@ -1,5 +1,6 @@
 #include "1028A/legacy.h"
 #include "1028A/robot.h"
+#include "1028A/vars.h"
 
 int _1028A::legacy::math(float Error, float lastError, float Kp, float Ki,
                          float Kd, double maxSpd) {
@@ -28,7 +29,8 @@ int _1028A::legacy::math(float Error, float lastError, float Kp, float Ki,
   return Drive;
 }
 bool _1028A::legacy::exit(float Error, float Threshold, float currTime,
-                          float startTime, float timeExit, float powerValue) {
+                          float startTime, float timeExit, float powerValue,
+                          float lastError) {
   if ((Error < Threshold and Error > -Threshold) && powerValue <= 10) {
     return true;
   } else if (currTime - startTime >= timeExit) {
@@ -44,11 +46,17 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
   float error;
   float lastError = 0;
 
-  float Kp = 1 + kpOffset;
+  float Kp = 0.8 + kpOffset;
   float Ki = 0;
-  float Kd = 0 + kdOffset;
+  float Kd = 0.1 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
+  _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  _1028A::robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  _1028A::robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  _1028A::robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   while (1) {
     // Reads the sensor value and scale
     SensorCurrentValue = _1028A::robot::inertial.get_rotation();
@@ -59,8 +67,8 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
 
     // calculate drive PID
     float powerValue = math(error, lastError, Kp, Ki, Kd, spd);
-
-    if (exit(error, thre, currentTime, startTime, time, powerValue)) {
+    if (exit(error, thre, currentTime, startTime, time, powerValue,
+             lastError)) {
       _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
       _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
       _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -76,7 +84,6 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
       _1028A::robot::rightback.brake();
       break;
     }
-
     // Move Motors with PID
     _1028A::robot::leftfront.move((0 * powerValue) + (-1 * powerValue));
     _1028A::robot::leftback.move((0 * powerValue) + (-1 * powerValue));
@@ -114,7 +121,8 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
     // calculate drive PID
     float powerValue = math(error, lastError, Kp, Ki, Kd, spd);
 
-    if (exit(error, thre, currentTime, startTime, time, powerValue)) {
+    if (exit(error, thre, currentTime, startTime, time, powerValue,
+             lastError)) {
       _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
       _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
       _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);

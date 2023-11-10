@@ -116,7 +116,6 @@ void _1028A::ui::utils::doNothing() {}
 
 void _1028A::ui::init() {
   _1028A::logger::info("Starting UI");
-  _1028A::utils::checks();
   pros::delay(1000);
   utils::stylesInit();
   _1028A::ui::screens::homeScreen();

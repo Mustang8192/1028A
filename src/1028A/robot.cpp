@@ -2,6 +2,7 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
+#include "pros/adi.hpp"
 #include "pros/motors.h"
 #include "pros/motors.hpp"
 #include "pros/optical.hpp"
@@ -30,8 +31,9 @@ pros::Motor _1028A::robot::flywheel(flywheelpt, pros::E_MOTOR_GEARSET_18, false,
 pros::Rotation _1028A::robot::verticalEnc(verticalEncpt);
 pros::Rotation _1028A::robot::horizontalEnc(horizontalEncpt);
 pros::IMU _1028A::robot::inertial(inertialpt);
-pros::ADIDigitalOut _1028A::robot::flapL('H');
-pros::ADIDigitalOut _1028A::robot::flapR('G');
+pros::ADIDigitalOut _1028A::robot::flapL('G');
+pros::ADIDigitalOut _1028A::robot::flapR('H');
+pros::ADIDigitalOut _1028A::robot::climb('F');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

@@ -13,13 +13,39 @@ void _1028A::comp::driver::driveCTRL() {
     _1028A::robot::leftMtrs.move(power + turn);
     _1028A::robot::rightMtrs.move(power - turn);
 
+    if (flywheelon == 1) {
+      robot::flywheel.move(127);
+    } else if (flywheelon == 2) {
+      robot::flywheel.move(-127);
+    } else {
+      robot::flywheel.brake();
+    }
     pros::delay(5);
   }
 }
 
 void _1028A::comp::driver::flywheelCTRL() {
+  robot::flywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   while (1) {
 
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
+        flywheelon != 1 && flywheelon != 2) {
+      flywheelon = 1;
+      pros::delay(600);
+    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
+               flywheelon != 0) {
+      flywheelon = 0;
+      pros::delay(600);
+    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+               flywheelon != 2 && flywheelon != 1) {
+      flywheelon = 2;
+      pros::delay(600);
+    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+               flywheelon != 0) {
+      flywheelon = 0;
+      pros::delay(600);
+    } else {
+    }
     pros::delay(20);
   }
 }
@@ -103,5 +129,25 @@ void _1028A::comp::driver::intakeCTRL() {
       _1028A::robot::intake.move(0);
     }
     pros::delay(10);
+  }
+}
+
+void _1028A::comp::driver::climbCTRL() {
+  int climbsts = 0;
+  while (1) {
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) &&
+        climbsts == 0) {
+      climbsts = 1;
+      robot::climb.set_value(1);
+      pros::delay(700);
+    } else if (_1028A::robot::master.get_digital(
+                   pros::E_CONTROLLER_DIGITAL_RIGHT) &&
+               climbsts == 1) {
+      climbsts = 0;
+      robot::climb.set_value(0);
+      pros::delay(700);
+    } else {
+    }
+    pros::delay(20);
   }
 }
