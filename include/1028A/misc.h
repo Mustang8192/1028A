@@ -81,4 +81,6 @@ void init();
 
 void checks();
 
+void controllerSelect();
+
 } // namespace _1028A::utils
