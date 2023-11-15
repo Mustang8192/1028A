@@ -63,10 +63,8 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
     // Reads the sensor value and scale
     SensorCurrentValue = _1028A::robot::inertial.get_rotation();
     double currentTime = pros::millis();
-    /*
     std::string print = "Turning: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());
-    */
 
     // calculates error
     error = -(RequestedValue - SensorCurrentValue);
@@ -121,6 +119,8 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
     // Reads the sensor value and scale
     SensorCurrentValue = _1028A::robot::leftfront.get_position();
     double currentTime = pros::millis();
+    std::string print = "Forward: " + std::to_string(SensorCurrentValue);
+    _1028A::logger::info(print.c_str());
 
     // calculates error
     error = (RequestedValue - SensorCurrentValue);
@@ -158,4 +158,20 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
     lastError = error;
     pros::delay(5);
   }
+}
+
+void _1028A::legacy::forward(double spd, double time) {
+  robot::leftfront.move(spd);
+  robot::leftback.move(spd);
+  robot::leftmid.move(spd);
+  robot::rightfront.move(spd);
+  robot::rightback.move(spd);
+  robot::rightmid.move(spd);
+  pros::delay(time);
+  robot::leftfront.brake();
+  robot::leftback.brake();
+  robot::leftmid.brake();
+  robot::rightfront.brake();
+  robot::rightback.brake();
+  robot::rightmid.brake();
 }

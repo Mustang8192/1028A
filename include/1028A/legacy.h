@@ -10,4 +10,5 @@ extern void turn(double RequestedValue, double spd, double thre, double time,
 
 extern void forward(double RequestedValue, double spd, double thre, double time,
                     double kpOffset, double kdOffset);
+extern void forward(double spd, double time);
 } // namespace _1028A::legacy
