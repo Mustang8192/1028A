@@ -4,6 +4,7 @@
 #include "1028A/ui/screens.h"
 #include "1028A/vars.h"
 #include "display/lv_core/lv_obj.h"
+#include "pros/rtos.hpp"
 
 lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
   if (selection == goalSide) {
@@ -20,7 +21,8 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Goal Side:\n4 Triball\nNo WP task");
+    lv_label_set_text(summaryTxt,
+                      "Snatch:\n4 Triball\nNo WP task\nTriball Rush");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
@@ -86,7 +88,7 @@ lv_res_t _1028A::ui::callbacks::loadingwpCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Loading WP:\nN/A");
+    lv_label_set_text(summaryTxt, "Loading WP:\n1 Goal\n 2 Over");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
@@ -108,7 +110,7 @@ lv_res_t _1028A::ui::callbacks::skillsCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Skills:\n4 roller\n20 Disks");
+    lv_label_set_text(summaryTxt, "Skills:\nFlywheel");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
@@ -157,6 +159,10 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
     uiLock = false;
   } else if (!uiLock) {
     uiLock = true;
+    pros::delay(5000);
+    robot::inertial.reset();
+    pros::delay(4000);
+    robot::master.rumble("-.");
   }
   return LV_RES_OK;
 }

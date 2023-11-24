@@ -8,7 +8,7 @@ void _1028A::ui::screens::autonScreen() {
   autonPG = lv_obj_create(NULL, NULL);
 
   utils::createBtn(goal, autonPG, _1028A::ui::callbacks::goalCB,
-                   LV_ALIGN_CENTER, -11, -55, 100, 50, "Goal Side");
+                   LV_ALIGN_CENTER, -11, -55, 100, 50, "Snatch");
   utils::createBtn(loading, autonPG, _1028A::ui::callbacks::goalwpCB,
                    LV_ALIGN_CENTER, -11, 0, 100, 50, "Goal WP");
   utils::createBtn(skills, autonPG, _1028A::ui::callbacks::skillsCB,

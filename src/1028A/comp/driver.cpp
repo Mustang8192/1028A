@@ -85,11 +85,11 @@ void _1028A::comp::driver::flapCTRL() {
 
       if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
         if (LSts != RSts) {
-          robot::flapL.set_value(0);
-          robot::flapR.set_value(0);
-          LSts = 0;
-          RSts = 0;
-          Bsts = 0;
+          robot::flapL.set_value(1);
+          robot::flapR.set_value(1);
+          LSts = 1;
+          RSts = 1;
+          Bsts = 1;
           actuations += 1;
           pros::delay(200);
         } else if (LSts == 0 && RSts == 0) {

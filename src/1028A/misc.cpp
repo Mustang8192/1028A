@@ -9,6 +9,7 @@
 #include "lemlib/chassis/odom.hpp"
 #include "pros/apix.h"
 #include "pros/misc.h"
+#include "pros/misc.hpp"
 #include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 
@@ -248,121 +249,4 @@ void _1028A::utils::init() {
   _1028A::ui::init();
   _1028A::robot::chassis.calibrate();
   lemlib::init();
-  //_1028A::task::Async controller(_1028A::utils::controllerSelect);
-}
-
-void _1028A::utils::controllerSelect() {
-  _1028A::robot::master.print(1, 1, "Auton: N/A");
-  while (1) {
-    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-        autonSelect == 0) {
-      autonSelect = 1;
-      _1028A::robot::master.print(1, 1, "Auton: GoalSide");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 1) {
-      autonSelect = 0;
-      _1028A::robot::master.print(1, 1, "Auton: N/A");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 0) {
-      autonSelect = 8;
-      _1028A::robot::master.print(1, 1, "Auton: Skills");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-               autonSelect == 1) {
-      autonSelect = 2;
-      _1028A::robot::master.print(1, 1, "Auton: GoalWP");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 2) {
-      autonSelect = 1;
-      _1028A::robot::master.print(1, 1, "Auton: GoalSide");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-               autonSelect == 2) {
-      autonSelect = 3;
-      _1028A::robot::master.print(1, 1, "Auton: LoadingSide");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 3) {
-      autonSelect = 2;
-      _1028A::robot::master.print(1, 1, "Auton: GoalWP");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-               autonSelect == 3) {
-      autonSelect = 4;
-      _1028A::robot::master.print(1, 1, "Auton: LoadingWP");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 4) {
-      autonSelect = 3;
-      _1028A::robot::master.print(1, 1, "Auton: LoadingSide");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-               autonSelect == 4) {
-      autonSelect = 8;
-      _1028A::robot::master.print(1, 1, "Auton: Skills");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               autonSelect == 8) {
-      autonSelect = 4;
-      _1028A::robot::master.print(1, 1, "Auton: LoadingSide");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) &&
-               autonSelect == 8) {
-      autonSelect = 0;
-      _1028A::robot::master.print(1, 1, "Auton: N/A");
-      lv_obj_clean(lv_scr_act());
-      pros::delay(250);
-      _1028A::ui::screens::homeScreen();
-      pros::delay(1000);
-      pros::delay(20);
-    }
-
-    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      break;
-    }
-
-    pros::delay(20);
-  }
 }
