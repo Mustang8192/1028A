@@ -1,12 +1,26 @@
 #include "1028A/comp/auton.h"
 #include "1028A/legacy.h"
 #include "1028A/robot.h"
+#include "1028A/task.h"
 #include "1028A/vars.h"
 #include "main.h"
 #include "pros/apix.h"
 #include "pros/rtos.hpp"
 
+void async() {
+  if (autonSelect == 4) {
+    while (1) {
+      if (_1028A::robot::inertial.get_rotation() <= -150) {
+        _1028A::robot::flapL.set_value(0);
+      }
+
+      pros::delay(20);
+    }
+  }
+}
+
 void _1028A::comp::auton::auton() {
+  autonSelect = 4;
   if (autonSelect == 1) {
     // Snatch
     robot::flapR.set_value(1);
@@ -52,33 +66,22 @@ void _1028A::comp::auton::auton() {
     legacy::forward(-250, 127, 1, 800, 0, 0);
   } else if (autonSelect == 4) {
     // Loading WP
-    legacy::forward(660, 127, 4, 1000, 0, 0);
-    pros::delay(300);
-    legacy::turn(-90, 127, 1, 1000, 0, 0);
+    robot::flapL.set_value(1);
+    pros::delay(400);
+    task::Async Async(async);
+    legacy::turn(-430, 50, 1, 6000, 0, 0);
+    Async.forceStop();
     robot::intake.move(127);
-    pros::delay(300);
+    robot::flapL.set_value(1);
     legacy::forward(127, 600);
-    pros::delay(300);
-    legacy::forward(-400, 127, 1, 1000, 0, 0);
+    pros::delay(400);
+    robot::flapL.set_value(0);
+    legacy::turn(-430, 127, 1, 2000, 0, 0);
+    legacy::forward(-300, 127, 4, 1000, 0, 0, false);
     robot::intake.move(0);
-    pros::delay(300);
-    legacy::turn(38, 127, 1, 1000, 0, 0);
-    pros::delay(300);
-    legacy::forward(-820, 127, 4, 1300, 0, 0);
-    pros::delay(300);
-    legacy::turn(134, 127, 1, 1000, 0, 0);
-    robot::flapR.set_value(1);
-    legacy::forward(200, 90, 1, 2000, 0, 0);
-    pros::delay(200);
-    legacy::turn(90, 127, 1, 1000, 0, 0);
-    pros::delay(300);
-    robot::flapR.set_value(1);
-    legacy::forward(300, 127, 4, 2000, 0, 0);
-    pros::delay(300);
-    robot::flapR.set_value(0);
-    legacy::turn(-90, 127, 1, 1000, 0, 0);
-    pros::delay(300);
-    legacy::forward(-230, 127, 4, 1000, 0, 0);
+    legacy::forward(-70, 1200);
+    legacy::turn(-500, 50, 1, 6000, 0, 0);
+    legacy::forward(-445, 127, 4, 1000, 0, 0.4);
   } else if (autonSelect == 8) {
     // Skills
     robot::flywheel.move(127);
