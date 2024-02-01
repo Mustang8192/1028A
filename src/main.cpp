@@ -1,5 +1,7 @@
 #include "main.h"
 #include "1028A/api.h"
+#include "pros/misc.h"
+#include "pros/rtos.hpp"
 
 void initialize() { _1028A::utils::init(); }
 
@@ -13,9 +15,10 @@ void opcontrol() {
   _1028A::logger::info("Driver Control Enabled");
   _1028A::task::Async driveCTRL(_1028A::comp::driver::driveCTRL);
   _1028A::task::Async intakeCTRL(_1028A::comp::driver::intakeCTRL);
-  _1028A::task::Async flywheelCTRL(_1028A::comp::driver::flywheelCTRL);
+  _1028A::task::Async kickerCTRL(_1028A::comp::driver::kickerCTRL);
   _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
   _1028A::task::Async climbCTRL(_1028A::comp::driver::climbCTRL);
+
   while (1) {
     pros::delay(200);
   }

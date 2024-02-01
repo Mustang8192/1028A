@@ -2,7 +2,8 @@
 #include <cstddef>
 #include <time.h>
 
-extern int flywheelon;
+extern int kickeron;
+extern int stickon;
 // logger
 extern bool fileLog;
 extern time_t robotStartTime;

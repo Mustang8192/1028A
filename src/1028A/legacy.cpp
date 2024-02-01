@@ -181,10 +181,10 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
   float Kd = 1.9 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
-  _1028A::robot::leftfront.tare_position();
+  _1028A::robot::leftmid.tare_position();
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::leftfront.get_position();
+    SensorCurrentValue = _1028A::robot::leftmid.get_position();
     double currentTime = pros::millis();
     std::string print = "Forward: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());

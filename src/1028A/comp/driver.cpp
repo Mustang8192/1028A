@@ -3,9 +3,17 @@
 #include "1028A/robot.h"
 #include "1028A/vars.h"
 #include "pros/misc.h"
+#include "pros/motors.h"
 #include "pros/rtos.hpp"
 
 void _1028A::comp::driver::driveCTRL() {
+  robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
   while (1) {
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
     int turn = _1028A::robot::master.get_analog(ANALOG_RIGHT_X);
@@ -13,38 +21,45 @@ void _1028A::comp::driver::driveCTRL() {
     _1028A::robot::leftMtrs.move(power + turn);
     _1028A::robot::rightMtrs.move(power - turn);
 
-    if (flywheelon == 1) {
-      robot::flywheel.move(127);
-    } else if (flywheelon == 2) {
-      robot::flywheel.move(-127);
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      robot::kicker.move(-127);
+    } else if (kickeron == 1) {
+      robot::kicker.move(-127);
     } else {
-      robot::flywheel.brake();
+      robot::kicker.move(0);
+    }
+
+    if (stickon == 1) {
+      robot::stick.set_value(1);
+    } else {
+      robot::stick.set_value(0);
     }
     pros::delay(5);
   }
 }
 
-void _1028A::comp::driver::flywheelCTRL() {
-  robot::flywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+void _1028A::comp::driver::kickerCTRL() {
   while (1) {
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
+        kickeron == 0) {
+      kickeron = 1;
+      pros::delay(400);
+    } else if (_1028A::robot::master.get_digital(
+                   pros::E_CONTROLLER_DIGITAL_R1) &&
+               kickeron == 1) {
+      kickeron = 0;
+      pros::delay(400);
+    }
 
-    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
-        flywheelon != 1 && flywheelon != 2) {
-      flywheelon = 1;
-      pros::delay(600);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
-               flywheelon != 0) {
-      flywheelon = 0;
-      pros::delay(600);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
-               flywheelon != 2 && flywheelon != 1) {
-      flywheelon = 2;
-      pros::delay(600);
-    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) &&
-               flywheelon != 0) {
-      flywheelon = 0;
-      pros::delay(600);
-    } else {
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) &&
+        stickon == 0) {
+      stickon = 1;
+      pros::delay(300);
+    } else if (_1028A::robot::master.get_digital(
+                   pros::E_CONTROLLER_DIGITAL_RIGHT) &&
+               stickon == 1) {
+      stickon = 0;
+      pros::delay(300);
     }
     pros::delay(20);
   }
@@ -133,20 +148,19 @@ void _1028A::comp::driver::intakeCTRL() {
 }
 
 void _1028A::comp::driver::climbCTRL() {
-  int climbsts = 0;
+  int toggle = 0;
   while (1) {
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) &&
-        climbsts == 0) {
-      climbsts = 1;
-      robot::climb.set_value(1);
-      pros::delay(700);
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
+        toggle == 0) {
+      _1028A::robot::climb.set_value(1);
+      toggle = 1;
+      pros::delay(500);
     } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_RIGHT) &&
-               climbsts == 1) {
-      climbsts = 0;
-      robot::climb.set_value(0);
-      pros::delay(700);
-    } else {
+                   pros::E_CONTROLLER_DIGITAL_DOWN) &&
+               toggle == 1) {
+      _1028A::robot::climb.set_value(0);
+      toggle = 0;
+      pros::delay(500);
     }
     pros::delay(20);
   }

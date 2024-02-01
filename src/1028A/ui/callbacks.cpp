@@ -29,7 +29,7 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
   }
 }
 
-lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
+lv_res_t _1028A::ui::callbacks::loadingrushCB(lv_obj_t *list_btn) {
   if (selection == loadingSide) {
     lv_obj_del(summary);
     selection = null;
@@ -51,7 +51,7 @@ lv_res_t _1028A::ui::callbacks::loadingCB(lv_obj_t *list_btn) {
   }
 }
 
-lv_res_t _1028A::ui::callbacks::goalwpCB(lv_obj_t *list_btn) {
+lv_res_t _1028A::ui::callbacks::ball6CB(lv_obj_t *list_btn) {
   if (selection == goalwp) {
     lv_obj_del(summary);
     selection = null;
@@ -66,7 +66,7 @@ lv_res_t _1028A::ui::callbacks::goalwpCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Goal WP:\nN/A");
+    lv_label_set_text(summaryTxt, "6 Ball:\n6 in goal");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;

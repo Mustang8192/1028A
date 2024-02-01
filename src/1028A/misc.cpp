@@ -157,10 +157,6 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((rightmidpt - 1));
   pros::c::v5_device_e_t RightBackcheck =
       pros::c::registry_get_plugged_type((rightbackpt - 1));
-  // pros::c::v5_device_e_t VerticalEnccheck =
-  //     pros::c::registry_get_plugged_type((verticalEncpt - 1));
-  // pros::c::v5_device_e_t HorizontalEnccheck =
-  //     pros::c::registry_get_plugged_type((horizontalEncpt - 1));
   pros::c::v5_device_e_t Inertialcheck =
       pros::c::registry_get_plugged_type((inertialpt - 1));
   pros::c::v5_device_e_t Intakecheck =
@@ -190,16 +186,6 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor not found");
     ports = false;
   }
-  /*
-  if (VerticalEnccheck != pros::c::E_DEVICE_ROTATION) {
-    _1028A::logger::fatal("Vertical Encoder not found");
-    ports = false;
-  }
-  if (HorizontalEnccheck != pros::c::E_DEVICE_ROTATION) {
-    _1028A::logger::fatal("Horizontal Encoder not found");
-    ports = false;
-  }
-  */
   if (Inertialcheck != pros::c::E_DEVICE_IMU) {
     _1028A::logger::fatal("Inertial Sensor not found");
     ports = false;
