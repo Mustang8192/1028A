@@ -7,20 +7,7 @@
 #include "pros/apix.h"
 #include "pros/rtos.hpp"
 
-void async() {
-  if (autonSelect == 4) {
-    while (1) {
-      if (_1028A::robot::inertial.get_rotation() <= -150) {
-        _1028A::robot::flapL.set_value(0);
-      }
-
-      pros::delay(20);
-    }
-  }
-}
-
 void _1028A::comp::auton::auton() {
-  //autonSelect = 4;
   if (autonSelect == 1) {
     robot::flapR.set_value(1);
     pros::delay(300);
@@ -72,20 +59,20 @@ void _1028A::comp::auton::auton() {
     robot::stick.set_value(1);
     legacy::forward(200, 127, 3, 600, 0, 0);
     legacy::turn(90, 127, 1, 700, 0, 0);
-    legacy::forward(-200, 127, 3, 600, 0, 0);
+    legacy::forward(-200, 127, 3, 400, 0, 0);
     robot::stick.set_value(0);
     robot::intake.move(127);
     // Turn to score all 3 in goal
-    legacy::turn(140, 127, 1, 800, 0, 0);
+    legacy::turn(140, 127, 1, 600, 0, 0);
     robot::stick.set_value(0);
     robot::flapL.set_value(0);
     legacy::forward(127, 800);
     pros::delay(200);
     legacy::forward(-200, 127, 1, 300, 0, 0);
-    legacy::turn(120, 127, 1, 500, 0, 0);
+    legacy::turn(120, 127, 1, 300, 0, 0);
     legacy::forward(127, 800);
     legacy::forward(-250, 127, 1, 700, 0, 0);
-    legacy::turn(17, 127, 1, 700, 0, 0);
+    legacy::turn(17, 127, 1, 400, 0, 0);
     robot::intake.move(-127);
     legacy::forward(800, 127, 1, 1000, 0, 0);
     pros::delay(200);
@@ -123,20 +110,20 @@ void _1028A::comp::auton::auton() {
   } else if (autonSelect == 8) {
     // Skills
     robot::kicker.move(-127);
-    pros::delay(3000);
+    pros::delay(38000);
     robot::kicker.move(0);
     legacy::turn(-80, 127, 1, 1000, 0, 0);
     legacy::forward(-100, 127, 1, 1000, 0, 0);
     legacy::turn(-16, 127, 1, 1000, 0, 0);
     pros::delay(500);
-    legacy::forward(-1290, 127, 1, 2000, 0, 0);
-    legacy::turn(-100, 127, 1, 1000, 0, 0);
+    legacy::forward(-1490, 127, 1, 2000, 0, 0);
+    legacy::turn(-80, 127, 1, 1000, 0, 0);
     legacy::forward(800, 127, 1, 1000, 0, 0);
-    legacy::turn(-200, 127, 1, 1000, 0, 0);
+    legacy::turn(-180, 127, 1, 1000, 0, 0);
     robot::intake.move(127);
     robot::flapL.set_value(1);
     robot::flapR.set_value(1);
-    legacy::forward(127, 1000);
+    legacy::forward(100, 2000);
     legacy::forward(-580, 127, 1, 1000, 0, 0);
     robot::flapL.set_value(0);
     robot::flapR.set_value(0);
