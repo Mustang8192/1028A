@@ -3,11 +3,10 @@
 #include "1028A/robot.h"
 #include "1028A/task.h"
 #include "1028A/vars.h"
-#include "main.h"
-#include "pros/apix.h"
 #include "pros/rtos.hpp"
 
 void _1028A::comp::auton::auton() {
+  autonSelect = 8;
   if (autonSelect == 1) {
     robot::flapR.set_value(1);
     pros::delay(300);
@@ -109,6 +108,7 @@ void _1028A::comp::auton::auton() {
 
   } else if (autonSelect == 8) {
     // Skills
+    /*
     robot::kicker.move(-127);
     pros::delay(38000);
     robot::kicker.move(0);
@@ -136,6 +136,27 @@ void _1028A::comp::auton::auton() {
     legacy::forward(-300, 127, 1, 1000, 0, 0);
     legacy::forward(127, 1000);
     legacy::forward(-300, 127, 1, 1000, 0, 0);
-    
+    */
+
+    legacy::forward(-127, 1000);
+    legacy::forward(200, 127, 1, 500, 0, 0);
+    legacy::ptturn(-90, 127, 1, 1000, 0, 0, true, false);
+    legacy::ptturn(-120, 127, 1, 1000, 0, 0, false, true);
+    robot::kicker.move(-127);
+    legacy::forward(30, 1500);
+    pros::delay(2000);
+    robot::kicker.move(0);
+    legacy::turn(10, 127, 1, 800, 0, 0);
+    legacy::forward(340, 127, 1, 1000, -.1, 0.3);
+    legacy::turn(65, 127, 0.5, 1000, 0, 0.1);
+    legacy::forward(1280, 127, 1, 2000, -.2, 0.2);
+    legacy::ptturn(125, 127, 1, 800, 0, 0, false, true);
+    robot::flapR.set_value(1);
+    robot::intake.move(127);
+    legacy::forward(127, 1000);
+    legacy::forward(-200, 127, 1, 1000, 0, 0);
+    legacy::forward(127, 1000);
+    legacy::forward(-100, 127, 1, 1000, 0, 0);
+    legacy::turn(250, 127, 1, 1000, 0, 0);
   }
 }

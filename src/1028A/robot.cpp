@@ -1,11 +1,9 @@
 #include "1028A/robot.h"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
-#include "main.h"
 #include "pros/adi.hpp"
 #include "pros/motors.h"
 #include "pros/motors.hpp"
-#include "pros/optical.hpp"
 #include "pros/rotation.hpp"
 
 pros::Motor _1028A::robot::leftfront(leftfrontpt, pros::E_MOTOR_GEARSET_18,

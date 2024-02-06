@@ -1,7 +1,5 @@
 #include "main.h"
 #include "1028A/api.h"
-#include "pros/misc.h"
-#include "pros/rtos.hpp"
 
 void initialize() { _1028A::utils::init(); }
 

@@ -5,13 +5,10 @@
 #include "1028A/ui/screens.h"
 #include "1028A/ui/utils.h"
 #include "1028A/vars.h"
-#include "display/lv_core/lv_obj.h"
 #include "lemlib/chassis/odom.hpp"
 #include "pros/apix.h"
-#include "pros/misc.h"
 #include "pros/misc.hpp"
 #include "pros/motors.hpp"
-#include "pros/rtos.hpp"
 
 /*omit
  * @brief Slew rate limiter
