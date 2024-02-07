@@ -32,7 +32,8 @@ pros::Rotation _1028A::robot::leftEnc(leftencpt);
 pros::Rotation _1028A::robot::rightEnc(rightencpt);
 pros::ADIDigitalOut _1028A::robot::flapL('A');
 pros::ADIDigitalOut _1028A::robot::flapR('C');
-pros::ADIDigitalOut _1028A::robot::climb('B');
+pros::ADIDigitalOut _1028A::robot::climb_set1('B');
+pros::ADIDigitalOut _1028A::robot::climb_set2('F');
 pros::ADIDigitalOut _1028A::robot::stick('D');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);

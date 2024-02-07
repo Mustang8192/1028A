@@ -35,7 +35,8 @@ extern pros::Rotation rightEnc;
 extern pros::Controller master;
 extern pros::ADIDigitalOut flapL;
 extern pros::ADIDigitalOut flapR;
-extern pros::ADIDigitalOut climb;
+extern pros::ADIDigitalOut climb_set1;
+extern pros::ADIDigitalOut climb_set2;
 extern pros::ADIDigitalOut stick;
 
 extern lemlib::Drivetrain_t drivetrain;
