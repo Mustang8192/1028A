@@ -6,4 +6,5 @@ void kickerCTRL();
 void intakeCTRL();
 void flapCTRL();
 void climbCTRL();
+void dataCTRL();
 } // namespace _1028A::comp::driver

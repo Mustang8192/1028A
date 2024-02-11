@@ -4,6 +4,15 @@
 
 extern int kickeron;
 extern int stickon;
+
+// Climb
+enum climbSts { up, down, neutral };
+extern climbSts climb;
+
+// Wings
+extern int LwingSts;
+extern int RwingSts;
+extern int BwingSts;
 // logger
 extern bool fileLog;
 extern time_t robotStartTime;

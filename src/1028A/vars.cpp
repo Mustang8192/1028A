@@ -2,6 +2,15 @@
 
 int kickeron = 0;
 int stickon = 0;
+
+// Climb
+climbSts climb = neutral;
+
+// Wings
+int LwingSts = 0;
+int RwingSts = 0;
+int BwingSts = 0;
+
 // logger
 bool fileLog = false;
 time_t robotStartTime = 0;

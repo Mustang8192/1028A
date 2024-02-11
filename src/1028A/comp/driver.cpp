@@ -67,68 +67,56 @@ void _1028A::comp::driver::kickerCTRL() {
 
 void _1028A::comp::driver::flapCTRL() {
   while (1) {
-    int LSts = 0;
-    int RSts = 0;
-    int Bsts = 0;
-    int actuations = 0;
-    while (1) {
-      if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-        if (RSts == 0) {
-          robot::flapR.set_value(1);
-          RSts = 1;
-          actuations += 1;
-          pros::delay(200);
-        } else if (RSts == 1) {
-          robot::flapR.set_value(0);
-          RSts = 0;
-          pros::delay(200);
-        }
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+      if (RwingSts == 0) {
+        robot::flapR.set_value(1);
+        RwingSts = 1;
+        pros::delay(200);
+      } else if (RwingSts == 1) {
+        robot::flapR.set_value(0);
+        RwingSts = 0;
+        pros::delay(200);
       }
-
-      if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-        if (LSts == 0) {
-          robot::flapL.set_value(1);
-          LSts = 1;
-          actuations += 1;
-          pros::delay(200);
-        } else if (LSts == 1) {
-          robot::flapL.set_value(0);
-          LSts = 0;
-          pros::delay(200);
-        }
-      }
-
-      if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-        if (LSts != RSts) {
-          robot::flapL.set_value(1);
-          robot::flapR.set_value(1);
-          LSts = 1;
-          RSts = 1;
-          Bsts = 1;
-          actuations += 1;
-          pros::delay(200);
-        } else if (LSts == 0 && RSts == 0) {
-          robot::flapL.set_value(1);
-          robot::flapR.set_value(1);
-          LSts = 1;
-          RSts = 1;
-          Bsts = 1;
-          actuations += 2;
-          pros::delay(200);
-        } else if (RSts == 1 && LSts == 1) {
-          robot::flapL.set_value(0);
-          robot::flapR.set_value(0);
-          LSts = 0;
-          RSts = 0;
-          Bsts = 0;
-          pros::delay(200);
-        } else {
-        }
-      }
-
-      robot::master.print(1, 1, "Act: %d", actuations);
-      pros::delay(20);
     }
+
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+      if (LwingSts == 0) {
+        robot::flapL.set_value(1);
+        LwingSts = 1;
+        pros::delay(200);
+      } else if (LwingSts == 1) {
+        robot::flapL.set_value(0);
+        LwingSts = 0;
+        pros::delay(200);
+      }
+    }
+
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+      if (LwingSts != RwingSts) {
+        robot::flapL.set_value(1);
+        robot::flapR.set_value(1);
+        LwingSts = 1;
+        RwingSts = 1;
+        BwingSts = 1;
+        pros::delay(200);
+      } else if (LwingSts == 0 && RwingSts == 0) {
+        robot::flapL.set_value(1);
+        robot::flapR.set_value(1);
+        LwingSts = 1;
+        RwingSts = 1;
+        BwingSts = 1;
+        pros::delay(200);
+      } else if (RwingSts == 1 && LwingSts == 1) {
+        robot::flapL.set_value(0);
+        robot::flapR.set_value(0);
+        LwingSts = 0;
+        RwingSts = 0;
+        BwingSts = 0;
+        pros::delay(200);
+      } else {
+      }
+    }
+    pros::delay(20);
   }
 }
 
@@ -148,49 +136,33 @@ void _1028A::comp::driver::intakeCTRL() {
 }
 
 void _1028A::comp::driver::climbCTRL() {
-  int toggle = 0;
-  int toggle2 = 0;
   while (1) {
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
-        toggle == 0) {
+        climb == neutral) {
       _1028A::robot::climb_set1.set_value(0);
       _1028A::robot::climb_set2.set_value(1);
-      toggle = 1;
-      robot::master.print(1, 4, "up");
+      climb = up;
       pros::delay(500);
     } else if (_1028A::robot::master.get_digital(
                    pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               toggle == 1) {
+               climb == up) {
       _1028A::robot::climb_set1.set_value(1);
       _1028A::robot::climb_set2.set_value(0);
-      toggle = 2;
-      robot::master.print(1, 4, "down");
+      climb = down;
       pros::delay(500);
     } else if (_1028A::robot::master.get_digital(
                    pros::E_CONTROLLER_DIGITAL_DOWN) &&
-               toggle == 2) {
+               climb == down) {
       _1028A::robot::climb_set1.set_value(0);
       _1028A::robot::climb_set2.set_value(0);
-      toggle = 0;
-      robot::master.print(1, 4, "float");
+      climb = neutral;
       pros::delay(500);
     }
-
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
-        toggle2 == 0) {
-      _1028A::robot::climb_set1.set_value(0);
-      _1028A::robot::climb_set2.set_value(1);
-      toggle2 = 1;
-      pros::delay(500);
-    } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_LEFT) &&
-               toggle2 == 1) {
-      _1028A::robot::climb_set1.set_value(0);
-      _1028A::robot::climb_set2.set_value(0);
-      toggle2 = 0;
-      pros::delay(500);
-    }
-
     pros::delay(20);
+  }
+}
+
+void _1028A::comp::driver::dataCTRL() {
+  while (1) {
   }
 }
