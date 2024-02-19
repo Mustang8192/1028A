@@ -1,6 +1,6 @@
 #include "1028A/robot.h"
-#include "lemlib/chassis/chassis.hpp"
-#include "lemlib/chassis/trackingWheel.hpp"
+#include "1028A/chassis/chassis.hpp"
+#include "1028A/chassis/trackingWheel.hpp"
 #include "pros/adi.hpp"
 #include "pros/motors.h"
 #include "pros/motors.hpp"
@@ -32,26 +32,26 @@ pros::Rotation _1028A::robot::leftEnc(leftencpt);
 pros::Rotation _1028A::robot::rightEnc(rightencpt);
 pros::ADIDigitalOut _1028A::robot::flapL('A');
 pros::ADIDigitalOut _1028A::robot::flapR('C');
-pros::ADIDigitalOut _1028A::robot::climb_set1('B');
-pros::ADIDigitalOut _1028A::robot::climb_set2('F');
-pros::ADIDigitalOut _1028A::robot::stick('D');
+pros::ADIDigitalOut _1028A::robot::climb_set1('D');
+pros::ADIDigitalOut _1028A::robot::climb_set2('B');
+pros::ADIDigitalOut _1028A::robot::stick('E');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 
-lemlib::Drivetrain_t _1028A::robot::drivetrain{
+_1028A::Drivetrain_t _1028A::robot::drivetrain{
     &leftMtrs,                  // left drivetrain motors
     &rightMtrs,                 // right drivetrain motors
     10,                         // track width
-    lemlib::Omniwheel::NEW_325, // wheel diameter
+    _1028A::Omniwheel::NEW_325, // wheel diameter
     600                         // wheel rpm
 };
 
-lemlib::TrackingWheel
-    _1028A::robot::leftTracker(&leftEnc, lemlib::Omniwheel::NEW_275, -4.6);
-lemlib::TrackingWheel
-    _1028A::robot::rightTracker(&rightEnc, lemlib::Omniwheel::NEW_275, 0);
+_1028A::TrackingWheel
+    _1028A::robot::leftTracker(&leftEnc, _1028A::Omniwheel::NEW_275, -4.6);
+_1028A::TrackingWheel
+    _1028A::robot::rightTracker(&rightEnc, _1028A::Omniwheel::NEW_275, 0);
 
-lemlib::OdomSensors_t _1028A::robot::odomSensors{
+_1028A::OdomSensors_t _1028A::robot::odomSensors{
     &leftTracker, // vertical tracking wheel
     &rightTracker,
     nullptr, // horizontal tracking wheel
@@ -59,7 +59,7 @@ lemlib::OdomSensors_t _1028A::robot::odomSensors{
     &inertial // inertial sensor
 };
 
-lemlib::ChassisController_t _1028A::robot::lateralController{
+_1028A::ChassisController_t _1028A::robot::lateralController{
     8,   // kP
     30,  // kD
     1,   // smallErrorRange
@@ -69,7 +69,7 @@ lemlib::ChassisController_t _1028A::robot::lateralController{
     5    // slew rate
 };
 
-lemlib::ChassisController_t _1028A::robot::angularController{
+_1028A::ChassisController_t _1028A::robot::angularController{
     4,   // kP
     40,  // kD
     1,   // smallErrorRange
@@ -79,5 +79,5 @@ lemlib::ChassisController_t _1028A::robot::angularController{
     40   // slew rate
 };
 
-lemlib::Chassis _1028A::robot::chassis(drivetrain, lateralController,
+_1028A::Chassis _1028A::robot::chassis(drivetrain, lateralController,
                                        angularController, odomSensors);

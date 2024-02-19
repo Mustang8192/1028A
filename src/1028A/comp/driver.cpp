@@ -68,50 +68,47 @@ void _1028A::comp::driver::kickerCTRL() {
 void _1028A::comp::driver::flapCTRL() {
   while (1) {
     if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-      if (RwingSts == 0) {
+      if (Rwing == closed) {
         robot::flapR.set_value(1);
-        RwingSts = 1;
+        Rwing = open;
         pros::delay(200);
-      } else if (RwingSts == 1) {
+      } else if (Rwing == open) {
         robot::flapR.set_value(0);
-        RwingSts = 0;
+        Rwing = closed;
         pros::delay(200);
       }
     }
 
     if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      if (LwingSts == 0) {
+      if (Lwing == closed) {
         robot::flapL.set_value(1);
-        LwingSts = 1;
+        Lwing = open;
         pros::delay(200);
-      } else if (LwingSts == 1) {
+      } else if (Lwing == open) {
         robot::flapL.set_value(0);
-        LwingSts = 0;
+        Lwing = closed;
         pros::delay(200);
       }
     }
 
     if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-      if (LwingSts != RwingSts) {
+      if (Lwing != Rwing) {
         robot::flapL.set_value(1);
         robot::flapR.set_value(1);
-        LwingSts = 1;
-        RwingSts = 1;
-        BwingSts = 1;
+        Lwing = open;
+        Rwing = open;
         pros::delay(200);
-      } else if (LwingSts == 0 && RwingSts == 0) {
+      } else if (Lwing == Rwing && Lwing == closed) {
         robot::flapL.set_value(1);
         robot::flapR.set_value(1);
-        LwingSts = 1;
-        RwingSts = 1;
-        BwingSts = 1;
+        Lwing = open;
+        Rwing = open;
         pros::delay(200);
-      } else if (RwingSts == 1 && LwingSts == 1) {
+      } else if (Lwing == Rwing && Lwing == open) {
         robot::flapL.set_value(0);
         robot::flapR.set_value(0);
-        LwingSts = 0;
-        RwingSts = 0;
-        BwingSts = 0;
+        Lwing = closed;
+        Rwing = closed;
         pros::delay(200);
       } else {
       }
@@ -139,24 +136,24 @@ void _1028A::comp::driver::climbCTRL() {
   while (1) {
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
         climb == neutral) {
-      _1028A::robot::climb_set1.set_value(0);
-      _1028A::robot::climb_set2.set_value(1);
+      _1028A::robot::climb_set1.set_value(1);
+      _1028A::robot::climb_set2.set_value(0);
       climb = up;
-      pros::delay(500);
+      pros::delay(300);
     } else if (_1028A::robot::master.get_digital(
                    pros::E_CONTROLLER_DIGITAL_DOWN) &&
                climb == up) {
-      _1028A::robot::climb_set1.set_value(1);
-      _1028A::robot::climb_set2.set_value(0);
+      _1028A::robot::climb_set1.set_value(0);
+      _1028A::robot::climb_set2.set_value(1);
       climb = down;
-      pros::delay(500);
+      pros::delay(300);
     } else if (_1028A::robot::master.get_digital(
                    pros::E_CONTROLLER_DIGITAL_DOWN) &&
                climb == down) {
       _1028A::robot::climb_set1.set_value(0);
       _1028A::robot::climb_set2.set_value(0);
       climb = neutral;
-      pros::delay(500);
+      pros::delay(300);
     }
     pros::delay(20);
   }
@@ -164,5 +161,28 @@ void _1028A::comp::driver::climbCTRL() {
 
 void _1028A::comp::driver::dataCTRL() {
   while (1) {
+    if (overTemp == true) {
+      _1028A::robot::master.print(0, 0, "Motors OverTemp");
+    } else {
+      if (Rwing == Lwing && Rwing == open) {
+        _1028A::robot::master.print(0, 0, "Wing: Both");
+      } else if (Lwing == open) {
+        _1028A::robot::master.print(0, 0, "Wing: Left");
+      } else if (Rwing == open) {
+        _1028A::robot::master.print(0, 0, "Wing: Right");
+      } else if (Lwing == closed && Rwing == closed) {
+        _1028A::robot::master.print(0, 0, "Wing: None");
+      }
+
+      if (climb == up) {
+        _1028A::robot::master.print(0, 10, "Climb: Up");
+      } else if (climb == down) {
+        _1028A::robot::master.print(0, 10, "Climb: Down");
+      } else if (climb == neutral) {
+        _1028A::robot::master.print(0, 10, "Climb: Neut");
+      }
+    }
+
+    pros::delay(200);
   }
 }

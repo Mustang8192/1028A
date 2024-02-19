@@ -10,9 +10,10 @@ enum climbSts { up, down, neutral };
 extern climbSts climb;
 
 // Wings
-extern int LwingSts;
-extern int RwingSts;
-extern int BwingSts;
+enum wingSts { open, closed };
+extern wingSts Lwing;
+extern wingSts Rwing;
+
 // logger
 extern bool fileLog;
 extern time_t robotStartTime;

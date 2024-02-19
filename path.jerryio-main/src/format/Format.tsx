@@ -1,6 +1,6 @@
 import { APP_VERSION } from "../core/MainApp";
 import { Path, Segment } from "../core/Path";
-import { LemLibFormatV0_4 } from "./LemLibFormatV0_4";
+import { _1028AFormatV0_4 } from "./_1028AFormatV0_4";
 import { PathDotJerryioFormatV0_1 } from "./PathDotJerryioFormatV0_1";
 import { GeneralConfig } from "./Config";
 import { Range } from "semver";
@@ -30,7 +30,7 @@ export interface Format {
 
 export function getAllFormats(): Format[] {
   return [
-    new LemLibFormatV0_4(), //
+    new _1028AFormatV0_4(), //
     new PathDotJerryioFormatV0_1()
   ];
 }
@@ -65,7 +65,7 @@ const convertFromV0_1_0ToV0_2_0: PathFileDataConverter = {
 const convertFromV0_2_0ToV0_3_0: PathFileDataConverter = {
   version: new Range("~0.2"),
   convert: (data: Record<string, any>): void => {
-    if (data.format === "LemLib v0.4.x (inch, byte-voltage)") {
+    if (data.format === "_1028A v0.4.x (inch, byte-voltage)") {
       for (const path of data.paths) path.pc.maxDecelerationRate = 127;
     }
 

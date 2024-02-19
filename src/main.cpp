@@ -3,7 +3,14 @@
 
 void initialize() { _1028A::utils::init(); }
 
-void disabled() { _1028A::logger::info("Robot Disabled"); }
+void disabled() {
+  _1028A::logger::info("Robot Disabled");
+  if (climb == up) {
+    _1028A::robot::climb_set1.set_value(0);
+    _1028A::robot::climb_set2.set_value(1);
+    climb = down;
+  }
+}
 
 void competition_initialize() {}
 
@@ -16,6 +23,7 @@ void opcontrol() {
   _1028A::task::Async kickerCTRL(_1028A::comp::driver::kickerCTRL);
   _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
   _1028A::task::Async climbCTRL(_1028A::comp::driver::climbCTRL);
+  //_1028A::task::Async dataCTRL(_1028A::comp::driver::dataCTRL);
 
   while (1) {
     pros::delay(200);

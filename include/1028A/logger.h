@@ -22,7 +22,7 @@ void init();
  */
 bool isDebug();
 /**
- * @brief Sets lemlib::debug
+ * @brief Sets _1028A::debug
  *
  * @param debug the new value
  */
@@ -31,12 +31,12 @@ void setDebug(bool debug);
 /**
  * @brief Whether or not to log info messages.
  *
- * If false, only log messages with a level of lemlib::logger::Level::WARN
+ * If false, only log messages with a level of _1028A::logger::Level::WARN
  * or higher will be logged
  */
 bool isVerbose();
 /**
- * @brief Sets lemlib::verbose
+ * @brief Sets _1028A::verbose
  *
  * @param verbose the new value
  */

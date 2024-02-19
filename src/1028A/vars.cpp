@@ -7,9 +7,8 @@ int stickon = 0;
 climbSts climb = neutral;
 
 // Wings
-int LwingSts = 0;
-int RwingSts = 0;
-int BwingSts = 0;
+wingSts Lwing = closed;
+wingSts Rwing = closed;
 
 // logger
 bool fileLog = false;

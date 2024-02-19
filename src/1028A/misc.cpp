@@ -1,11 +1,11 @@
 #include "1028A/misc.h"
+#include "1028A/chassis/odom.hpp"
 #include "1028A/logger.h"
 #include "1028A/robot.h"
 #include "1028A/task.h"
 #include "1028A/ui/screens.h"
 #include "1028A/ui/utils.h"
 #include "1028A/vars.h"
-#include "lemlib/chassis/odom.hpp"
 #include "pros/apix.h"
 #include "pros/misc.hpp"
 #include "pros/motors.hpp"
@@ -231,5 +231,5 @@ void _1028A::utils::init() {
   _1028A::logger::init();
   _1028A::ui::init();
   _1028A::robot::chassis.calibrate();
-  lemlib::init();
+  _1028A::init();
 }

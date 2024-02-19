@@ -42,9 +42,9 @@ class GeneralConfigImpl implements GeneralConfig {
     getDefaultBuiltInFieldImage().getSignatureAndOrigin();
 
   @Exclude()
-  private format_: LemLibFormatV0_4;
+  private format_: _1028AFormatV0_4;
 
-  constructor(format: LemLibFormatV0_4) {
+  constructor(format: _1028AFormatV0_4) {
     this.format_ = format;
     makeAutoObservable(this);
 
@@ -100,12 +100,12 @@ class PathConfigImpl implements PathConfig {
   maxDecelerationRate: number = 127;
 
   @Exclude()
-  readonly format: LemLibFormatV0_4;
+  readonly format: _1028AFormatV0_4;
 
   @Exclude()
   public path!: Path;
 
-  constructor(format: LemLibFormatV0_4) {
+  constructor(format: _1028AFormatV0_4) {
     this.format = format;
     makeAutoObservable(this);
 
@@ -174,7 +174,7 @@ class PathConfigImpl implements PathConfig {
 }
 
 // observable class
-export class LemLibFormatV0_4 implements Format {
+export class _1028AFormatV0_4 implements Format {
   isInit: boolean = false;
   uid: string;
 
@@ -186,11 +186,11 @@ export class LemLibFormatV0_4 implements Format {
   }
 
   createNewInstance(): Format {
-    return new LemLibFormatV0_4();
+    return new _1028AFormatV0_4();
   }
 
   getName(): string {
-    return "LemLib v0.4.x (inch, byte-voltage)";
+    return "_1028A v0.4.x (inch, byte-voltage)";
   }
 
   init(): void {
@@ -224,7 +224,7 @@ export class LemLibFormatV0_4 implements Format {
   }
 
   recoverPathFileData(fileContent: string): PathFileData {
-    // ALGO: The implementation is adopted from https://github.com/LemLib/Path-Gen under the GPLv3 license.
+    // ALGO: The implementation is adopted from https://github.com/_1028A/Path-Gen under the GPLv3 license.
 
     const paths: Path[] = [];
 
@@ -299,7 +299,7 @@ export class LemLibFormatV0_4 implements Format {
   exportPathFile(): string {
     const { app } = getAppStores();
 
-    // ALGO: The implementation is adopted from https://github.com/LemLib/Path-Gen under the GPLv3 license.
+    // ALGO: The implementation is adopted from https://github.com/_1028A/Path-Gen under the GPLv3 license.
 
     let rtn = "";
 
@@ -311,7 +311,7 @@ export class LemLibFormatV0_4 implements Format {
 
     const points = this.getPathPoints(path).points;
     for (const point of points) {
-      // ALGO: heading is not supported in LemLib V0.4 format.
+      // ALGO: heading is not supported in _1028A V0.4 format.
       rtn += `${uc.fromAtoB(point.x).toUser()}, ${uc.fromAtoB(point.y).toUser()}, ${point.speed.toUser()}\n`;
     }
 
@@ -333,7 +333,7 @@ export class LemLibFormatV0_4 implements Format {
     // ALGO: use second and third last points, since first and second last point are always identical
     const last2 = points[points.length - 3]; // third last point, last point by the calculation
     const last1 = points[points.length - 2]; // second last point, also the last control point
-    // ALGO: The 20 inches constant is a constant value in the original LemLib-Path-Gen implementation.
+    // ALGO: The 20 inches constant is a constant value in the original _1028A-Path-Gen implementation.
     const ghostPoint = last2.interpolate(last1, last2.distance(last1) + uc.fromBtoA(20));
     rtn += `${uc.fromAtoB(ghostPoint.x).toUser()}, ${uc.fromAtoB(ghostPoint.y).toUser()}, 0\n`;
 
