@@ -6,7 +6,7 @@
 #include "pros/rtos.hpp"
 
 void _1028A::comp::auton::auton() {
-  // autonSelect = 2;
+  autonSelect = 8;
   if (autonSelect == 1) {
     robot::flapR.set_value(1);
     pros::delay(300);
@@ -111,55 +111,51 @@ void _1028A::comp::auton::auton() {
 
   } else if (autonSelect == 8) {
     // Skills
-    legacy::forward(-127, 1000);
-    legacy::forward(200, 127, 1, 500, 0, 0);
-    legacy::ptturn(-90, 127, 1, 1000, 0, 0, true, false);
-    legacy::ptturn(-112, 127, 1, 1000, 0, 0, false, true);
-    robot::kicker.move(-127);
-    legacy::forward(10, 2000);
-    pros::delay(30000);
+    /*
+    legacy::slantR(-40, 800);
+    legacy::forward(-127, 500);
+    legacy::forward(200, 127, 1, 600, 0, 0);
+    legacy::turn(-162, 127, 1, 800, 0, 0);
+    robot::flapR.set_value(1);
+    robot::kicker.move(-95);
+    pros::delay(2000);
     robot::kicker.move(0);
-    legacy::turn(10, 127, 1, 800, 0, 0);
-    legacy::forward(340, 127, 1, 1000, -.1, 0.3);
-    legacy::turn(65, 127, 0.5, 1000, 0, 0.1);
-    legacy::forward(1280, 127, 1, 2000, -.2, 0.2);
-    legacy::ptturn(125, 127, 1, 800, 0, 0, false, true);
-    // robot::flapR.set_value(1);
-    robot::intake.move(127);
-    legacy::forward(127, 1000);
-    legacy::forward(-100, 127, 1, 1000, 0, 0);
-    legacy::forward(127, 1000);
-    legacy::forward(-200, 127, 1, 1000, 0, 0);
     robot::flapR.set_value(0);
-    robot::intake.move(0);
-    legacy::turn(230, 127, 1, 1000, 0, 0);
-    legacy::forward(750, 127, 1, 1000, 0, 0);
-    legacy::turn(155, 127, 1, 1000, 0, 0);
-    legacy::forward(300, 127, 1, 1000, 0, 0);
+    legacy::turn(10, 127, 1, 1000, 0, 0);
+    legacy::forward(600, 127, 1, 1200, 0, 0);
+    legacy::turn(91, 127, 1.5, 800, 0, 0);
+    robot::flapL.set_value(1);
+    robot::intake.move(127);
+    legacy::forward(1200, 91, 127, 1, 1600, 0, -.4);
+    robot::flapL.set_value(0);
+    pros::delay(300);
+    legacy::turn(-3, 127, 1, 1300, 0.6, 0);
+    legacy::forward(-700, 127, 1, 1000, 0, 0);
     legacy::turn(70, 127, 1, 1000, 0, 0);
-    robot::flapL.set_value(1);
-    robot::flapR.set_value(1);
-    robot::intake.move(127);
-    legacy::forward(127, 1500);
-    legacy::forward(-200, 127, 1, 1000, 0, 0);
-    legacy::forward(127, 1000);
-    robot::flapL.set_value(0);
-    robot::flapR.set_value(0);
-    legacy::forward(-580, 127, 1, 1000, 0, 0);
-    robot::intake.move(0);
-    legacy::turn(155, 127, 1, 1000, 0, 0);
+    legacy::forward(450, 127, 1, 1000, 0, 0);
+    legacy::turn(-4, 127, 1, 1000, 0, 0);
+    legacy::forward(1000, 100, 3, 2700, 0, 0);
+    legacy::forward(200, 80, 3, 2000, 0, 0);
+    pros::delay(500);
+    legacy::turn(-210, 127, 1, 1000, 0, 0);
+    legacy::forward(-400, 127, 1, 1000, 0, 0);
+    legacy::turn(-260, 127, 1, 1000, 0, 0);
+    legacy::forward(-127, 900);
+    legacy::forward(200, 127, 1, 1000, 0, 0);
+    legacy::forward(-127, 900);
+    */
+
+    legacy::ptturn(120, 127, 0, 1, 1000, 0, 0, false, true);
     legacy::forward(500, 127, 1, 1000, 0, 0);
-    legacy::turn(20, 127, 1, 1000, 0, 0);
-    robot::flapL.set_value(1);
-    robot::flapR.set_value(1);
+    legacy::ptturn(270, 127, 0, 1, 1500, 0, 0, false, true);
     robot::intake.move(127);
     legacy::forward(127, 1000);
-    legacy::forward(-200, 127, 1, 1000, 0, 0);
+    pros::delay(500);
+    legacy::forward(-560, 127, 1, 1000, 0, 0);
+    pros::delay(300);
+    legacy::turn(360, 127, 1, 1000, 0, 0);
+    legacy::forward(-550, 127, 1, 1000, 0, 0);
+    legacy::turn(295, 127, 1, 1000, 0, 0);
     legacy::forward(127, 1000);
-    robot::flapL.set_value(0);
-    robot::flapR.set_value(0);
-    legacy::forward(-300, 127, 1, 1000, 0, 0);
-    legacy::turn(160, 127, 1, 1000, 0, 0);
-    legacy::forward(400, 127, 1, 1000, 0, 0);
   }
 }
