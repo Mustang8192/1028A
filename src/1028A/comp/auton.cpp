@@ -126,7 +126,7 @@ void _1028A::comp::auton::auton() {
     legacy::turn(90, 127, 1.5, 800, 0, 0);
     robot::flapL.set_value(1);
     robot::intake.move(127);
-    legacy::forward(1200, 91, 127, 1, 1600, 0, -.4);
+    legacy::forward(1200, 90, 127, 1, 1600, 0, -.4);
     robot::flapL.set_value(0);
     pros::delay(300);
     legacy::turn(-3, 127, 1, 1300, 0.6, 0);
@@ -135,7 +135,7 @@ void _1028A::comp::auton::auton() {
     legacy::forward(450, 127, 1, 1000, 0, 0);
     legacy::turn(-4, 127, 1, 1000, 0, 0);
     legacy::forward(1000, 100, 3, 1700, 0, 0);
-    legacy::forward(200, 80, 3, 2000, 0, 0);
+    legacy::forward(200, 80, 3, 800, 0, 0);
     pros::delay(500);
     legacy::turn(-190, 127, 1, 1000, 0, 0);
     legacy::forward(-480, 127, 1, 1000, 0, 0);
@@ -169,8 +169,10 @@ void _1028A::comp::auton::auton() {
     legacy::forward(-350, 127, 1, 1000, 0, 0);
     legacy::turn(215, 127, 1.5, 1000, 0, 0);
     legacy::forward(400, 127, 1, 1000, 0, 0);
-    // legacy::turn(-150, 127, 1, 1000, 0, 0);
-    //  legacy::forward(800, 127, 1, 1000, 0, 0);
+    legacy::turn(175, 127, 1, 1000, 0, 0);
+    _1028A::robot::climb_set1.set_value(1);
+    _1028A::robot::climb_set2.set_value(0);
+    legacy::forward(500, 127, 1, 1000, 0, 0);
     /*
     legacy::turn(360, 127, 1, 1000, 0, 0);
     legacy::forward(-550, 127, 1, 1000, 0, 0);
