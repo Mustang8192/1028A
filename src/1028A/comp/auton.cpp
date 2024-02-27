@@ -5,8 +5,19 @@
 #include "1028A/vars.h"
 #include "pros/rtos.hpp"
 
+void rush5balldrop(){
+  while (1){
+    if(_1028A::robot::leftmid.get_position() <= -50){
+      _1028A::robot::intake.move(127);
+      pros::delay(200);
+      break;
+    }
+    pros::delay(5);
+  }
+}
+
 void _1028A::comp::auton::auton() {
-  autonSelect = 8;
+  autonSelect = 5;
   if (autonSelect == 1) {
     robot::flapR.set_value(1);
     pros::delay(300);
@@ -109,6 +120,68 @@ void _1028A::comp::auton::auton() {
     legacy::turn(-30, 127, 1, 1000, 0, 0);
     legacy::forward(580, 127, 1, 1400, 0, 0);
 
+  } else if (autonSelect == 5) {
+    //Rush_6
+    robot::intake.move(-127);
+    legacy::forward(750, 127, 1, 1000, 0, 0);
+    task::Async ballDrop (rush5balldrop);
+    legacy::forward(-600, 100, 1, 800, 0, 0);
+    legacy::ptturn(-105, 127, 0, 1, 1000, 0, 0, false, true);
+    //legacy::forward(200, 127, 1, 800, 0, 0);
+    //legacy::ptturn(-90, 127, 0, 1, 400, 0, 0, false, true);
+    legacy::forward(100, 127, 1, 1000, 0, 0);
+    legacy::turn(-60, 127, 1, 800, 0, 0);
+    robot::intake.move(-127);
+    legacy::forward(400, 100, 1, 800, 0, 0);
+    pros::delay(200);
+    robot::intake.move(0);
+    legacy::forward(-400, 127, 1, 1000, 0, 0);
+    legacy::forward(40, 127, 3, 400, 0, 0);
+    // Turn around to get Match Load
+    legacy::turn(90, 127, 1, 1000, 0, 0);
+    robot::flapL.set_value(1);
+    legacy::forward(300, 127, 1, 500, 0, 0);
+    robot::stick.set_value(1);
+    legacy::forward(200, 127, 3, 600, 0, 0);
+    legacy::turn(1, 127, 1, 700, 0, 0);
+    legacy::forward(-200, 127, 3, 400, 0, 0);
+    robot::stick.set_value(0);
+    robot::intake.move(127);
+    
+    // Turn to score all 3 in goal
+    legacy::turn(0, 127, 1, 600, 0, 0);
+    robot::stick.set_value(0);
+    robot::flapL.set_value(0);
+    legacy::forward(127, 800);
+    pros::delay(200);
+    legacy::forward(-200, 127, 1, 300, 0, 0);
+    legacy::turn(115, 127, 1, 300, 0, 0);
+    legacy::forward(127, 800);
+    legacy::forward(-250, 127, 1, 700, 0, 0);
+    /*    legacy::turn(17, 127, 1, 400, 0, 0);
+    robot::intake.move(-127);
+    legacy::forward(800, 127, 1, 1000, 0, 0);
+    pros::delay(200);
+    legacy::turn(130, 127, 1, 800, 0, 0);
+    legacy::forward(290, 127, 1, 1000, 0, 0);
+    robot::intake.move(127);
+    pros::delay(200);
+    legacy::forward(-100, 127, 1, 300, 0, 0);
+    legacy::turn(54, 127, 1, 1000, 0, 0);
+    robot::intake.move(-127);
+    legacy::forward(310, 127, 1, 1000, 0, 0);
+    legacy::turn(180, 127, 1, 800, 0, 0);
+    robot::intake.move(127);
+    robot::flapR.set_value(1);
+    robot::flapL.set_value(1);
+    Lwing = open;
+    Rwing = open;
+    legacy::forward(127, 1000);*/
+
+    
+    
+    
+    
   } else if (autonSelect == 8) {
     // Skills
     legacy::slantR(-40, 800);

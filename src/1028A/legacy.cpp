@@ -2,6 +2,7 @@
 #include "1028A/logger.h"
 #include "1028A/robot.h"
 #include "1028A/vars.h"
+#include "1028A/task.h"
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
 
