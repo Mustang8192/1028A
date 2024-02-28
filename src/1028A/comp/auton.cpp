@@ -7,7 +7,7 @@
 
 void rush5balldrop(){
   while (1){
-    if(_1028A::robot::leftmid.get_position() <= -100){
+    if(_1028A::robot::leftmid.get_position() <= -80){
       _1028A::robot::intake.move(127);
       pros::delay(200);
       break;
@@ -124,32 +124,65 @@ void _1028A::comp::auton::auton() {
     //Rush_6
     robot::intake.move(-127);
     legacy::forward(750, 127, 1, 1000, 0, 0);
+    pros::delay(200);
     task::Async ballDrop (rush5balldrop);
     legacy::forward(-600, 100, 1, 800, 0, 0);
-    legacy::ptturn(-105, 127, 0, 1, 1000, 0, 0, false, true);
-    //legacy::forward(200, 127, 1, 800, 0, 0);
-    //legacy::ptturn(-90, 127, 0, 1, 400, 0, 0, false, true);
-    legacy::forward(100, 127, 1, 1000, 0, 0);
-    legacy::turn(-60, 127, 1, 800, 0, 0);
+    //legacy::ptturn(-105, 127, 0, 1, 1000, 0, 0, false, true);
+    legacy::ptturn(-90, 127, 0, 1, 500, 0, 0, false, true);
+    //legacy::ptturn(-65, 127, 0, 1, 600, 0, 0, false, true);
     robot::intake.move(-127);
-    legacy::forward(450, 100, 1, 800, 0, 0);
+    legacy::forward(470, 100, 1, 800, 0, 0);
     pros::delay(200);
+    legacy::turn(-58, 127, 1, 800, 0.4, 0);
+    legacy::forward(-490, 127, 1, 1000, 0, 0);
     robot::intake.move(0);
-    legacy::forward(-400, 127, 1, 1000, 0, 0);
-    legacy::forward(40, 127, 3, 400, 0, 0);
     // Turn around to get Match Load
-    legacy::turn(90, 127, 1, 1000, 0, 0);
+    legacy::turn(64, 127, 1, 1000, 0, 0);
     robot::flapL.set_value(1);
-    legacy::forward(300, 127, 1, 500, 0, 0);
+    legacy::forward(250, 127, 3, 600, 0, 0);
     robot::stick.set_value(1);
-    legacy::forward(200, 127, 3, 600, 0, 0);
-    legacy::turn(1, 127, 1, 700, 0, 0);
-    legacy::forward(-200, 127, 3, 400, 0, 0);
+    legacy::ptturn(5, 127, 0, 1, 1000, 0.4, 0, true, false);
+    robot::stick.set_value(0);
+    legacy::ptturn(70, 127, 0, 1, 1000, 0.4, 0, true, false);
+    legacy::forward(-200, 127, 3, 1000, 0, 0);
+    robot::intake.move(127);
+    legacy::forward(250, 127, 3, 1000, 0, 0);
+    legacy::ptturn(10, 127, 0, 1, 1000, 0.4, 0, true, false);
+    legacy::forward(450, 127, 3, 500, 0, 0);
+    legacy::forward(-200, 127, 3, 1000, 0, 0);
+    legacy::forward(450, 127, 3, 1000, 0, 0);
+    robot::flapL.set_value(1);
+    legacy::ptturn(60, 127, 0, 1, 1000, 0.4, 0, false, true);
+    robot::intake.move(-127);
+    legacy::forward(600, 127, 3, 1000, 0, 0);
+    legacy::turn(88, 127, 1, 800, 0, 0);
+    robot::flapR.set_value(1);
+    robot::intake.move(127);
+    legacy::forward(300, 127, 3, 1000, 0, 0);
+    robot::flapR.set_value(0);
+    legacy::slantR(-40, 800);
+    robot::intake.move(-127);
+    legacy::forward(300, 127, 3, 1000, 0, 0);
+    legacy::turn(110, 127, 1, 800, 0, 0);
+    robot::flapR.set_value(1);
+    robot::flapL.set_value(1);
+    legacy::forward(1000, 127, 3, 1000, 0, 0);
+    
+
+    
+
+
+
+
+    
+
+
+    /*legacy::forward(-200, 127, 3, 400, 0, 0);
     robot::stick.set_value(0);
     robot::intake.move(127);
     
     // Turn to score all 3 in goal
-    legacy::turn(0, 127, 1, 600, 0, 0);
+    legacy::turn(-50, 127, 1, 600, 0, 0);
     robot::stick.set_value(0);
     robot::flapL.set_value(0);
     legacy::forward(127, 800);
@@ -158,7 +191,7 @@ void _1028A::comp::auton::auton() {
     legacy::turn(115, 127, 1, 300, 0, 0);
     legacy::forward(127, 800);
     legacy::forward(-250, 127, 1, 700, 0, 0);
-    /*    legacy::turn(17, 127, 1, 400, 0, 0);
+       legacy::turn(17, 127, 1, 400, 0, 0);
     robot::intake.move(-127);
     legacy::forward(800, 127, 1, 1000, 0, 0);
     pros::delay(200);
