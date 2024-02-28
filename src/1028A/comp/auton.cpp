@@ -7,7 +7,7 @@
 
 void rush5balldrop(){
   while (1){
-    if(_1028A::robot::leftmid.get_position() <= -50){
+    if(_1028A::robot::leftmid.get_position() <= -100){
       _1028A::robot::intake.move(127);
       pros::delay(200);
       break;
@@ -132,7 +132,7 @@ void _1028A::comp::auton::auton() {
     legacy::forward(100, 127, 1, 1000, 0, 0);
     legacy::turn(-60, 127, 1, 800, 0, 0);
     robot::intake.move(-127);
-    legacy::forward(400, 100, 1, 800, 0, 0);
+    legacy::forward(450, 100, 1, 800, 0, 0);
     pros::delay(200);
     robot::intake.move(0);
     legacy::forward(-400, 127, 1, 1000, 0, 0);
