@@ -22,9 +22,9 @@ void _1028A::comp::driver::driveCTRL() {
     _1028A::robot::rightMtrs.move(power - turn);
 
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      robot::kicker.move(-95);
+      robot::kicker.move(-97);
     } else if (kickeron == 1) {
-      robot::kicker.move(-95);
+      robot::kicker.move(-97);
     } else {
       robot::kicker.move(0);
     }
