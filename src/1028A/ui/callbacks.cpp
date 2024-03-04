@@ -101,7 +101,7 @@ lv_res_t _1028A::ui::callbacks::skillsCB(lv_obj_t *list_btn) {
     selection = null;
     return LV_RES_OK;
   } else if (!uiLock) {
-    autonSelect = 8;
+    autonSelect = 12;
     selection = Skills;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
