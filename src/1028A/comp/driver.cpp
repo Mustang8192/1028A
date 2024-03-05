@@ -1,4 +1,5 @@
 #include "1028A/comp/driver.h"
+#include "1028A/legacy.h"
 #include "1028A/misc.h"
 #include "1028A/robot.h"
 #include "1028A/vars.h"
@@ -7,6 +8,17 @@
 #include "pros/rtos.hpp"
 
 void _1028A::comp::driver::driveCTRL() {
+  if (autonSelect == 12) {
+    legacy::slantR(-40, 800);
+    legacy::forward(-127, 500);
+    legacy::forward(200, 127, 1, 600, 0, 0);
+    legacy::turn(-169, 127, 1, 800, 0, 0);
+    robot::flapR.set_value(1);
+    Rwing = open;
+    robot::kicker.move(-100);
+    kickeron = 1;
+  }
+
   robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
