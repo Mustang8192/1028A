@@ -409,3 +409,58 @@ void _1028A::legacy::slantL(double spd, double time) {
   robot::rightmid.brake();
   robot::rightback.brake();
 }
+
+void _1028A::legacy::curve(double requestedValue, double spd, double thre,
+                           double time, double kpOffset, double kdOffset,
+                           int scalar, bool left) {
+  float SensorCurrentValueL;
+  float errorL;
+  float lastErrorL = 0;
+
+  float SensorCurrentValueR;
+  float errorR;
+  float lastErrorR = 0;
+
+  float Kp = 0.6 + kpOffset;
+  float Ki = 0;
+  float Kd = 1.9 + kdOffset;
+  double timeExit = 0;
+  double startTime = pros::millis();
+
+  while (1) {
+    SensorCurrentValueL = robot::leftfront.get_position();
+    SensorCurrentValueR = -robot::rightfront.get_position();
+    double currentTime = pros::millis();
+
+    errorL = (requestedValue - SensorCurrentValueL);
+    errorR = (requestedValue - SensorCurrentValueR);
+
+    float powerValueL = math(errorL, lastErrorL, Kp, Ki, Kd, spd);
+    float powerValueR = math(errorR, lastErrorR, Kp, Ki, Kd, spd);
+
+    if (exit(errorL, thre, currentTime, startTime, time, powerValueL,
+             lastErrorL) &&
+        exit(errorR, thre, currentTime, startTime, time, powerValueR,
+             lastErrorR)) {
+      break;
+    }
+
+    if (left) {
+      robot::leftfront.move((0 * powerValueL) + (scalar * powerValueL));
+      robot::leftback.move((0 * powerValueL) + (scalar * powerValueL));
+      robot::leftmid.move((0 * powerValueL) + (scalar * powerValueL));
+
+      robot::rightfront.move((0 * powerValueR) + (1 * powerValueR));
+      robot::rightback.move((0 * powerValueR) + (1 * powerValueR));
+      robot::rightmid.move((0 * powerValueR) + (1 * powerValueR));
+    } else {
+      robot::leftfront.move((0 * powerValueL) + (1 * powerValueL));
+      robot::leftback.move((0 * powerValueL) + (1 * powerValueL));
+      robot::leftmid.move((0 * powerValueL) + (1 * powerValueL));
+
+      robot::rightfront.move((0 * powerValueR) + (scalar * powerValueR));
+      robot::rightback.move((0 * powerValueR) + (scalar * powerValueR));
+      robot::rightmid.move((0 * powerValueR) + (scalar * powerValueR));
+    }
+  }
+}

@@ -12,11 +12,18 @@ void _1028A::comp::driver::driveCTRL() {
     legacy::slantR(-40, 800);
     legacy::forward(-127, 500);
     legacy::forward(200, 127, 1, 600, 0, 0);
-    legacy::turn(-169, 127, 1, 800, 0, 0);
+    legacy::turn(-170, 127, 1, 800, 0, 0);
     robot::flapR.set_value(1);
     Rwing = open;
     robot::kicker.move(-100);
     kickeron = 1;
+    while (1) {
+      if (_1028A::robot::master.get_analog(ANALOG_LEFT_Y) != 0 or
+          _1028A::robot::master.get_analog(ANALOG_RIGHT_X) != 0) {
+        break;
+      }
+      pros::delay(20);
+    }
   }
 
   robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -34,9 +41,9 @@ void _1028A::comp::driver::driveCTRL() {
     _1028A::robot::rightMtrs.move(power - turn);
 
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      robot::kicker.move(-97);
+      robot::kicker.move(-105);
     } else if (kickeron == 1) {
-      robot::kicker.move(-97);
+      robot::kicker.move(-105);
     } else {
       robot::kicker.move(0);
     }
@@ -146,21 +153,21 @@ void _1028A::comp::driver::intakeCTRL() {
 
 void _1028A::comp::driver::climbCTRL() {
   while (1) {
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
         climb == neutral) {
       _1028A::robot::climb_set1.set_value(1);
       _1028A::robot::climb_set2.set_value(0);
       climb = up;
       pros::delay(300);
     } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_DOWN) &&
+                   pros::E_CONTROLLER_DIGITAL_R2) &&
                climb == up) {
       _1028A::robot::climb_set1.set_value(0);
       _1028A::robot::climb_set2.set_value(1);
       climb = down;
       pros::delay(300);
     } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_DOWN) &&
+                   pros::E_CONTROLLER_DIGITAL_R2) &&
                climb == down) {
       _1028A::robot::climb_set1.set_value(0);
       _1028A::robot::climb_set2.set_value(0);

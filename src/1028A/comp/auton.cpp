@@ -49,7 +49,7 @@ void skillswng() {
   }
 }
 void _1028A::comp::auton::auton() {
-  autonSelect = 12;
+  // autonSelect = 12;
   if (autonSelect == 1) {
     robot::flapR.set_value(1);
     pros::delay(300);
@@ -283,10 +283,11 @@ void _1028A::comp::auton::auton() {
 
   } else if (autonSelect == 12) {
     // Skills
+    int startTime = pros::millis();
     legacy::slantR(-40, 800);
     legacy::forward(-127, 500);
     legacy::forward(200, 127, 1, 600, 0, 0);
-    legacy::turn(-169, 127, 1, 800, 0, 0);
+    legacy::turn(-171, 127, 1, 800, 0, 0);
     robot::flapR.set_value(1);
     robot::kicker.move(-100);
     pros::delay(21500);
@@ -310,12 +311,12 @@ void _1028A::comp::auton::auton() {
     legacy::turn(20, 127, 1, 800, 0, 0);
     legacy::forward(200, 127, 7, 400, 0, 0);
     robot::flapL.set_value(1);
-    legacy::forward(850, 0, 127, 5, 800, 0, 0);
+    legacy::forward(800, 0, 127, 5, 800, 0, 0);
     // legacy::forward(200, 80, 5, 1000, 0, 0);
     robot::intake.move(127);
-    legacy::turn(-7, 127, 1, 400, 0, 0);
-    legacy::forward(540, 127, 1, 600, 0, 0);
-    legacy::turn(-55, 127, 1, 700, 0, 0);
+    legacy::turn(-13, 127, 1, 400, 0, 0);
+    legacy::forward(530, 127, 1, 1000, 0, 0);
+    legacy::turn(-46, 127, 1, 700, 0, 0);
     legacy::forward(127, 900);
     legacy::forward(-150, 127, 1, 600, 0, 0);
     robot::flapL.set_value(0);
@@ -324,103 +325,89 @@ void _1028A::comp::auton::auton() {
     legacy::turn(-90, 127, 2, 400, 0, 0);
     legacy::ptturn(-180, 127, 0, 1, 1000, 0, 0, false, true);
 
-    legacy::forward(450, 127, 1, 800, 0, 0);
-    legacy::ptturn(-7, 127, 0, 1, 800, 0, 0, false, true);
+    legacy::forward(530, 127, 1, 800, 0, 0);
+    legacy::ptturn(-10, 127, 0, 1, 800, 0, 0, false, true);
+    robot::flapR.set_value(1);
     robot::intake.move(127);
     legacy::forward(80, 1100);
-    robot::flapL.set_value(0);
-
-    legacy::forward(-100, 127, 1, 600, 0, 0);
-    task::Async wingOpen(skillswng);
-    legacy::turn(150, 127, 2, 800, 0, 0);
-    legacy::forward(180, 127, 1, 1000, 0, 0);
-    robot::flapL.set_value(1);
-    legacy::ptturn(250, 127, 20, 1, 800, 0.4, 0, false, true);
-    // legacy::forward(200, 127, 1, 1000, 0, 0);
-    legacy::ptturn(373, 127, 20, 1, 1000, 0.4, 0, false, true);
-    robot::flapL.set_value(0);
-    robot::flapR.set_value(1);
-    legacy::forward(80, 1000);
-    // robot::flapL.set_value(0);
     robot::flapR.set_value(0);
-    legacy::forward(-450, 127, 1, 600, 0, 0);
+
+    legacy::forward(-150, 127, 1, 600, 0, 0);
+    robot::intake.move(0);
     // task::Async wingOpen(skillswng);
-    // legacy::ptturn(600, 127, 20, 1, 1500, 0.4, 0, false, true);
-    // legacy::forward(700, 127, 1, 1000, 0, 0);
-    // legacy::forward(-230, 127, 1, 1000, 0, 0);
-    // legacy::ptturn(748, 127, 20, 1, 1000, 0.4, 0, false, true);
-    // robot::flapL.set_value(1);
-    // robot::flapR.set_value(1);
-    legacy::ptturn(450, 127, 0, 1, 1000, 0, 0, true, false);
-
-    /*
-    legacy::forward(500, 127, 1, 1000, 0, 0);
-    legacy::forward(-140, 127, 1, 1000, 0, 0);
-    legacy::forward(127, 1000);
-    robot::flapL.set_value(0);
-    robot::flapR.set_value(0);
-    legacy::forward(-200, 127, 1, 1000, 0, 0);
-    legacy::turn(640, 127, 1, 1000, 0, 0);
-    legacy::forward(730, 127, 1, 1000, 0, 0);
-    legacy::turn(740, 127, 1, 1000, 0, 0);
-    robot::flapR.set_value(1);
-    legacy::forward(127, 1000);
-    robot::flapR.set_value(0);
-    legacy::forward(-300, 127, 1, 1000, 0, 0);
-    legacy::turn(640, 127, 1, 1000, 0, 0);
-    */
-
-    //  robot::flapL.set_value(1);
-    //  legacy::forward(300, 127, 1, 1000, 0, 0);
-    /*
-    legacy::forward(-300, 127, 1, 600, 0, 0);
-    robot::flapL.set_value(0);
-    legacy::ptturn(640, 127, 20, 1, 1000, 0, 0, false, true);
-    legacy::forward(530, 127, 1, 1000, 0, 0);
-    legacy::ptturn(730, 127, 20, 1, 1000, 0, 0, false, true);
-    robot::flapL.set_value(1);
-    robot::flapR.set_value(1);
-    legacy::forward(80, 1100);
-    robot::flapL.set_value(0);
-    robot::flapR.set_value(0);
-    legacy::forward(-100, 127, 1, 1000, 0, 0);
-    // legacy::turn(-90, 127, 1, 1000, 0, 0);
-    // legacy::forward(600, -90, 127, 1, 1000, 0, 0);
-    // robot::flapL.set_value(1);
-    // legacy::ptturn(70, 127, 0, 1, 1000, 0, 0, false, true);
+    legacy::turn(130, 127, 2, 800, 0, 0);
+    legacy::forward(220, 127, 1, 1000, 0, 0);
+    legacy::turn(230, 127, 1, 800, 0, 0);
+    legacy::forward(180, 127, 1, 1000, 0.3, 0);
+    legacy::ptturn(360, 127, 20, 1, 1000, 0.8, 0, false, true);
     // robot::flapL.set_value(0);
-    // legacy::forward(127, 1000);
-    // legacy::forward(-350, 127, 1, 800, 0, 0);
-    */
-    /*
+    robot::flapR.set_value(1);
     // robot::flapL.set_value(1);
     robot::intake.move(127);
-    legacy::forward(127, 1000);
+    legacy::forward(70, 1000);
+    // robot::flapL.set_value(0);
+    robot::flapR.set_value(0);
     robot::flapL.set_value(0);
-    legacy::forward(-560, 127, 1, 1000, 0, 0);
-    pros::delay(300);
-    legacy::turn(-90, 127, 1, 1000, 0, 0);
-    legacy::forward(400, 127, 1, 1000, 0, 0);
-    legacy::turn(16.5, 127, 1, 1000, 0, 0);
+    pros::delay(700);
+    legacy::forward(-450, 127, 1, 600, 0, 0);
+    legacy::turn(270, 127, 1, 1000, 0, 0);
+    legacy::forward(460, 127, 1, 1500, 0, 0);
+    legacy::ptturn(350, 127, 20, 1, 1500, 0.9, 0, false, true);
+    legacy::turn(423, 127, 1, 1500, 0, 0);
     robot::flapL.set_value(1);
     robot::flapR.set_value(1);
-    legacy::forward(127, 1000);
+    legacy::forward(800, 370, 127, 1, 1500, 0, 0);
+    legacy::forward(-200, 127, 1, 1000, 0, 0);
+    legacy::turn(360, 127, 1, 1000, 0, 0);
+    legacy::forward(127, 800);
     robot::flapL.set_value(0);
     robot::flapR.set_value(0);
     legacy::forward(-100, 127, 1, 1000, 0, 0);
-    legacy::turn(-90, 127, 1, 1000, 0, 0);
-    legacy::forward(600, -90, 127, 1, 1000, 0, 0);
-    robot::flapL.set_value(1);
-    legacy::ptturn(70, 127, 0, 1, 1000, 0, 0, false, true);
-    robot::flapL.set_value(0);
+    legacy::turn(270, 127, 1, 1000, 0, 0);
+    legacy::forward(820, 127, 1, 1000, 0, 0);
+    legacy::turn(370, 127, 1, 1000, 0, 0);
+    robot::flapR.set_value(1);
+    legacy::forward(600, 127, 5, 800, 0, 0);
+    // legacy::turn(480, 127, 8, 400, 0, 0);
     legacy::forward(127, 1000);
-    legacy::forward(-350, 127, 1, 800, 0, 0);
-    */
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+
+    legacy::forward(127, 800);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+    legacy::forward(127, 800);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+    legacy::forward(127, 800);
+    legacy::forward(-500, 127, 1, 1000, 0, 0);
+
     /*
-    legacy::turn(360, 127, 1, 1000, 0, 0);
-    legacy::forward(-550, 127, 1, 1000, 0, 0);
-    legacy::turn(295, 127, 1, 1000, 0, 0);
+  if (pros::millis() - startTime >= 50000) {
     legacy::forward(127, 1000);
-    */
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+
+    legacy::forward(127, 800);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+    legacy::forward(127, 800);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+    legacy::forward(127, 800);
+    legacy::forward(-500, 127, 1, 1000, 0, 0);
+  } else if (pros::millis() - startTime >= 55000) {
+    legacy::forward(127, 1000);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    // legacy::turn(460, 127, 8, 1000, 0, 0);
+
+    legacy::forward(127, 800);
+    legacy::forward(-500, 127, 1, 1000, 0, 0);
+  } else if (pros::millis() - startTime >= 58000) {
+    legacy::forward(127, 1000);
+    legacy::forward(-500, 127, 1, 1000, 0, 0);
+  }
+  */
+    // legacy::turn(460, 127, 8, 1000, 0, 0)
   }
 }
