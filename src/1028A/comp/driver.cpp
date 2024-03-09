@@ -15,7 +15,7 @@ void _1028A::comp::driver::driveCTRL() {
     legacy::turn(-170, 127, 1, 800, 0, 0);
     robot::flapR.set_value(1);
     Rwing = open;
-    robot::kicker.move(-100);
+    robot::kicker.move(-105);
     kickeron = 1;
     while (1) {
       if (_1028A::robot::master.get_analog(ANALOG_LEFT_Y) != 0 or
@@ -25,7 +25,7 @@ void _1028A::comp::driver::driveCTRL() {
       pros::delay(20);
     }
   }
-
+  autonSelect = NULL;
   robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -40,9 +40,7 @@ void _1028A::comp::driver::driveCTRL() {
     _1028A::robot::leftMtrs.move(power + turn);
     _1028A::robot::rightMtrs.move(power - turn);
 
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      robot::kicker.move(-105);
-    } else if (kickeron == 1) {
+    if (kickeron == 1) {
       robot::kicker.move(-105);
     } else {
       robot::kicker.move(0);
