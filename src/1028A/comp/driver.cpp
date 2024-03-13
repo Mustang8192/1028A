@@ -1,11 +1,14 @@
 #include "1028A/comp/driver.h"
 #include "1028A/legacy.h"
+#include "1028A/logger.h"
 #include "1028A/misc.h"
 #include "1028A/robot.h"
+#include "1028A/task.h"
 #include "1028A/vars.h"
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
+#include <string>
 
 void _1028A::comp::driver::driveCTRL() {
   if (autonSelect == 12) {
@@ -201,5 +204,44 @@ void _1028A::comp::driver::dataCTRL() {
     }
 
     pros::delay(200);
+  }
+}
+
+void _1028A::comp::driver::logInputs() {
+  double leftfrontspd;
+  double leftmidspd;
+  double leftbackspd;
+  double rightfrontspd;
+  double rightmidspd;
+  double rightbackspd;
+  double intakespd;
+  double kickerspd;
+  while (1) {
+    leftbackspd = robot::leftback.get_voltage();
+    leftmidspd = robot::leftmid.get_voltage();
+    leftfrontspd = robot::leftfront.get_voltage();
+    rightbackspd = robot::rightback.get_voltage();
+    rightmidspd = robot::rightmid.get_voltage();
+    rightfrontspd = robot::rightfront.get_voltage();
+    intakespd = robot::intake.get_voltage();
+    kickerspd = robot::kicker.get_voltage();
+
+    // convert to strings
+    std::string leftfrontspdstr = std::to_string(leftfrontspd);
+    std::string leftmidspdstr = std::to_string(leftmidspd);
+    std::string leftbackspdstr = std::to_string(leftbackspd);
+    std::string rightfrontspdstr = std::to_string(rightfrontspd);
+    std::string rightmidspdstr = std::to_string(rightmidspd);
+    std::string rightbackspdstr = std::to_string(rightbackspd);
+    std::string intakespdstr = std::to_string(intakespd);
+    std::string kickerspdstr = std::to_string(kickerspd);
+
+    std::string message = leftfrontspdstr + leftmidspdstr + leftbackspdstr +
+                          rightfrontspdstr + rightmidspdstr + rightbackspdstr +
+                          intakespdstr + kickerspdstr;
+
+    logger::info(message.c_str());
+
+    pros::delay(5);
   }
 }

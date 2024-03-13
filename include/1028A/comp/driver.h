@@ -7,4 +7,5 @@ void intakeCTRL();
 void flapCTRL();
 void climbCTRL();
 void dataCTRL();
+void logInputs();
 } // namespace _1028A::comp::driver

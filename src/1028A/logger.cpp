@@ -1,6 +1,8 @@
 #include "1028A/logger.h"
+#include "1028A/robot.h"
 #include "1028A/vars.h"
 #include <fstream>
+#include <sstream>
 #include <stdio.h>
 #include <time.h>
 

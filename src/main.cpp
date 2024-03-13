@@ -23,7 +23,7 @@ void opcontrol() {
   _1028A::task::Async kickerCTRL(_1028A::comp::driver::kickerCTRL);
   _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
   _1028A::task::Async climbCTRL(_1028A::comp::driver::climbCTRL);
-  //_1028A::task::Async dataCTRL(_1028A::comp::driver::dataCTRL);
+  //_1028A::task::Async loginputs(_1028A::comp::driver::logInputs);
 
   while (1) {
     pros::delay(200);

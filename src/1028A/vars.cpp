@@ -11,7 +11,7 @@ wingSts Lwing = closed;
 wingSts Rwing = closed;
 
 // logger
-bool fileLog = false;
+bool fileLog = true;
 time_t robotStartTime = 0;
 
 // checks
