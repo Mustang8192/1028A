@@ -1,4 +1,5 @@
 #include "main.h"
+#include <string>
 
 namespace _1028A::logger {
 namespace file {
@@ -10,7 +11,7 @@ void startFileLog();
 static bool Debug = false;
 static bool Verbose = false;
 
-enum class Level { DEBUG, INFO, WARN, ERROR, FATAL };
+enum class Level { DATA, DEBUG, INFO, WARN, ERROR, FATAL };
 
 static Level lowestLevel = Level::INFO;
 
@@ -71,6 +72,9 @@ void log(Level level, const char *message, const char *exception);
  * @param message the message
  */
 void log(Level level, const char *message);
+
+void log(Level level, const char *message, std::string filename,
+         bool logToFile);
 
 /**
  * @brief Logs a debug message

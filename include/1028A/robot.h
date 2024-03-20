@@ -6,17 +6,24 @@
 #include "pros/motors.hpp"
 #include "pros/optical.hpp"
 #include "pros/rotation.hpp"
-#define leftfrontpt 5
-#define leftmidpt 2
-#define leftbackpt 11
-#define rightfrontpt 4
-#define rightmidpt 3
-#define rightbackpt 17
-#define inertialpt 21
-#define inakept 1
-#define kickerpt 16
+#define leftfrontpt 7
+#define leftmidpt 11
+#define leftbackpt 12
+#define rightfrontpt 10
+#define rightmidpt 6
+#define rightbackpt 19
+#define inertialpt 14
+#define inakept 5
+#define kickerpt 17
 #define leftencpt 9
 #define rightencpt 7
+#define adiExtPt 8
+#define flapLpt 'B'
+#define flapRpt 'A'
+#define climb_set1pt 'E'
+#define climb_set2pt 'G'
+#define backLpt 'D'
+#define backRpt 'C'
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -37,7 +44,8 @@ extern pros::ADIDigitalOut flapL;
 extern pros::ADIDigitalOut flapR;
 extern pros::ADIDigitalOut climb_set1;
 extern pros::ADIDigitalOut climb_set2;
-extern pros::ADIDigitalOut stick;
+extern pros::ADIDigitalOut backL;
+extern pros::ADIDigitalOut backR;
 
 extern _1028A::Drivetrain_t drivetrain;
 extern _1028A::TrackingWheel leftTracker;

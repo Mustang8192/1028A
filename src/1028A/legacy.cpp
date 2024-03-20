@@ -184,7 +184,7 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
 
   float Kp = 0.6 + kpOffset;
   float Ki = 0;
-  float Kd = 1.9 + kdOffset;
+  float Kd = 2.1 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
   _1028A::robot::leftmid.tare_position();
@@ -462,5 +462,23 @@ void _1028A::legacy::curve(double requestedValue, double spd, double thre,
       robot::rightback.move((0 * powerValueR) + (scalar * powerValueR));
       robot::rightmid.move((0 * powerValueR) + (scalar * powerValueR));
     }
+  }
+}
+
+void _1028A::legacy::curve(std::vector<std::vector<int>> array) {
+  int startingPt = 0;
+  while (1) {
+    robot::leftfront.move(array[startingPt][0]);
+    robot::leftmid.move(array[startingPt][1]);
+    robot::leftback.move(array[startingPt][2]);
+    robot::rightfront.move(array[startingPt][3]);
+    robot::rightmid.move(array[startingPt][4]);
+    robot::rightback.move(array[startingPt][5]);
+    robot::intake.move(array[startingPt][6]);
+    robot::kicker.move(array[startingPt][7]);
+
+    startingPt += 1;
+
+    pros::delay(20);
   }
 }

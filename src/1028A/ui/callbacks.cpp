@@ -166,3 +166,8 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
   }
   return LV_RES_OK;
 }
+
+lv_res_t _1028A::ui::callbacks::macroLogging(lv_obj_t *btn) {
+  startLogging = 1;
+  return LV_RES_OK;
+}

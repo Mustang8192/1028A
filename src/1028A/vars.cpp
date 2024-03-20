@@ -1,7 +1,9 @@
 #include "1028A/vars.h"
+#include "display/lv_core/lv_obj.h"
 
 int kickeron = 0;
 int stickon = 0;
+int driveSens = 0;
 
 // Climb
 climbSts climb = neutral;
@@ -9,10 +11,12 @@ climbSts climb = neutral;
 // Wings
 wingSts Lwing = closed;
 wingSts Rwing = closed;
+wingSts Lbwing = closed;
+wingSts Rbwing = closed;
 
 // logger
-bool fileLog = true;
 time_t robotStartTime = 0;
+bool fileLog = false;
 
 // checks
 bool ports = true;
@@ -42,11 +46,15 @@ lv_obj_t *autonPG;
 lv_obj_t *summary;
 lv_obj_t *summaryTxt;
 lv_obj_t *goal;
+lv_obj_t *ball6;
 lv_obj_t *loading;
+lv_obj_t *wploading;
 lv_obj_t *skills;
 
 // Sensor Screen
 lv_obj_t *macrosPG;
+lv_obj_t *logging;
+int startLogging = 0;
 
 // Home Screen
 lv_obj_t *homePG;

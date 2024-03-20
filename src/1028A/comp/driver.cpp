@@ -14,11 +14,12 @@ void _1028A::comp::driver::driveCTRL() {
   if (autonSelect == 12) {
     legacy::slantR(-40, 800);
     legacy::forward(-127, 500);
-    legacy::forward(200, 127, 1, 600, 0, 0);
-    legacy::turn(-170, 127, 1, 800, 0, 0);
-    robot::flapR.set_value(1);
-    Rwing = open;
-    robot::kicker.move(-105);
+    legacy::forward(140, 127, 1, 1000, 0, 0);
+    legacy::ptturn(28, 127, 20, 1, 1000, 0, 0, false, true);
+    robot::kicker.move(115);
+    legacy::forward(-10, 1000);
+    robot::backL.set_value(1);
+    Lbwing = open;
     kickeron = 1;
     while (1) {
       if (_1028A::robot::master.get_analog(ANALOG_LEFT_Y) != 0 or
@@ -40,20 +41,25 @@ void _1028A::comp::driver::driveCTRL() {
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
     int turn = _1028A::robot::master.get_analog(ANALOG_RIGHT_X);
 
-    _1028A::robot::leftMtrs.move(power + turn);
-    _1028A::robot::rightMtrs.move(power - turn);
+    if (driveSens == 0) {
+      _1028A::robot::leftMtrs.move(power + turn);
+      _1028A::robot::rightMtrs.move(power - turn);
+    } else if (driveSens == 1) {
+      _1028A::robot::leftMtrs.move(53);
+      _1028A::robot::rightMtrs.move(53);
+    }
 
     if (kickeron == 1) {
-      robot::kicker.move(-105);
+      robot::kicker.move(105);
     } else {
       robot::kicker.move(0);
     }
 
-    if (stickon == 1) {
-      robot::stick.set_value(1);
-    } else {
-      robot::stick.set_value(0);
-    }
+    // if (stickon == 1) {
+    //   robot::stick.set_value(1);
+    // } else {
+    //  robot::stick.set_value(0);
+    //}
     pros::delay(5);
   }
 }
@@ -71,17 +77,30 @@ void _1028A::comp::driver::kickerCTRL() {
       pros::delay(400);
     }
 
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT) &&
-        stickon == 0) {
-      stickon = 1;
-      pros::delay(300);
-    } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_RIGHT) &&
-               stickon == 1) {
-      stickon = 0;
-      pros::delay(300);
-    }
+    // if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)
+    // &&
+    //     stickon == 0) {
+    //   stickon = 1;
+    //   pros::delay(300);
+    // } else if (_1028A::robot::master.get_digital(
+    //                pros::E_CONTROLLER_DIGITAL_RIGHT) &&
+    //            stickon == 1) {
+    //   stickon = 0;
+    //   pros::delay(300);
+    // }
     pros::delay(20);
+  }
+}
+
+void _1028A::comp::driver::driveS() {
+  while (1) {
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+      driveSens = 1;
+    } else {
+      driveSens = 0;
+    }
+
+    pros::delay(10);
   }
 }
 
@@ -133,6 +152,53 @@ void _1028A::comp::driver::flapCTRL() {
       } else {
       }
     }
+
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+      if (Rbwing == closed) {
+        robot::backR.set_value(1);
+        Rbwing = open;
+        pros::delay(200);
+      } else if (Rbwing == open) {
+        robot::backR.set_value(0);
+        Rbwing = closed;
+        pros::delay(200);
+      }
+    }
+
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+      if (Lbwing == closed) {
+        robot::backL.set_value(1);
+        Lbwing = open;
+        pros::delay(200);
+      } else if (Lbwing == open) {
+        robot::backL.set_value(0);
+        Lbwing = closed;
+        pros::delay(200);
+      }
+    }
+
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+      if (Lbwing != Rbwing) {
+        robot::backL.set_value(1);
+        robot::backR.set_value(1);
+        Lbwing = open;
+        Rbwing = open;
+        pros::delay(200);
+      } else if (Lbwing == Rbwing && Lbwing == closed) {
+        robot::backL.set_value(1);
+        robot::backR.set_value(1);
+        Lbwing = open;
+        Rbwing = open;
+        pros::delay(200);
+      } else if (Lbwing == Rbwing && Lbwing == open) {
+        robot::backL.set_value(0);
+        robot::backR.set_value(0);
+        Lbwing = closed;
+        Rbwing = closed;
+        pros::delay(200);
+      } else {
+      }
+    }
     pros::delay(20);
   }
 }
@@ -140,11 +206,11 @@ void _1028A::comp::driver::flapCTRL() {
 void _1028A::comp::driver::intakeCTRL() {
   while (1) {
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-      _1028A::robot::intake.move(127);
+      _1028A::robot::intake.move(-127);
 
     } else if (_1028A::robot::master.get_digital(
                    pros::E_CONTROLLER_DIGITAL_L2)) {
-      _1028A::robot::intake.move(-127);
+      _1028A::robot::intake.move(127);
     } else {
       _1028A::robot::intake.move(0);
     }
@@ -208,40 +274,42 @@ void _1028A::comp::driver::dataCTRL() {
 }
 
 void _1028A::comp::driver::logInputs() {
-  double leftfrontspd;
-  double leftmidspd;
-  double leftbackspd;
-  double rightfrontspd;
-  double rightmidspd;
-  double rightbackspd;
-  double intakespd;
-  double kickerspd;
   while (1) {
-    leftbackspd = robot::leftback.get_voltage();
-    leftmidspd = robot::leftmid.get_voltage();
-    leftfrontspd = robot::leftfront.get_voltage();
-    rightbackspd = robot::rightback.get_voltage();
-    rightmidspd = robot::rightmid.get_voltage();
-    rightfrontspd = robot::rightfront.get_voltage();
-    intakespd = robot::intake.get_voltage();
-    kickerspd = robot::kicker.get_voltage();
+    if (startLogging) {
+      robot::master.rumble("..");
+      while (1) {
+        if (!startLogging) {
+          break;
+        }
+        int leftFrontpwr = robot::leftfront.get_voltage();
+        int leftMidpwr = robot::leftmid.get_voltage();
+        int leftBackpwr = robot::leftback.get_voltage();
+        int rightFrontpwr = robot::rightfront.get_voltage();
+        int rightMidpwr = robot::rightmid.get_voltage();
+        int rightBackpwr = robot::rightback.get_voltage();
+        int intakepwr = robot::intake.get_voltage();
+        int kickerpwr = robot::kicker.get_voltage();
 
-    // convert to strings
-    std::string leftfrontspdstr = std::to_string(leftfrontspd);
-    std::string leftmidspdstr = std::to_string(leftmidspd);
-    std::string leftbackspdstr = std::to_string(leftbackspd);
-    std::string rightfrontspdstr = std::to_string(rightfrontspd);
-    std::string rightmidspdstr = std::to_string(rightmidspd);
-    std::string rightbackspdstr = std::to_string(rightbackspd);
-    std::string intakespdstr = std::to_string(intakespd);
-    std::string kickerspdstr = std::to_string(kickerspd);
+        std::string data[8] = {
+            std::to_string(leftFrontpwr), std::to_string(leftMidpwr),
+            std::to_string(leftBackpwr),  std::to_string(rightFrontpwr),
+            std::to_string(rightMidpwr),  std::to_string(rightBackpwr),
+            std::to_string(intakepwr),    std::to_string(kickerpwr)};
+        // convert array to string
+        std::string str = "";
+        for (int i = 0; i < 8; i++) {
+          str += data[i] + ",";
+        }
+        str = "{" + str + "},";
 
-    std::string message = leftfrontspdstr + leftmidspdstr + leftbackspdstr +
-                          rightfrontspdstr + rightmidspdstr + rightbackspdstr +
-                          intakespdstr + kickerspdstr;
+        logger::info(str.c_str());
+        pros::delay(20);
+      }
 
-    logger::info(message.c_str());
+    } else {
+      pros::delay(1000);
+    }
 
-    pros::delay(5);
+    pros::delay(300);
   }
 }

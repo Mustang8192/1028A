@@ -1,9 +1,11 @@
+#include "display/lv_core/lv_obj.h"
 #include "main.h"
 #include <cstddef>
 #include <time.h>
 
 extern int kickeron;
 extern int stickon;
+extern int driveSens;
 
 // Climb
 enum climbSts { up, down, neutral };
@@ -13,10 +15,12 @@ extern climbSts climb;
 enum wingSts { open, closed };
 extern wingSts Lwing;
 extern wingSts Rwing;
+extern wingSts Lbwing;
+extern wingSts Rbwing;
 
 // logger
-extern bool fileLog;
 extern time_t robotStartTime;
+extern bool fileLog;
 
 // checks
 extern bool ports;
@@ -47,11 +51,15 @@ extern lv_obj_t *autonPG;
 extern lv_obj_t *summary;
 extern lv_obj_t *summaryTxt;
 extern lv_obj_t *goal;
+extern lv_obj_t *ball6;
 extern lv_obj_t *loading;
+extern lv_obj_t *wploading;
 extern lv_obj_t *skills;
 
 // Macros Screen
 extern lv_obj_t *macrosPG;
+extern lv_obj_t *logging;
+extern int startLogging;
 
 // Home Screen
 extern lv_obj_t *homePG;

@@ -23,4 +23,6 @@ extern lv_res_t do_nothingCB(lv_obj_t *list_btn);
 
 extern lv_res_t lockCB(lv_obj_t *btn);
 
+extern lv_res_t macroLogging(lv_obj_t *btn);
+
 } // namespace _1028A::ui::callbacks
