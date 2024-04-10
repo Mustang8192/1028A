@@ -24,6 +24,7 @@
 #define climb_set2pt 'G'
 #define backLpt 'D'
 #define backRpt 'C'
+#define limitSwitchpt 'H'
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -46,6 +47,7 @@ extern pros::ADIDigitalOut climb_set1;
 extern pros::ADIDigitalOut climb_set2;
 extern pros::ADIDigitalOut backL;
 extern pros::ADIDigitalOut backR;
+extern pros::ADIDigitalIn limitSwitch;
 
 extern _1028A::Drivetrain_t drivetrain;
 extern _1028A::TrackingWheel leftTracker;

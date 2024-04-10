@@ -220,8 +220,13 @@ void _1028A::comp::driver::intakeCTRL() {
 
 void _1028A::comp::driver::climbCTRL() {
   while (1) {
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) &&
-        climb == neutral) {
+    if (_1028A::robot::limitSwitch.get_value() == 1 && climb == up) {
+      _1028A::robot::climb_set1.set_value(0);
+      _1028A::robot::climb_set2.set_value(1);
+      climb = down;
+    } else if (_1028A::robot::master.get_digital(
+                   pros::E_CONTROLLER_DIGITAL_R2) &&
+               climb == neutral) {
       _1028A::robot::climb_set1.set_value(1);
       _1028A::robot::climb_set2.set_value(0);
       climb = up;
@@ -276,19 +281,20 @@ void _1028A::comp::driver::dataCTRL() {
 void _1028A::comp::driver::logInputs() {
   while (1) {
     if (startLogging) {
+      pros::delay(3000);
       robot::master.rumble("..");
       while (1) {
         if (!startLogging) {
           break;
         }
-        int leftFrontpwr = robot::leftfront.get_voltage();
-        int leftMidpwr = robot::leftmid.get_voltage();
-        int leftBackpwr = robot::leftback.get_voltage();
-        int rightFrontpwr = robot::rightfront.get_voltage();
-        int rightMidpwr = robot::rightmid.get_voltage();
-        int rightBackpwr = robot::rightback.get_voltage();
-        int intakepwr = robot::intake.get_voltage();
-        int kickerpwr = robot::kicker.get_voltage();
+        int leftFrontpwr = robot::leftfront.get_target_velocity();
+        int leftMidpwr = robot::leftmid.get_target_velocity();
+        int leftBackpwr = robot::leftback.get_target_velocity();
+        int rightFrontpwr = robot::rightfront.get_target_velocity();
+        int rightMidpwr = robot::rightmid.get_target_velocity();
+        int rightBackpwr = robot::rightback.get_target_velocity();
+        int intakepwr = robot::intake.get_target_velocity();
+        int kickerpwr = robot::kicker.get_target_velocity();
 
         std::string data[8] = {
             std::to_string(leftFrontpwr), std::to_string(leftMidpwr),
@@ -302,7 +308,7 @@ void _1028A::comp::driver::logInputs() {
         }
         str = "{" + str + "},";
 
-        logger::info(str.c_str());
+        printf(str.c_str());
         pros::delay(20);
       }
 

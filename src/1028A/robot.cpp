@@ -37,6 +37,7 @@ pros::ADIDigitalOut _1028A::robot::climb_set1(climb_set1pt);
 pros::ADIDigitalOut _1028A::robot::climb_set2(climb_set2pt);
 pros::ADIDigitalOut _1028A::robot::backL(backLpt);
 pros::ADIDigitalOut _1028A::robot::backR(backRpt);
+pros::ADIDigitalIn _1028A::robot::limitSwitch(limitSwitchpt);
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

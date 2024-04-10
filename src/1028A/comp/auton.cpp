@@ -57,6 +57,50 @@ void deployIntake() {
   _1028A::robot::kicker.move(0);
 }
 
+void lockAngle() {
+  while (1) {
+    float SensorCurrentValue;
+    float error;
+    float lastError = 0;
+    double lockedHeading = 26;
+
+    float Kp = 1;
+    float Ki = 0;
+    float Kd = 5;
+    double timeExit = 0;
+    double startTime = pros::millis();
+    _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    _1028A::robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    _1028A::robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    _1028A::robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    while (1) {
+      // Reads the sensor value and scale
+      SensorCurrentValue = _1028A::robot::inertial.get_rotation();
+      double currentTime = pros::millis();
+
+      // calculates error
+      error = -(lockedHeading - SensorCurrentValue);
+
+      // calculate drive PID
+      float powerValue =
+          _1028A::legacy::math(error, lastError, Kp, Ki, Kd, 127);
+
+      // Move Motors with PID
+      _1028A::robot::leftfront.move((0 * powerValue) + (-1 * powerValue));
+      _1028A::robot::leftback.move((0 * powerValue) + (-1 * powerValue));
+      _1028A::robot::leftmid.move((0 * powerValue) + (-1 * powerValue));
+
+      _1028A::robot::rightfront.move((0 * powerValue) + (1 * powerValue));
+      _1028A::robot::rightback.move((0 * powerValue) + (1 * powerValue));
+      _1028A::robot::rightmid.move((0 * powerValue) + (1 * powerValue));
+
+      lastError = error;
+      pros::delay(5);
+    }
+  }
+}
 void _1028A::comp::auton::auton() {
   autonSelect = 2;
   //    task::Async deploy(deployIntake);
@@ -98,6 +142,7 @@ void _1028A::comp::auton::auton() {
     robot::intake.move(0);
 
   } else if (autonSelect == 2) {
+    /*
     // 6 Ball
     // Grab Triball under pole
     robot::intake.move(127);
@@ -142,7 +187,32 @@ void _1028A::comp::auton::auton() {
     Rwing = open;
     legacy::forward(127, 800);
     // robot::backR.set_value(0);
+    */
 
+    robot::intake.move(127);
+    legacy::forward(740, 0, 127, 1, 1000, 0, 0);
+    pros::delay(200);
+    legacy::forward(-150, 127, 1, 1000, 0, 0);
+    legacy::turn(92, 127, 1, 1000, 0, 0);
+    robot::intake.move(-127);
+    pros::delay(200);
+    legacy::turn(255, 127, 1, 1000, 0, 0);
+    robot::intake.move(127);
+    legacy::forward(300, 127, 1, 1000, 0, 0);
+    pros::delay(200);
+    legacy::forward(-200, 127, 1, 1000, 0, 0);
+    legacy::turn(91.5, 127, 1, 1000, 0, 0);
+    robot::intake.move(-127);
+    legacy::forward(600, 92, 127, 1, 1000, 0, 0);
+    pros::delay(200);
+    legacy::ptturn(192, 127, 20, 1, 1000, 0.5, 0, true, false);
+    legacy::forward(900, 192, 127, 1, 1000, 0, 0);
+    legacy::turn(298, 127, 1, 1000, 0, 0);
+    robot::intake.move(127);
+    legacy::forward(410, 281.5, 127, 1, 1000, 0, 0);
+    pros::delay(200);
+    legacy::forward(-600, 127, 5, 1000, 0, 0);
+    legacy::turn(230, 127, 1, 1000, 0, 0);
     // Turn to score all 3 in goal
     /*
     legacy::turn(130, 127, 1, 600, 0, 0);
@@ -331,7 +401,28 @@ void _1028A::comp::auton::auton() {
     legacy::slantR(-40, 800);
     legacy::forward(-127, 500);
     legacy::forward(140, 127, 1, 1000, 0, 0);
-    legacy::ptturn(24, 127, 20, 1, 1500, 0, 0, false, true);
+    legacy::ptturn(26, 127, 20, 1, 1500, 0, 0, false, true);
+    robot::backL.set_value(1);
+    legacy::forward(-20, 1000);
+    task::Async lock(lockAngle);
+    pros::delay(2000);
+    lock.forceStop();
+    robot::intake.move(127);
+    robot::backL.set_value(0);
+    legacy::forward(710, 127, 1, 1000, 0, 0.2);
+    legacy::turn(91.5, 127, 1.5, 800, 0, 0);
+    robot::flapL.set_value(1);
+    robot::intake.move(-127);
+    legacy::forward(1000, 91.5, 127, 1, 1400, 0, -.4);
+    legacy::turn(-0.8, 127, 1, 1000, 0, 0);
+    robot::flapL.set_value(0);
+    legacy::forward(-127, 880);
+    legacy::turn(48, 127, 1, 1000, 0, 0);
+    legacy::forward(400, 127, 1, 1000, 0, 0);
+    legacy::turn(10, 127, 1, 800, 0, 0);
+    legacy::forward(900, 127, 1, 1500, 0, 0);
+
+    /*
     robot::backL.set_value(1);
     robot::kicker.move(105);
     legacy::forward(-10, 35000);
@@ -349,6 +440,7 @@ void _1028A::comp::auton::auton() {
     legacy::forward(-400, 127, 1, 1000, 0, 0);
     legacy::forward(127, 1300);
     legacy::forward(-400, 127, 1, 1000, 0, 0);
+    */
 
     /*
     int startTime = pros::millis();
