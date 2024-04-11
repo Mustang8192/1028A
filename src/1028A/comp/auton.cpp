@@ -207,13 +207,13 @@ void _1028A::comp::auton::auton() {
     pros::delay(200);
     legacy::ptturn(192, 127, 20, 1, 1000, 0.5, 0, true, false);
     legacy::forward(900, 192, 127, 1, 1000, 0, 0);
-    legacy::turn(298, 127, 1, 1000, 0, 0);
-    robot::intake.move(127);
-    legacy::forward(410, 281.5, 127, 1, 1000, 0, 0);
-    pros::delay(200);
-    legacy::forward(-600, 127, 5, 1000, 0, 0);
-    legacy::turn(230, 127, 1, 1000, 0, 0);
-    // Turn to score all 3 in goal
+    legacy::turn(281, 127, 1, 1000, 0, 0);
+    // robot::intake.move(127);
+    // legacy::forward(410, 290, 127, 1, 1000, 0, 0);
+    // pros::delay(200);
+    // legacy::forward(-600, 127, 5, 1000, 0, 0);
+    // legacy::turn(230, 127, 1, 1000, 0, 0);
+    //  Turn to score all 3 in goal
     /*
     legacy::turn(130, 127, 1, 600, 0, 0);
     // robot::stick.set_value(0);
