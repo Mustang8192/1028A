@@ -24,7 +24,6 @@ void opcontrol() {
   _1028A::task::Async driveSense(_1028A::comp::driver::driveS);
   _1028A::task::Async intakeCTRL(_1028A::comp::driver::intakeCTRL);
   _1028A::task::Async kickerCTRL(_1028A::comp::driver::kickerCTRL);
-  _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
   _1028A::task::Async climbCTRL(_1028A::comp::driver::climbCTRL);
   _1028A::task::Async loginputs(_1028A::comp::driver::logInputs);
 

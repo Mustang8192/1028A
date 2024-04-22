@@ -11,21 +11,47 @@
 #include <string>
 
 void _1028A::comp::driver::driveCTRL() {
+  // autonSelect = 12;
   if (autonSelect == 12) {
     legacy::slantR(-40, 800);
     legacy::forward(-127, 500);
     legacy::forward(140, 127, 1, 1000, 0, 0);
-    legacy::ptturn(28, 127, 20, 1, 1000, 0, 0, false, true);
-    robot::kicker.move(115);
-    legacy::forward(-10, 1000);
+    legacy::ptturn(26, 127, 20, 1, 1500, 0, 0, false, true);
     robot::backL.set_value(1);
-    Lbwing = open;
-    kickeron = 1;
+    robot::kicker.move(105);
+    legacy::forward(-20, 1000);
     while (1) {
       if (_1028A::robot::master.get_analog(ANALOG_LEFT_Y) != 0 or
           _1028A::robot::master.get_analog(ANALOG_RIGHT_X) != 0) {
+        robot::backL.set_value(0);
+        robot::kicker.move(0);
         break;
       }
+
+      if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+        robot::leftfront.move(15);
+        robot::leftmid.move(15);
+        robot::leftback.move(15);
+        robot::rightfront.move(-15);
+        robot::rightmid.move(-15);
+        robot::rightback.move(-15);
+      } else if (_1028A::robot::master.get_digital(
+                     pros::E_CONTROLLER_DIGITAL_LEFT)) {
+        robot::leftfront.move(-15);
+        robot::leftmid.move(-15);
+        robot::leftback.move(-15);
+        robot::rightfront.move(15);
+        robot::rightmid.move(15);
+        robot::rightback.move(15);
+      } else {
+        robot::leftfront.move(0);
+        robot::leftmid.move(0);
+        robot::leftback.move(0);
+        robot::rightfront.move(0);
+        robot::rightmid.move(0);
+        robot::rightback.move(0);
+      }
+
       pros::delay(20);
     }
   }
@@ -36,7 +62,7 @@ void _1028A::comp::driver::driveCTRL() {
   robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-
+  _1028A::task::Async flapCTRL(_1028A::comp::driver::flapCTRL);
   while (1) {
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
     int turn = _1028A::robot::master.get_analog(ANALOG_RIGHT_X);
@@ -50,7 +76,7 @@ void _1028A::comp::driver::driveCTRL() {
     }
 
     if (kickeron == 1) {
-      robot::kicker.move(105);
+      robot::kicker.move(110);
     } else {
       robot::kicker.move(0);
     }

@@ -12,7 +12,7 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
     selection = null;
     return LV_RES_OK;
   } else if (!uiLock) {
-    autonSelect = 1;
+    autonSelect = 5;
     selection = goalSide;
     summary = lv_page_create(autonPG, NULL);
     lv_obj_set_size(summary, 150, 200);
@@ -22,7 +22,7 @@ lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
     lv_label_set_text(summaryTxt,
-                      "Snatch:\n4 Triball\nNo WP task\nTriball Rush");
+                      "Rush 5:\n5 Triball\nNo WP task\nTriball Rush");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;
