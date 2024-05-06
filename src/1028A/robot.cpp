@@ -1,10 +1,4 @@
 #include "1028A/robot.h"
-#include "1028A/chassis/chassis.hpp"
-#include "1028A/chassis/trackingWheel.hpp"
-#include "pros/adi.hpp"
-#include "pros/motors.h"
-#include "pros/motors.hpp"
-#include "pros/rotation.hpp"
 
 pros::Motor _1028A::robot::leftfront(leftfrontpt, pros::E_MOTOR_GEARSET_18,
                                      true, pros::E_MOTOR_ENCODER_DEGREES);
@@ -40,47 +34,3 @@ pros::ADIDigitalOut _1028A::robot::backR(backRpt);
 pros::ADIDigitalIn _1028A::robot::limitSwitch(limitSwitchpt);
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
-
-_1028A::Drivetrain_t _1028A::robot::drivetrain{
-    &leftMtrs,                  // left drivetrain motors
-    &rightMtrs,                 // right drivetrain motors
-    10,                         // track width
-    _1028A::Omniwheel::NEW_325, // wheel diameter
-    600                         // wheel rpm
-};
-
-_1028A::TrackingWheel
-    _1028A::robot::leftTracker(&leftEnc, _1028A::Omniwheel::NEW_275, -4.6);
-_1028A::TrackingWheel
-    _1028A::robot::rightTracker(&rightEnc, _1028A::Omniwheel::NEW_275, 0);
-
-_1028A::OdomSensors_t _1028A::robot::odomSensors{
-    &leftTracker, // vertical tracking wheel
-    &rightTracker,
-    nullptr, // horizontal tracking wheel
-    nullptr,
-    &inertial // inertial sensor
-};
-
-_1028A::ChassisController_t _1028A::robot::lateralController{
-    8,   // kP
-    30,  // kD
-    1,   // smallErrorRange
-    100, // smallErrorTimeout
-    3,   // largeErrorRange
-    500, // largeErrorTimeout
-    5    // slew rate
-};
-
-_1028A::ChassisController_t _1028A::robot::angularController{
-    4,   // kP
-    40,  // kD
-    1,   // smallErrorRange
-    100, // smallErrorTimeout
-    3,   // largeErrorRange
-    500, // largeErrorTimeout
-    40   // slew rate
-};
-
-_1028A::Chassis _1028A::robot::chassis(drivetrain, lateralController,
-                                       angularController, odomSensors);

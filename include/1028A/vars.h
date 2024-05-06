@@ -1,36 +1,11 @@
-#include "display/lv_core/lv_obj.h"
 #include "main.h"
-#include <cstddef>
-#include <time.h>
 
-extern int kickeron;
-extern int stickon;
-extern int driveSens;
-
-// Climb
-enum climbSts { up, down, neutral };
-extern climbSts climb;
-
-// Wings
-enum wingSts { open, closed };
-extern wingSts Lwing;
-extern wingSts Rwing;
-extern wingSts Lbwing;
-extern wingSts Rbwing;
-
-// logger
-extern time_t robotStartTime;
-extern bool fileLog;
-
-// checks
-extern bool ports;
-extern bool overTemp;
+// Ui
 extern bool batteryLow;
-
-// ui
+extern bool overTemp;
+extern bool ports;
 extern bool uiLock;
 extern int autonSelect;
-// Ui
 extern lv_style_t style_meter;
 extern lv_style_t style_box;
 extern lv_style_t style_ready;

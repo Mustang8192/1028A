@@ -1,32 +1,12 @@
 #include "1028A/vars.h"
-#include "display/lv_core/lv_obj.h"
-
-int kickeron = 0;
-int stickon = 0;
-int driveSens = 0;
-
-// Climb
-climbSts climb = neutral;
-
-// Wings
-wingSts Lwing = closed;
-wingSts Rwing = closed;
-wingSts Lbwing = closed;
-wingSts Rbwing = closed;
-
-// logger
-time_t robotStartTime = 0;
-bool fileLog = false;
-
-// checks
-bool ports = true;
-bool overTemp = false;
-bool batteryLow = false;
 
 // ui
+
+bool batteryLow = false;
+bool overTemp = false;
+bool ports = false;
 bool uiLock = false;
 int autonSelect = 0;
-// UI
 lv_style_t style_meter;
 lv_style_t style_box;
 lv_style_t style_ready;

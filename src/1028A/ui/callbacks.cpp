@@ -3,8 +3,6 @@
 #include "1028A/robot.h"
 #include "1028A/ui/screens.h"
 #include "1028A/vars.h"
-#include "display/lv_core/lv_obj.h"
-#include "pros/rtos.hpp"
 
 lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
   if (selection == goalSide) {

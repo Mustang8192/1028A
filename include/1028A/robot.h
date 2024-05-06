@@ -1,11 +1,6 @@
-#include "1028A/chassis/chassis.hpp"
-#include "1028A/chassis/trackingWheel.hpp"
-#include "1028A/sensors.h"
+#include "lemlib/api.hpp"
 #include "main.h"
-#include "pros/adi.hpp"
-#include "pros/motors.hpp"
-#include "pros/optical.hpp"
-#include "pros/rotation.hpp"
+
 #define leftfrontpt 7
 #define leftmidpt 11
 #define leftbackpt 12
@@ -48,13 +43,5 @@ extern pros::ADIDigitalOut climb_set2;
 extern pros::ADIDigitalOut backL;
 extern pros::ADIDigitalOut backR;
 extern pros::ADIDigitalIn limitSwitch;
-
-extern _1028A::Drivetrain_t drivetrain;
-extern _1028A::TrackingWheel leftTracker;
-extern _1028A::TrackingWheel rightTracker;
-extern _1028A::OdomSensors_t odomSensors;
-extern _1028A::ChassisController_t lateralController;
-extern _1028A::ChassisController_t angularController;
-extern _1028A::Chassis chassis;
 
 } // namespace _1028A::robot

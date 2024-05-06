@@ -5,8 +5,6 @@
 #include "1028A/ui/screens.h"
 #include "1028A/vars.h"
 
-ASSET(intro_gif);
-
 void _1028A::ui::utils::stylesInit() {
   lv_style_copy(&style_meter, &lv_style_pretty_color);
   style_meter.line.width = 2;
