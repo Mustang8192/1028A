@@ -1,8 +1,10 @@
 #include "main.h"
 #include "1028A/api.h"
-#include "lemlib/api.hpp"
 
-void initialize() { _1028A::utils::init(); }
+void initialize() {
+  _1028A::utils::init();
+  _1028A::robot::chassis.calibrate();
+}
 
 void disabled() {}
 

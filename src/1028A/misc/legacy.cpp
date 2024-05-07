@@ -1,7 +1,7 @@
-#include "1028A/legacy.h"
-#include "1028A/logger.h"
-#include "1028A/robot.h"
-#include "1028A/task.h"
+#include "1028A/misc/legacy.h"
+#include "1028A/misc/logger.h"
+#include "1028A/misc/robot.h"
+#include "1028A/misc/task.h"
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
 
@@ -464,6 +464,7 @@ void _1028A::legacy::curve(double requestedValue, double spd, double thre,
   }
 }
 
+/*
 void _1028A::legacy::curve(std::vector<std::vector<int>> array) {
   int startingPt = 0;
   while (1) {
@@ -481,3 +482,4 @@ void _1028A::legacy::curve(std::vector<std::vector<int>> array) {
     pros::delay(20);
   }
 }
+*/

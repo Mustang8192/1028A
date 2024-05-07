@@ -1,10 +1,10 @@
-#include "1028A/misc.h"
-#include "1028A/logger.h"
-#include "1028A/robot.h"
-#include "1028A/task.h"
+#include "1028A/misc/misc.h"
+#include "1028A/misc/logger.h"
+#include "1028A/misc/robot.h"
+#include "1028A/misc/task.h"
+#include "1028A/misc/vars.h"
 #include "1028A/ui/screens.h"
 #include "1028A/ui/utils.h"
-#include "1028A/vars.h"
 
 /*omit
  * @brief Slew rate limiter
@@ -152,8 +152,8 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((rightbackpt - 1));
   pros::c::v5_device_e_t Inertialcheck =
       pros::c::registry_get_plugged_type((inertialpt - 1));
-  pros::c::v5_device_e_t Intakecheck =
-      pros::c::registry_get_plugged_type((inakept - 1));
+  // pros::c::v5_device_e_t Intakecheck =
+  //     pros::c::registry_get_plugged_type((inakept - 1));
 
   if (LeftFrontcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Left Front Motor not found");
@@ -183,10 +183,10 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Inertial Sensor not found");
     ports = false;
   }
-  if (Intakecheck != pros::c::E_DEVICE_MOTOR) {
-    _1028A::logger::fatal("Intake Motor not found");
-    ports = false;
-  }
+  // if (Intakecheck != pros::c::E_DEVICE_MOTOR) {
+  //   _1028A::logger::fatal("Intake Motor not found");
+  //   ports = false;
+  // }
 
   if (_1028A::robot::leftfront.is_over_temp()) {
     _1028A::logger::fatal("Left Front Motor overheating");
@@ -212,10 +212,10 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor overheating");
     overTemp = true;
   }
-  if (_1028A::robot::intake.is_over_temp()) {
-    _1028A::logger::fatal("Intake Motor overheating");
-    overTemp = true;
-  }
+  // if (_1028A::robot::intake.is_over_temp()) {
+  //   _1028A::logger::fatal("Intake Motor overheating");
+  //   overTemp = true;
+  // }
 
   if (pros::battery::get_capacity() < 80) {
     batteryLow = true;

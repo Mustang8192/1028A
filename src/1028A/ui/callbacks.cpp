@@ -1,8 +1,8 @@
 #include "1028A/ui/callbacks.h"
-#include "1028A/logger.h"
-#include "1028A/robot.h"
+#include "1028A/misc/logger.h"
+#include "1028A/misc/robot.h"
+#include "1028A/misc/vars.h"
 #include "1028A/ui/screens.h"
-#include "1028A/vars.h"
 
 lv_res_t _1028A::ui::callbacks::goalCB(lv_obj_t *list_btn) {
   if (selection == goalSide) {

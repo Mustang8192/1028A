@@ -1,8 +1,8 @@
 #include "1028A/ui/screens.h"
-#include "1028A/misc.h"
+#include "1028A/misc/misc.h"
+#include "1028A/misc/vars.h"
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/utils.h"
-#include "1028A/vars.h"
 
 void _1028A::ui::screens::autonScreen() {
   autonPG = lv_obj_create(NULL, NULL);

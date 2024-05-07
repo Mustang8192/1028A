@@ -1,9 +1,9 @@
 #include "1028A/ui/utils.h"
-#include "1028A/logger.h"
-#include "1028A/misc.h"
+#include "1028A/misc/logger.h"
+#include "1028A/misc/misc.h"
+#include "1028A/misc/vars.h"
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/screens.h"
-#include "1028A/vars.h"
 
 void _1028A::ui::utils::stylesInit() {
   lv_style_copy(&style_meter, &lv_style_pretty_color);

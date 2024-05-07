@@ -1,5 +1,5 @@
-#include "1028A/logger.h"
-#include "1028A/robot.h"
+#include "1028A/misc/logger.h"
+#include "1028A/misc/robot.h"
 #include <fstream>
 #include <stdio.h>
 #include <time.h>
