@@ -1,13 +1,11 @@
 #include "1028A/misc/vars.h"
 
 // ui
-
 bool batteryLow = false;
 bool overTemp = false;
 bool ports = false;
 bool uiLock = false;
 int autonSelect = 0;
-lv_style_t style_meter;
 lv_style_t style_box;
 lv_style_t style_ready;
 lv_style_t style_notready;
@@ -50,3 +48,4 @@ lv_obj_t *batterystatus;
 lv_obj_t *overtempstatus;
 lv_obj_t *portbadstatus;
 lv_obj_t *lockBtn;
+lv_obj_t *selectedAuto;

@@ -6,13 +6,6 @@
 #include "1028A/ui/screens.h"
 
 void _1028A::ui::utils::stylesInit() {
-  lv_style_copy(&style_meter, &lv_style_pretty_color);
-  style_meter.line.width = 2;
-  style_meter.line.color = LV_COLOR_SILVER;
-  style_meter.body.padding.hor = 16; /*Line length*/
-  style_meter.body.main_color = LV_COLOR_LIME;
-  style_meter.body.grad_color = LV_COLOR_ORANGE;
-
   lv_style_copy(&style_box, &lv_style_plain);
   style_box.body.main_color = LV_COLOR_BLUE;
   style_box.body.grad_color = LV_COLOR_BLUE;
@@ -62,19 +55,6 @@ void _1028A::ui::utils::createBtn(lv_obj_t *name, lv_obj_t *location,
 
   lv_obj_t *BtnLbl = lv_label_create(name, NULL);
   lv_label_set_text(BtnLbl, text.c_str());
-}
-
-void _1028A::ui::utils::createLnMeter(lv_obj_t *meter, lv_obj_t *location,
-                                      lv_align_t alignment, int offsetx,
-                                      int offsety, int sizeX, int sizeY,
-                                      int angle, int numberofTicks, int min,
-                                      int max) {
-  meter = lv_lmeter_create(location, meter);
-  lv_obj_set_style(meter, &style_meter);
-  lv_obj_set_size(meter, sizeX, sizeY);
-  lv_obj_align(meter, NULL, alignment, offsetx, offsety);
-  lv_lmeter_set_scale(meter, angle, numberofTicks);
-  lv_lmeter_set_range(meter, min, max);
 }
 
 void _1028A::ui::utils::createBox(lv_obj_t *box, lv_obj_t *label,

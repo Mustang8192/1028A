@@ -1,3 +1,4 @@
+#include "1028A/misc/vars.h"
 #include "main.h"
 
 namespace _1028A::utils {
@@ -80,5 +81,4 @@ float reduce_negative_90_to_90(float angle);
 void init();
 
 void checks();
-
 } // namespace _1028A::utils

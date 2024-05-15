@@ -3,20 +3,13 @@
 #include "1028A/misc/vars.h"
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/utils.h"
+#include "display/lv_core/lv_obj.h"
 
 void _1028A::ui::screens::autonScreen() {
   autonPG = lv_obj_create(NULL, NULL);
 
-  utils::createBtn(goal, autonPG, _1028A::ui::callbacks::goalCB,
-                   LV_ALIGN_CENTER, -11, -55, 100, 50, "5 ball");
-  utils::createBtn(ball6, autonPG, _1028A::ui::callbacks::ball6CB,
-                   LV_ALIGN_CENTER, -11, 0, 100, 50, "6 Ball");
   utils::createBtn(skills, autonPG, _1028A::ui::callbacks::skillsCB,
                    LV_ALIGN_CENTER, -11, 110, 100, 50, "Skills");
-  utils::createBtn(loading, autonPG, _1028A::ui::callbacks::loadingrushCB,
-                   LV_ALIGN_CENTER, 150, -55, 100, 50, "Loading Rush");
-  utils::createBtn(wploading, autonPG, _1028A::ui::callbacks::loadingwpCB,
-                   LV_ALIGN_CENTER, 150, 0, 100, 50, "Loading WP");
   utils::listInit(_1028A::ui::callbacks::homeCB,
                   _1028A::ui::callbacks::do_nothingCB,
                   _1028A::ui::callbacks::macrosCB, autonPG, List);

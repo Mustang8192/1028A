@@ -8,11 +8,6 @@ extern void createBtn(lv_obj_t *name, lv_obj_t *location,
                       int offsetx, int offsety, int sizeX, int sizeY,
                       std::string text);
 
-extern void createLnMeter(lv_obj_t *meter, lv_obj_t *location,
-                          lv_align_t alignment, int offsetx, int offsety,
-                          int sizeX, int sizeY, int angle, int numberofTicks,
-                          int min, int max);
-
 extern void createLabel(lv_obj_t *label, lv_obj_t *location,
                         lv_align_t alignment, int offsetx, int offsety,
                         std::string text);

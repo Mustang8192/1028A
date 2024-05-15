@@ -1,4 +1,5 @@
 #include "main.h"
+#pragma once
 
 // Ui
 extern bool batteryLow;
@@ -6,7 +7,6 @@ extern bool overTemp;
 extern bool ports;
 extern bool uiLock;
 extern int autonSelect;
-extern lv_style_t style_meter;
 extern lv_style_t style_box;
 extern lv_style_t style_ready;
 extern lv_style_t style_notready;
@@ -51,3 +51,4 @@ extern lv_obj_t *batterystatus;
 extern lv_obj_t *overtempstatus;
 extern lv_obj_t *portbadstatus;
 extern lv_obj_t *lockBtn;
+extern lv_obj_t *selectedAuto;
