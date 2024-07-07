@@ -1,5 +1,4 @@
-#include "lemlib/api.hpp"
-#include "lemlib/chassis/chassis.hpp"
+
 #include "main.h"
 
 #define leftfrontpt 7
@@ -23,11 +22,4 @@ extern pros::Motor_Group rightMtrs;
 extern pros::IMU inertial;
 extern pros::Rotation hortzencod;
 extern pros::Controller master;
-
-extern lemlib::Drivetrain drivetrain;
-extern lemlib::TrackingWheel horizontalTracker;
-extern lemlib::OdomSensors sensors;
-extern lemlib::ControllerSettings lateral_controller;
-extern lemlib::ControllerSettings angular_controller;
-extern lemlib::Chassis chassis;
 } // namespace _1028A::robot
