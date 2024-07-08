@@ -10,7 +10,9 @@ void competition_initialize() {}
 void autonomous() {}
 
 void opcontrol() {
-
+  _1028A::task::Async DriveCTRL(_1028A::comp::driver::driverCTRL);
+  _1028A::task::Async IntakeCTRL(_1028A::comp::driver::intakeCTRL);
+  _1028A::task::Async MogoCTRL(_1028A::comp::driver::mogoCTRL);
   while (true) {
     pros::delay(20);
   }

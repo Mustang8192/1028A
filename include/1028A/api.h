@@ -1,3 +1,4 @@
+#include "1028A/comp/driver.h"
 #include "1028A/misc/legacy.h"
 #include "1028A/misc/logger.h"
 #include "1028A/misc/misc.h"
