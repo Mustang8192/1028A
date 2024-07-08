@@ -17,9 +17,9 @@ pros::Motor _1028A::robot::rightback(rightbackpt, pros::E_MOTOR_GEARSET_06,
                                      false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor_Group _1028A::robot::rightMtrs({rightfrontpt, rightmidpt,
                                             rightbackpt});
-pros::Motor _1028A::robot::intake(intakept, pros::E_MOTOR_GEARSET_06, true,
+pros::Motor _1028A::robot::intake(intakept, pros::E_MOTOR_GEARSET_06, false,
                                   pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor _1028A::robot::conveyor(conveyorpt, pros::E_MOTOR_GEARSET_06, true,
+pros::Motor _1028A::robot::conveyor(conveyorpt, pros::E_MOTOR_GEARSET_06, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIDigitalOut _1028A::robot::mogo('a');
 pros::Motor_Group _1028A::robot::intakeMtrs({intakept, conveyorpt});
