@@ -1,4 +1,6 @@
 
+#include "lemlib/api.hpp"
+#include "lemlib/chassis/chassis.hpp"
 #include "main.h"
 
 #define leftfrontpt 1
@@ -10,7 +12,7 @@
 #define intakept 5
 #define conveyorpt 7
 #define inertialpt 20
-#define hortzencodpt 19
+#define horizontalencodpt 19
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -26,6 +28,13 @@ extern pros::Motor conveyor;
 extern pros::Motor_Group intakeMtrs;
 extern pros::ADIDigitalOut mogo;
 extern pros::IMU inertial;
-extern pros::Rotation hortzencod;
+extern pros::Rotation horizontalencod;
 extern pros::Controller master;
+
+extern lemlib::Drivetrain drivetrain;
+extern lemlib::TrackingWheel horizontalEncoder;
+extern lemlib::OdomSensors sensors;
+extern lemlib::ControllerSettings lateral_controller;
+extern lemlib::ControllerSettings angular_controller;
+extern lemlib::Chassis chassis;
 } // namespace _1028A::robot

@@ -3,6 +3,7 @@
 #include "1028A/misc/robot.h"
 #include "1028A/misc/vars.h"
 #include "1028A/ui/screens.h"
+#include "pros/rtos.hpp"
 
 lv_res_t _1028A::ui::callbacks::skillsCB(lv_obj_t *list_btn) {
   if (selection == Skills) {
@@ -68,9 +69,9 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
     uiLock = false;
   } else if (!uiLock) {
     uiLock = true;
-    pros::delay(5000);
-    robot::inertial.reset();
-    pros::delay(4000);
+    pros::delay(2000);
+    robot::inertial.reset(false);
+    pros::delay(3000);
     robot::master.rumble("-.");
   }
   return LV_RES_OK;
