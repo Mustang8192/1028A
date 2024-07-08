@@ -34,7 +34,9 @@ extern lv_obj_t *skills;
 // Macros Screen
 extern lv_obj_t *macrosPG;
 extern lv_obj_t *logging;
+extern lv_obj_t *odomReadout;
 extern int startLogging;
+extern int startReadout;
 
 // Home Screen
 extern lv_obj_t *homePG;

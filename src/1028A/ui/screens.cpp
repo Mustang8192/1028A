@@ -25,6 +25,9 @@ void _1028A::ui::screens::macrosScreen() {
 
   utils::createBtn(logging, macrosPG, _1028A::ui::callbacks::macroLogging,
                    LV_ALIGN_CENTER, -11, -55, 100, 50, "Start Logging");
+
+  utils::createBtn(odomReadout, macrosPG, _1028A::ui::callbacks::macroReadout,
+                   LV_ALIGN_CENTER, -11, 0, 100, 50, "Odom Readout");
   lv_scr_load(macrosPG);
 }
 

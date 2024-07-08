@@ -17,6 +17,7 @@ void opcontrol() {
   _1028A::task::Async IntakeCTRL(_1028A::comp::driver::intakeCTRL);
   _1028A::task::Async MogoCTRL(_1028A::comp::driver::mogoCTRL);
   _1028A::task::Async Assistance(_1028A::comp::driver::assistance);
+  _1028A::task::Async Macros(_1028A::comp::driver::macros);
   while (true) {
     pros::delay(20);
   }

@@ -78,6 +78,19 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
 }
 
 lv_res_t _1028A::ui::callbacks::macroLogging(lv_obj_t *btn) {
-  startLogging = 1;
+  if (startLogging) {
+    startLogging = 0;
+  } else if (!startLogging) {
+    startLogging = 1;
+  }
+  return LV_RES_OK;
+}
+
+lv_res_t _1028A::ui::callbacks::macroReadout(lv_obj_t *btn) {
+  if (startReadout) {
+    startReadout = 0;
+  } else if (!startReadout) {
+    startReadout = 1;
+  }
   return LV_RES_OK;
 }

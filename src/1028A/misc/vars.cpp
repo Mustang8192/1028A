@@ -32,7 +32,9 @@ lv_obj_t *skills;
 // Sensor Screen
 lv_obj_t *macrosPG;
 lv_obj_t *logging;
+lv_obj_t *odomReadout;
 int startLogging = 0;
+int startReadout = 0;
 
 // Home Screen
 lv_obj_t *homePG;

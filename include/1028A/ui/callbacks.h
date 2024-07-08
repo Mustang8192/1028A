@@ -16,4 +16,6 @@ extern lv_res_t lockCB(lv_obj_t *btn);
 
 extern lv_res_t macroLogging(lv_obj_t *btn);
 
+extern lv_res_t macroReadout(lv_obj_t *btn);
+
 } // namespace _1028A::ui::callbacks
