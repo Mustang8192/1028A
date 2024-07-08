@@ -20,7 +20,7 @@ lv_res_t _1028A::ui::callbacks::skillsCB(lv_obj_t *list_btn) {
     lv_page_set_scrl_fit(summary, false, false);
     lv_page_set_scrl_layout(summary, LV_LAYOUT_PRETTY);
     summaryTxt = lv_label_create(summary, NULL);
-    lv_label_set_text(summaryTxt, "Skills:\nFlywheel");
+    lv_label_set_text(summaryTxt, "Skills:");
     return LV_RES_OK;
   } else {
     return LV_RES_OK;

@@ -124,6 +124,14 @@ void _1028A::ui::screens::homeScreen() {
   lv_label_set_text(statusLabel, "Status:");
   lv_obj_align(statusLabel, homePG, LV_ALIGN_CENTER, 20, -90);
 
+  selectedAuto = lv_label_create(homePG, NULL);
+  lv_obj_align(selectedAuto, homePG, LV_ALIGN_IN_BOTTOM_RIGHT, -100, -20);
+  if (autonSelect == 0) {
+    lv_label_set_text(selectedAuto, "None");
+  } else if (autonSelect == 12) {
+    lv_label_set_text(selectedAuto, "Skills");
+  }
+
   utils::createBtn(lockBtn, homePG, callbacks::lockCB, LV_ALIGN_IN_BOTTOM_RIGHT,
                    40, 40, 75, 30, "Lock");
 

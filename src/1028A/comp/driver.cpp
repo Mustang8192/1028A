@@ -99,7 +99,7 @@ void _1028A::comp::driver::macros() {
         }
         str = "{" + str + "},";
 
-        printf(str.c_str());
+        printf("%s", str.c_str());
         pros::delay(20);
       }
 
