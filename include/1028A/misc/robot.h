@@ -2,6 +2,7 @@
 #include "lemlib/api.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "main.h"
+#include "pros/adi.hpp"
 
 #define leftfrontpt 1
 #define leftmidpt 2
@@ -27,6 +28,8 @@ extern pros::Motor intake;
 extern pros::Motor conveyor;
 extern pros::Motor_Group intakeMtrs;
 extern pros::ADIDigitalOut mogo;
+extern pros::ADIDigitalOut Ilift;
+extern pros::ADIDigitalOut HGlift;
 extern pros::IMU inertial;
 extern pros::Rotation horizontalencod;
 extern pros::Controller master;

@@ -29,6 +29,9 @@ void _1028A::comp::driver::intakeCTRL() {
       _1028A::robot::intakeMtrs.move(-127);
     } else if (_1028A::robot::master.get_digital(DIGITAL_L2)) {
       _1028A::robot::intakeMtrs.move(127);
+    } else if (_1028A::robot::master.get_digital(DIGITAL_A)) {
+      _1028A::robot::intake.move(127);
+      _1028A::robot::conveyor.move(-127);
     } else {
       _1028A::robot::intakeMtrs.move_velocity(0);
     }
@@ -54,11 +57,45 @@ void _1028A::comp::driver::mogoCTRL() {
   }
 }
 
+void _1028A::comp::driver::intakeLiftCTRL() {
+  int status = 0;
+  while (1) {
+    if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 0) {
+      _1028A::robot::Ilift.set_value(true);
+      status = 1;
+      pros::delay(200);
+    } else if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 1) {
+      _1028A::robot::Ilift.set_value(false);
+      status = 0;
+      pros::delay(200);
+    }
+
+    pros::delay(20);
+  }
+}
+
+void _1028A::comp::driver::hgLiftCTRL() {
+  int status = 0;
+  while (1) {
+    if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 0) {
+      _1028A::robot::HGlift.set_value(true);
+      status = 1;
+      pros::delay(200);
+    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 1) {
+      _1028A::robot::HGlift.set_value(false);
+      status = 0;
+      pros::delay(200);
+    }
+
+    pros::delay(20);
+  }
+}
+
 void _1028A::comp::driver::assistance() {
   while (1) {
     if (robot::conveyor.get_actual_velocity() == 0 &&
         _1028A::robot::master.get_digital(DIGITAL_L2)) {
-      robot::master.rumble(".");
+      robot::master.rumble("-");
       robot::master.print(1, 1, "Lock up");
     } else {
       robot::master.clear_line(1);

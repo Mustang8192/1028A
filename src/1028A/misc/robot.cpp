@@ -1,4 +1,5 @@
 #include "1028A/misc/robot.h"
+#include "pros/adi.hpp"
 #include <cstddef>
 
 pros::Motor _1028A::robot::leftfront(leftfrontpt, pros::E_MOTOR_GEARSET_06,
@@ -22,6 +23,8 @@ pros::Motor _1028A::robot::intake(intakept, pros::E_MOTOR_GEARSET_06, false,
 pros::Motor _1028A::robot::conveyor(conveyorpt, pros::E_MOTOR_GEARSET_06, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIDigitalOut _1028A::robot::mogo('a');
+pros::ADIDigitalOut _1028A::robot::Ilift('h');
+pros::ADIDigitalOut _1028A::robot::HGlift('e');
 pros::Motor_Group _1028A::robot::intakeMtrs({intakept, conveyorpt});
 pros::IMU _1028A::robot::inertial(inertialpt);
 pros::Rotation _1028A::robot::horizontalencod(horizontalencodpt);
