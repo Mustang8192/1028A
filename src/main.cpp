@@ -3,14 +3,14 @@
 
 void initialize() {
   _1028A::utils::init();
-  _1028A::robot::chassis.calibrate(false);
+  _1028A::robot::chassis.calibrate();
 }
 
-void disabled() {}
+void disabled() { _1028A::robot::mogo.set_value(0); }
 
 void competition_initialize() {}
 
-void autonomous() {}
+void autonomous() { _1028A::comp::auton(); }
 
 void opcontrol() {
   _1028A::task::Async DriveCTRL(_1028A::comp::driver::driverCTRL);

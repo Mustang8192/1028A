@@ -3,8 +3,10 @@
 // ui
 bool batteryLow = false;
 bool overTemp = false;
-bool ports = false;
+bool ports = true;
 bool uiLock = false;
+bool isDiskMag = false;
+int macroStart = 0;
 int autonSelect = 0;
 lv_style_t style_box;
 lv_style_t style_ready;

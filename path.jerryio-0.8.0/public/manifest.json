@@ -1,0 +1,43 @@
+{
+  "short_name": "PATH.JERRYIO",
+  "name": "PATH.JERRYIO",
+  "description": "The best path editor in the VEX Robotics Competition for designing skills routes and generating path files.",
+  "icons": [
+    {
+      "src": "precache/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "static/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "static/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "static/logo512-apple.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#5C469C",
+  "background_color": "#FFFFFF",
+  "display_override": [
+    "standalone",
+    "browser",
+    "minimal-ui",
+    "window-controls-overlay"
+  ],
+  "orientation": "landscape",
+  "dir": "ltr",
+  "lang": "en"
+}

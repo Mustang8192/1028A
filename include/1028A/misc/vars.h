@@ -6,6 +6,8 @@ extern bool batteryLow;
 extern bool overTemp;
 extern bool ports;
 extern bool uiLock;
+extern bool isDiskMag;
+extern int macroStart;
 extern int autonSelect;
 extern lv_style_t style_box;
 extern lv_style_t style_ready;

@@ -1,0 +1,17 @@
+/.github/
+/.vscode/settings.json
+/build/
+/CODE_OF_CONDUCT.md
+/coverage/
+/*.js
+/public/
+/package-lock.json
+/package.json
+/src/app/MarkdownSupport.tsx
+/src/app/MarkdownTest.mdx
+/src/app/common.blocks/modal/WelcomeForBrave.mdx
+/src/app/common.blocks/modal/WelcomeForOthers.mdx
+/src/react-app-env.d.ts
+/src/setupTests.ts
+/src/token/Tokens.test.ts
+/tsconfig.json

@@ -10,6 +10,14 @@ void _1028A::ui::screens::autonScreen() {
 
   utils::createBtn(skills, autonPG, _1028A::ui::callbacks::skillsCB,
                    LV_ALIGN_CENTER, -11, 110, 100, 50, "Skills");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::BlueLCB,
+                   LV_ALIGN_CENTER, -11, 20, 100, 50, "BlueL");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::BlueRCB,
+                   LV_ALIGN_CENTER, -11, 70, 100, 50, "BlueR");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::RedLCB,
+                   LV_ALIGN_CENTER, -130, 20, 100, 50, "RedL");
+  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::RedRCB,
+                   LV_ALIGN_CENTER, -130, 70, 100, 50, "RedR");
   utils::listInit(_1028A::ui::callbacks::homeCB,
                   _1028A::ui::callbacks::do_nothingCB,
                   _1028A::ui::callbacks::macrosCB, autonPG, List);

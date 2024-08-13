@@ -3,6 +3,9 @@
 #include "1028A/misc/robot.h"
 #include "1028A/misc/task.h"
 #include "1028A/misc/vars.h"
+#include "pros/misc.h"
+#include "pros/rtos.hpp"
+#include <string>
 
 void _1028A::comp::driver::driverCTRL() {
   autonSelect = 0;
@@ -13,6 +16,7 @@ void _1028A::comp::driver::driverCTRL() {
   robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   while (1) {
+
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
     int turn = _1028A::robot::master.get_analog(ANALOG_RIGHT_X);
 
@@ -25,7 +29,30 @@ void _1028A::comp::driver::driverCTRL() {
 
 void _1028A::comp::driver::intakeCTRL() {
   while (1) {
-    if (_1028A::robot::master.get_digital(DIGITAL_L1)) {
+    if (macroStart == 1) {
+      _1028A::robot::intake.move(127);
+      _1028A::robot::conveyor.move(127);
+      while (1) {
+        if (_1028A::robot::ringSenseH.get() < 40) {
+          pros::delay(200);
+          _1028A::robot::intake.move(127);
+          _1028A::robot::conveyor.move(-127);
+          isDiskMag = true;
+          pros::delay(1500);
+          _1028A::robot::conveyor.move(0);
+          pros::delay(800);
+          _1028A::robot::intakeMtrs.move(0);
+          macroStart = 0;
+          break;
+        }
+        if (_1028A::robot::master.get_digital(DIGITAL_L2) or
+            _1028A::robot::master.get_digital(DIGITAL_L1)) {
+          macroStart = 0;
+          break;
+        }
+        pros::delay(20);
+      }
+    } else if (_1028A::robot::master.get_digital(DIGITAL_L1)) {
       _1028A::robot::intakeMtrs.move(-127);
     } else if (_1028A::robot::master.get_digital(DIGITAL_L2)) {
       _1028A::robot::intakeMtrs.move(127);
@@ -46,11 +73,11 @@ void _1028A::comp::driver::mogoCTRL() {
     if (_1028A::robot::master.get_digital(DIGITAL_R1) && status == 0) {
       _1028A::robot::mogo.set_value(true);
       status = 1;
-      pros::delay(200);
+      pros::delay(300);
     } else if (_1028A::robot::master.get_digital(DIGITAL_R1) && status == 1) {
       _1028A::robot::mogo.set_value(false);
       status = 0;
-      pros::delay(200);
+      pros::delay(300);
     }
 
     pros::delay(20);
@@ -63,11 +90,11 @@ void _1028A::comp::driver::intakeLiftCTRL() {
     if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 0) {
       _1028A::robot::Ilift.set_value(true);
       status = 1;
-      pros::delay(200);
+      pros::delay(400);
     } else if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 1) {
       _1028A::robot::Ilift.set_value(false);
       status = 0;
-      pros::delay(200);
+      pros::delay(400);
     }
 
     pros::delay(20);
@@ -77,14 +104,22 @@ void _1028A::comp::driver::intakeLiftCTRL() {
 void _1028A::comp::driver::hgLiftCTRL() {
   int status = 0;
   while (1) {
-    if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 0) {
-      _1028A::robot::HGlift.set_value(true);
-      status = 1;
-      pros::delay(200);
-    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 1) {
+    if (_1028A::robot::master.get_digital(DIGITAL_R2) && macroStart == 0 &&
+        isDiskMag == false && !_1028A::robot::master.get_digital(DIGITAL_B)) {
+      macroStart = 1;
+    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 1 &&
+               (isDiskMag == true or
+                _1028A::robot::master.get_digital(DIGITAL_B))) {
       _1028A::robot::HGlift.set_value(false);
       status = 0;
-      pros::delay(200);
+      isDiskMag = false;
+      pros::delay(400);
+    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 0 &&
+               (isDiskMag == true or
+                _1028A::robot::master.get_digital(DIGITAL_B))) {
+      _1028A::robot::HGlift.set_value(true);
+      status = 1;
+      pros::delay(400);
     }
 
     pros::delay(20);
@@ -94,7 +129,9 @@ void _1028A::comp::driver::hgLiftCTRL() {
 void _1028A::comp::driver::assistance() {
   while (1) {
     if (robot::conveyor.get_actual_velocity() == 0 &&
-        _1028A::robot::master.get_digital(DIGITAL_L2)) {
+        robot::conveyor.is_stopped() &&
+        (_1028A::robot::master.get_digital(DIGITAL_L2) or
+         _1028A::robot::master.get_digital(DIGITAL_A))) {
       robot::master.rumble("-");
       robot::master.print(1, 1, "Lock up");
     } else {
@@ -111,6 +148,7 @@ void _1028A::comp::driver::macros() {
       logger::info("Input Logging Started");
       pros::delay(3000);
       robot::master.rumble("..");
+      int mogo;
       while (1) {
         if (!startLogging) {
           break;
@@ -124,11 +162,18 @@ void _1028A::comp::driver::macros() {
         int intakepwr = robot::intake.get_target_velocity();
         int conveyorpwr = robot::conveyor.get_target_velocity();
 
-        std::string data[8] = {
+        if (robot::master.get_digital(DIGITAL_R1)) {
+          int mogo = 1;
+        } else {
+          int mogo = 0;
+        }
+
+        std::string data[9] = {
             std::to_string(leftFrontpwr), std::to_string(leftMidpwr),
             std::to_string(leftBackpwr),  std::to_string(rightFrontpwr),
             std::to_string(rightMidpwr),  std::to_string(rightBackpwr),
-            std::to_string(intakepwr),    std::to_string(conveyorpwr)};
+            std::to_string(intakepwr),    std::to_string(conveyorpwr),
+            std::to_string(mogo)};
         // convert array to string
         std::string str = "";
         for (int i = 0; i < 8; i++) {
@@ -144,10 +189,10 @@ void _1028A::comp::driver::macros() {
     }
 
     if (startReadout) {
-      lemlib::Pose pose = robot::chassis.getPose();
-      std::string message = "(" + std::to_string(pose.x) + ", " +
-                            std::to_string(pose.y) + ", " +
-                            std::to_string(pose.theta) + ")";
+      std::string message =
+          "(" + std::to_string(robot::chassis.getPose().x) + ", " +
+          std::to_string(robot::chassis.getPose().y) + ", " +
+          std::to_string(robot::chassis.getPose().theta) + ")";
       logger::info(message.c_str());
     }
 

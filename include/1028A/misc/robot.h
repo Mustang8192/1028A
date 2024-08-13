@@ -1,8 +1,8 @@
-
 #include "lemlib/api.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "main.h"
 #include "pros/adi.hpp"
+#include "pros/distance.hpp"
 
 #define leftfrontpt 1
 #define leftmidpt 2
@@ -10,10 +10,12 @@
 #define rightfrontpt 10
 #define rightmidpt 9
 #define rightbackpt 8
-#define intakept 5
-#define conveyorpt 7
-#define inertialpt 20
-#define horizontalencodpt 19
+#define intakept 21
+#define conveyorpt 21
+#define inertialpt 4
+#define horizontalencodpt 7
+#define ringHpt 21
+#define ringLpt 21
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -32,6 +34,8 @@ extern pros::ADIDigitalOut Ilift;
 extern pros::ADIDigitalOut HGlift;
 extern pros::IMU inertial;
 extern pros::Rotation horizontalencod;
+extern pros::Distance ringSenseL;
+extern pros::Distance ringSenseH;
 extern pros::Controller master;
 
 extern lemlib::Drivetrain drivetrain;

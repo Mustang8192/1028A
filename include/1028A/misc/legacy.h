@@ -1,4 +1,5 @@
 #include "main.h"
+#include <vector>
 
 namespace _1028A::legacy {
 extern int math(float Error, float lastError, float Kp, float Ki, float Kd,
@@ -20,4 +21,6 @@ extern void forward(double RequestedValue, double spd, double minspd,
 extern void forward(double requestedValue, double angle, double spd,
                     double thre, double time, double kpOffset, double kdOffset);
 extern void forward(double spd, double time);
+
+extern void curve(std::vector<std::vector<int>> array);
 } // namespace _1028A::legacy

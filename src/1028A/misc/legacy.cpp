@@ -34,7 +34,7 @@ int _1028A::legacy::math(float Error, float lastError, float Kp, float Ki,
 bool _1028A::legacy::exit(float Error, float Threshold, float currTime,
                           float startTime, float timeExit, float powerValue,
                           float lastError) {
-  if ((Error < Threshold and Error > -Threshold) && powerValue <= 5) {
+  if ((Error < Threshold and Error > -Threshold) && powerValue <= 1) {
     return true;
   } else if (currTime - startTime >= timeExit) {
     return true;
@@ -49,9 +49,9 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
   float error;
   float lastError = 0;
 
-  float Kp = 1 + kpOffset;
+  float Kp = 1.2 + kpOffset;
   float Ki = 0;
-  float Kd = 5 + kdOffset;
+  float Kd = 1.3 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
   _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -181,17 +181,18 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
   float error;
   float lastError = 0;
 
-  float Kp = 0.6 + kpOffset;
+  float Kp = 1.5 + kpOffset;
   float Ki = 0;
-  float Kd = 2.1 + kdOffset;
+  float Kd = 6 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
-  _1028A::robot::leftmid.tare_position();
+  _1028A::robot::leftfront.tare_position();
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::leftmid.get_position();
+    SensorCurrentValue = _1028A::robot::leftfront.get_position() * 100;
     double currentTime = pros::millis();
-    std::string print = "Forward: " + std::to_string(SensorCurrentValue);
+    std::string print =
+        "Forward: " + std::to_string(_1028A::robot::leftfront.get_position());
     _1028A::logger::info(print.c_str());
 
     // calculates error
@@ -242,11 +243,11 @@ void _1028A::legacy::forward(double RequestedValue, double angle, double spd,
   float lastError = 0;
   float lastangleerror = 0;
 
-  float Kp = 0.6 + kpOffset;
+  float Kp = 1 + kpOffset;
   float Ki = 0;
-  float Kd = 1.9 + kdOffset;
+  float Kd = 6 + kdOffset;
 
-  float Ap = 1;
+  float Ap = .3;
   float Ai = 0;
   float Ad = 5;
 
@@ -255,7 +256,7 @@ void _1028A::legacy::forward(double RequestedValue, double angle, double spd,
   _1028A::robot::leftmid.tare_position();
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::leftmid.get_position();
+    SensorCurrentValue = _1028A::robot::leftmid.get_position() * 100;
     angleSensor = _1028A::robot::inertial.get_rotation();
     double currentTime = pros::millis();
     std::string print = "Forward: " + std::to_string(SensorCurrentValue);
@@ -316,7 +317,7 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double minspd,
   _1028A::robot::leftfront.tare_position();
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::leftfront.get_position();
+    SensorCurrentValue = _1028A::robot::leftfront.get_position() * 100;
     double currentTime = pros::millis();
     std::string print = "Forward: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());
@@ -407,4 +408,25 @@ void _1028A::legacy::slantL(double spd, double time) {
   robot::rightfront.brake();
   robot::rightmid.brake();
   robot::rightback.brake();
+}
+
+void _1028A::legacy::curve(std::vector<std::vector<int>> array) {
+  int startingPt = 0;
+  while (1) {
+    robot::leftfront.move(array[startingPt][0]);
+    robot::leftmid.move(array[startingPt][1]);
+    robot::leftback.move(array[startingPt][2]);
+    robot::rightfront.move(array[startingPt][3]);
+    robot::rightmid.move(array[startingPt][4]);
+    robot::rightback.move(array[startingPt][5]);
+    robot::intake.move(array[startingPt][6]);
+    robot::conveyor.move(array[startingPt][7]);
+
+    if (array[startingPt][8] == 1) {
+      robot::mogo.set_value(1);
+    }
+    startingPt += 1;
+
+    pros::delay(20);
+  }
 }

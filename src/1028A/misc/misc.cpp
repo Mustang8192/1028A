@@ -5,6 +5,7 @@
 #include "1028A/misc/vars.h"
 #include "1028A/ui/screens.h"
 #include "1028A/ui/utils.h"
+#include "okapi/api.hpp"
 #include "pros/apix.h"
 
 /*omit
@@ -157,8 +158,6 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((conveyorpt - 1));
   pros::c::v5_device_e_t Inertialcheck =
       pros::c::registry_get_plugged_type((inertialpt - 1));
-  // pros::c::v5_device_e_t Intakecheck =
-  //     pros::c::registry_get_plugged_type((inakept - 1));
 
   if (LeftFrontcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Left Front Motor not found");
@@ -237,6 +236,22 @@ void _1028A::utils::checks() {
 }
 
 void _1028A::utils::init() {
+  using namespace okapi;
   _1028A::logger::init();
   _1028A::ui::init();
+  /*
+  robot::drive.pid_heading_constants_set(3, 0, 20);
+  robot::drive.pid_drive_constants_set(100, 0, 0);
+  robot::drive.pid_turn_constants_set(3, 0, 20);
+  robot::drive.pid_swing_constants_set(5, 0, 30);
+
+  robot::drive.pid_turn_exit_condition_set(300_ms, 3_deg, 500_ms, 7_deg, 750_ms,
+                                           750_ms);
+  robot::drive.pid_swing_exit_condition_set(300_ms, 3_deg, 500_ms, 7_deg,
+                                            750_ms, 750_ms);
+  robot::drive.pid_drive_exit_condition_set(300_ms, 1_in, 500_ms, 3_in, 750_ms,
+                                            750_ms);
+
+  robot::drive.slew_drive_constants_set(7_in, 80);
+  */
 }

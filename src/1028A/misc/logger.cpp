@@ -20,14 +20,14 @@ void _1028A::logger::init() {
   time_t robotStartTime;
   robotStartTime = std::time(NULL);
   std::string TIME = ctime(&robotStartTime);
-  std::string message = "Initialized at " + TIME;
+  std::string message = "Initialized on " + TIME;
   info(message.c_str());
 }
 
 void _1028A::logger::file::startFileLog() {
   time_t robotStartTime;
   std::string TIME = ctime(&robotStartTime);
-  std::string message = "Initialized at " + TIME;
+  std::string message = "Initialized on " + TIME;
   file::openLogFile("/usd/log.txt");
   file::logString(message);
   file::closeLogFile();
