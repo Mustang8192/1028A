@@ -4,16 +4,9 @@
 #include "1028A/misc/vars.h"
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/screens.h"
+#include "display/lv_core/lv_obj.h"
 
 void _1028A::ui::utils::stylesInit() {
-  lv_style_copy(&style_box, &lv_style_plain);
-  style_box.body.main_color = LV_COLOR_BLUE;
-  style_box.body.grad_color = LV_COLOR_BLUE;
-  style_box.body.border.color = LV_COLOR_BLUE;
-  style_box.body.border.width = 1;
-  style_box.body.border.opa = LV_OPA_50;
-  style_box.body.radius = 0;
-  style_box.text.color = LV_COLOR_WHITE;
 
   lv_style_copy(&style_ready, &lv_style_plain);
   style_ready.body.main_color = LV_COLOR_LIME;
@@ -41,6 +34,16 @@ void _1028A::ui::utils::stylesInit() {
   style_standby.body.border.opa = LV_OPA_50;
   style_standby.body.radius = 0;
   style_standby.text.color = LV_COLOR_YELLOW;
+
+  lv_style_copy(&style_blue, &lv_style_plain);
+  style_blue.text.color = LV_COLOR_BLUE;
+  style_blue.body.radius = 10;
+  style_blue.body.main_color = LV_COLOR_BLUE;
+
+  lv_style_copy(&style_red, &lv_style_plain);
+  style_red.text.color = LV_COLOR_RED;
+  style_red.body.radius = 10;
+  style_red.body.main_color = LV_COLOR_RED;
 }
 
 void _1028A::ui::utils::createBtn(lv_obj_t *name, lv_obj_t *location,
@@ -57,19 +60,28 @@ void _1028A::ui::utils::createBtn(lv_obj_t *name, lv_obj_t *location,
   lv_label_set_text(BtnLbl, text.c_str());
 }
 
-void _1028A::ui::utils::createBox(lv_obj_t *box, lv_obj_t *label,
-                                  lv_obj_t *location, lv_align_t alignment,
-                                  lv_align_t alignmentLbl, int offsetx,
+void _1028A::ui::utils::createBtn(lv_obj_t *name, lv_style_t &style,
+                                  lv_obj_t *location,
+                                  lv_res_t callback(lv_obj_t *btn),
+                                  lv_align_t alignment, int offsetx,
                                   int offsety, int sizeX, int sizeY,
-                                  int Lbloffsetx, int Lbloffsety,
                                   std::string text) {
-  box = lv_obj_create(location, NULL);
-  lv_obj_set_size(box, sizeX, sizeY);
-  lv_obj_align(box, location, alignment, offsetx, offsety);
-  lv_obj_set_style(box, &style_box);
+  name = lv_btn_create(location, NULL);
+  lv_obj_align(name, NULL, alignment, offsetx, offsety);
+  lv_obj_set_size(name, sizeX, sizeY);
+  lv_cb_set_action(name, callback);
+  lv_obj_set_style(name, &style);
 
-  _1028A::ui::utils::createLabel(label, box, alignmentLbl, Lbloffsetx,
-                                 Lbloffsety, text);
+  lv_obj_t *BtnLbl = lv_label_create(name, NULL);
+  lv_label_set_text(BtnLbl, text.c_str());
+}
+
+void _1028A::ui::utils::createBox(lv_obj_t *box, lv_obj_t *location,
+                                  lv_align_t alignment, int offsetx,
+                                  int offsety, int sizeX, int sizeY) {
+  box = lv_page_create(location, NULL);
+  lv_obj_set_size(box, sizeX, sizeY);
+  lv_obj_align(box, NULL, alignment, offsetx, offsety);
 }
 
 void _1028A::ui::utils::createLabel(lv_obj_t *label, lv_obj_t *location,

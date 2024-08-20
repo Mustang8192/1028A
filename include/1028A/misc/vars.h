@@ -1,3 +1,4 @@
+#include "display/lv_core/lv_style.h"
 #include "main.h"
 #pragma once
 
@@ -9,10 +10,11 @@ extern bool uiLock;
 extern bool isDiskMag;
 extern int macroStart;
 extern int autonSelect;
-extern lv_style_t style_box;
 extern lv_style_t style_ready;
 extern lv_style_t style_notready;
 extern lv_style_t style_standby;
+extern lv_style_t style_blue;
+extern lv_style_t style_red;
 extern int currentScreen;
 enum lastAutonSelect { goalSide, goalwp, loadingSide, loadingwp, Skills, null };
 extern lastAutonSelect selection;
@@ -27,10 +29,9 @@ extern lv_obj_t *macrosBtn;
 extern lv_obj_t *autonPG;
 extern lv_obj_t *summary;
 extern lv_obj_t *summaryTxt;
-extern lv_obj_t *goal;
-extern lv_obj_t *ball6;
-extern lv_obj_t *loading;
-extern lv_obj_t *wploading;
+extern lv_obj_t *blueBox;
+extern lv_obj_t *goalRush;
+extern lv_obj_t *redBox;
 extern lv_obj_t *skills;
 
 // Macros Screen

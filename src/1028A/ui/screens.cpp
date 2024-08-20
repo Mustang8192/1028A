@@ -4,20 +4,18 @@
 #include "1028A/ui/callbacks.h"
 #include "1028A/ui/utils.h"
 #include "display/lv_core/lv_obj.h"
-
+#include "display/lv_core/lv_style.h"
 void _1028A::ui::screens::autonScreen() {
   autonPG = lv_obj_create(NULL, NULL);
 
-  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::skillsCB,
-                   LV_ALIGN_CENTER, -11, 110, 100, 50, "Skills");
-  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::BlueLCB,
-                   LV_ALIGN_CENTER, -11, 20, 100, 50, "BlueL");
-  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::BlueRCB,
-                   LV_ALIGN_CENTER, -11, 70, 100, 50, "BlueR");
-  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::RedLCB,
-                   LV_ALIGN_CENTER, -130, 20, 100, 50, "RedL");
-  utils::createBtn(skills, autonPG, _1028A::ui::callbacks::RedRCB,
-                   LV_ALIGN_CENTER, -130, 70, 100, 50, "RedR");
+  utils::createBox(blueBox, autonPG, LV_ALIGN_CENTER, 150, 0, 150, 200);
+
+  utils::createBox(redBox, autonPG, LV_ALIGN_CENTER, -22, 0, 150, 200);
+
+  utils::createBtn(goalRush, style_red, autonPG,
+                   _1028A::ui::callbacks::do_nothingCB, LV_ALIGN_CENTER, -10,
+                   -40, 100, 50, "Goal Rush");
+
   utils::listInit(_1028A::ui::callbacks::homeCB,
                   _1028A::ui::callbacks::do_nothingCB,
                   _1028A::ui::callbacks::macrosCB, autonPG, List);

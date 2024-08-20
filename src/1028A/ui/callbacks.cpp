@@ -94,23 +94,3 @@ lv_res_t _1028A::ui::callbacks::macroReadout(lv_obj_t *btn) {
   }
   return LV_RES_OK;
 }
-
-lv_res_t _1028A::ui::callbacks::RedLCB(lv_obj_t *btn) {
-  autonSelect = 2;
-  return LV_RES_OK;
-};
-
-lv_res_t _1028A::ui::callbacks::RedRCB(lv_obj_t *btn) {
-  autonSelect = 8;
-  return LV_RES_OK;
-}
-
-lv_res_t _1028A::ui::callbacks::BlueLCB(lv_obj_t *btn) {
-  autonSelect = 1;
-  return LV_RES_OK;
-};
-
-lv_res_t _1028A::ui::callbacks::BlueRCB(lv_obj_t *btn) {
-  autonSelect = 4;
-  return LV_RES_OK;
-};

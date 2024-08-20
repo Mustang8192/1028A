@@ -1,3 +1,4 @@
+#include "display/lv_core/lv_style.h"
 #include "main.h"
 
 namespace _1028A::ui::utils {
@@ -8,14 +9,17 @@ extern void createBtn(lv_obj_t *name, lv_obj_t *location,
                       int offsetx, int offsety, int sizeX, int sizeY,
                       std::string text);
 
+extern void createBtn(lv_obj_t *name, lv_style_t &style, lv_obj_t *location,
+                      lv_res_t callback(lv_obj_t *btn), lv_align_t alignment,
+                      int offsetx, int offsety, int sizeX, int sizeY,
+                      std::string text);
+
 extern void createLabel(lv_obj_t *label, lv_obj_t *location,
                         lv_align_t alignment, int offsetx, int offsety,
                         std::string text);
 
-extern void createBox(lv_obj_t *box, lv_obj_t *label, lv_obj_t *location,
-                      lv_align_t alignment, lv_align_t alignmentLbl,
-                      int offsetx, int offsety, int sizeX, int sizeY,
-                      int Lbloffsetx, int Lbloffsety, std::string text);
+extern void createBox(lv_obj_t *box, lv_obj_t *location, lv_align_t alignment,
+                      int offsetx, int offsety, int sizeX, int sizeY);
 
 extern void listInit(lv_res_t homeCB(lv_obj_t *list_btn),
                      lv_res_t autonCB(lv_obj_t *list_btn),

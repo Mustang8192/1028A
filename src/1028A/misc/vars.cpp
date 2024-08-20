@@ -8,10 +8,11 @@ bool uiLock = false;
 bool isDiskMag = false;
 int macroStart = 0;
 int autonSelect = 0;
-lv_style_t style_box;
 lv_style_t style_ready;
 lv_style_t style_notready;
 lv_style_t style_standby;
+lv_style_t style_blue;
+lv_style_t style_red;
 int currentScreen = 0;
 lastAutonSelect selection = null;
 
@@ -21,17 +22,16 @@ lv_obj_t *autonBtn;
 lv_obj_t *logsBtn;
 lv_obj_t *macrosBtn;
 
-// Macros Screen
+// Auton Screen
 lv_obj_t *autonPG;
 lv_obj_t *summary;
 lv_obj_t *summaryTxt;
-lv_obj_t *goal;
-lv_obj_t *ball6;
-lv_obj_t *loading;
-lv_obj_t *wploading;
+lv_obj_t *blueBox;
+lv_obj_t *goalRush;
+lv_obj_t *redBox;
 lv_obj_t *skills;
 
-// Sensor Screen
+// Macro Screen
 lv_obj_t *macrosPG;
 lv_obj_t *logging;
 lv_obj_t *odomReadout;
