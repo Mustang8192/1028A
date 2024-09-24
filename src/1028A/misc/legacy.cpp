@@ -63,7 +63,7 @@ void _1028A::legacy::turn(double RequestedValue, double spd, double thre,
   robot::master.clear_line(1);
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::inertial.get_rotation();
+    SensorCurrentValue = _1028A::robot::inertialReg.get_rotation();
     double currentTime = pros::millis();
     std::string print = "Turning: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());
@@ -126,7 +126,7 @@ void _1028A::legacy::ptturn(double RequestedValue, double spd, double minspd,
   robot::master.clear_line(1);
   while (1) {
     // Reads the sensor value and scale
-    SensorCurrentValue = _1028A::robot::inertial.get_rotation();
+    SensorCurrentValue = _1028A::robot::inertialReg.get_rotation();
     double currentTime = pros::millis();
     std::string print = "Turning: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());
@@ -257,7 +257,7 @@ void _1028A::legacy::forward(double RequestedValue, double angle, double spd,
   while (1) {
     // Reads the sensor value and scale
     SensorCurrentValue = _1028A::robot::leftmid.get_position() * 100;
-    angleSensor = _1028A::robot::inertial.get_rotation();
+    angleSensor = _1028A::robot::inertialReg.get_rotation();
     double currentTime = pros::millis();
     std::string print = "Forward: " + std::to_string(SensorCurrentValue);
     _1028A::logger::info(print.c_str());
@@ -419,8 +419,8 @@ void _1028A::legacy::curve(std::vector<std::vector<int>> array) {
     robot::rightfront.move(array[startingPt][3]);
     robot::rightmid.move(array[startingPt][4]);
     robot::rightback.move(array[startingPt][5]);
-    robot::intake.move(array[startingPt][6]);
-    robot::conveyor.move(array[startingPt][7]);
+    robot::intakeL.move(array[startingPt][6]);
+    robot::intakeR.move(array[startingPt][7]);
 
     if (array[startingPt][8] == 1) {
       robot::mogo.set_value(1);

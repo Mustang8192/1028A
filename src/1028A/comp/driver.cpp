@@ -15,6 +15,8 @@ void _1028A::comp::driver::driverCTRL() {
   robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+  robot::intakeL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  robot::intakeR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   while (1) {
 
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
@@ -29,40 +31,22 @@ void _1028A::comp::driver::driverCTRL() {
 
 void _1028A::comp::driver::intakeCTRL() {
   while (1) {
-    if (macroStart == 1) {
-      _1028A::robot::intake.move(127);
-      _1028A::robot::conveyor.move(127);
-      while (1) {
-        if (_1028A::robot::ringSenseH.get() < 40) {
-          pros::delay(200);
-          _1028A::robot::intake.move(127);
-          _1028A::robot::conveyor.move(-127);
-          isDiskMag = true;
-          pros::delay(1500);
-          _1028A::robot::conveyor.move(0);
-          pros::delay(800);
-          _1028A::robot::intakeMtrs.move(0);
-          macroStart = 0;
-          break;
-        }
-        if (_1028A::robot::master.get_digital(DIGITAL_L2) or
-            _1028A::robot::master.get_digital(DIGITAL_L1)) {
-          macroStart = 0;
-          break;
-        }
-        pros::delay(20);
-      }
-    } else if (_1028A::robot::master.get_digital(DIGITAL_L1)) {
-      _1028A::robot::intakeMtrs.move(-127);
+    if (_1028A::robot::master.get_digital(DIGITAL_L1)) {
+     _1028A::robot::intakeMtrs.move(-127);
+     macroStart = 0;
     } else if (_1028A::robot::master.get_digital(DIGITAL_L2)) {
       _1028A::robot::intakeMtrs.move(127);
+      macroStart = 0;
     } else if (_1028A::robot::master.get_digital(DIGITAL_A)) {
-      _1028A::robot::intake.move(127);
-      _1028A::robot::conveyor.move(-127);
-    } else {
-      _1028A::robot::intakeMtrs.move_velocity(0);
-    }
-
+      _1028A::robot::intakeMtrs.move(40);
+      macroStart = 0;
+    } else if (_1028A::robot::master.get_digital(DIGITAL_B)) {
+      _1028A::robot::intakeMtrs.move(-40);
+      macroStart = 0;
+    } else if (_1028A::robot::master.get_digital(DIGITAL_R2)) {
+      macroStart = 1;
+      pros::delay(300);
+    } 
     pros::delay(10);
   }
 }
@@ -73,7 +57,7 @@ void _1028A::comp::driver::mogoCTRL() {
     if (_1028A::robot::master.get_digital(DIGITAL_R1) && status == 0) {
       _1028A::robot::mogo.set_value(true);
       status = 1;
-      pros::delay(300);
+      pros::delay(300); 
     } else if (_1028A::robot::master.get_digital(DIGITAL_R1) && status == 1) {
       _1028A::robot::mogo.set_value(false);
       status = 0;
@@ -84,50 +68,45 @@ void _1028A::comp::driver::mogoCTRL() {
   }
 }
 
-void _1028A::comp::driver::intakeLiftCTRL() {
-  int status = 0;
-  while (1) {
-    if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 0) {
-      _1028A::robot::Ilift.set_value(true);
-      status = 1;
-      pros::delay(400);
-    } else if (_1028A::robot::master.get_digital(DIGITAL_X) && status == 1) {
-      _1028A::robot::Ilift.set_value(false);
-      status = 0;
-      pros::delay(400);
+void _1028A::comp::driver::HGCTRL(){
+  while (1){
+    if (macroStart == 1){
+      _1028A::robot::intakeMtrs.move(127);
+      while (1){
+        if (robot::ringL.get()<20){
+          _1028A::robot::intakeMtrs.move(40);
+          while (1){
+            if (robot::ringH.get()<80){
+              pros::delay(100);
+              _1028A::robot::intakeMtrs.move(0);
+              pros::delay(300);
+              _1028A::robot::intakeMtrs.move(-40);
+              pros::delay(500);
+              _1028A::robot::intakeMtrs.move(0);
+              macroStart = 0;
+            }
+            else if (!macroStart){
+              break;
+            }
+            pros::delay(10);
+          }
+        }
+        else if (!macroStart){
+              break;
+            }
+        pros::delay(10);
+      }
     }
-
-    pros::delay(20);
-  }
-}
-
-void _1028A::comp::driver::hgLiftCTRL() {
-  int status = 0;
-  while (1) {
-    if (_1028A::robot::master.get_digital(DIGITAL_R2) && macroStart == 0 &&
-        isDiskMag == false && !_1028A::robot::master.get_digital(DIGITAL_B)) {
-      macroStart = 1;
-    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 1 &&
-               (isDiskMag == true or
-                _1028A::robot::master.get_digital(DIGITAL_B))) {
-      _1028A::robot::HGlift.set_value(false);
-      status = 0;
-      isDiskMag = false;
-      pros::delay(400);
-    } else if (_1028A::robot::master.get_digital(DIGITAL_R2) && status == 0 &&
-               (isDiskMag == true or
-                _1028A::robot::master.get_digital(DIGITAL_B))) {
-      _1028A::robot::HGlift.set_value(true);
-      status = 1;
-      pros::delay(400);
+    else if (!macroStart && (!_1028A::robot::master.get_digital(DIGITAL_L1) && !_1028A::robot::master.get_digital(DIGITAL_L2) && !_1028A::robot::master.get_digital(DIGITAL_A) && !_1028A::robot::master.get_digital(DIGITAL_B))) {
+      _1028A::robot::intakeMtrs.move_velocity(0);
     }
-
     pros::delay(20);
   }
 }
 
 void _1028A::comp::driver::assistance() {
   while (1) {
+    /*
     if (robot::conveyor.get_actual_velocity() == 0 &&
         robot::conveyor.is_stopped() &&
         (_1028A::robot::master.get_digital(DIGITAL_L2) or
@@ -137,7 +116,7 @@ void _1028A::comp::driver::assistance() {
     } else {
       robot::master.clear_line(1);
     }
-
+    */
     pros::delay(20);
   }
 }
@@ -159,8 +138,8 @@ void _1028A::comp::driver::macros() {
         int rightFrontpwr = robot::rightfront.get_target_velocity();
         int rightMidpwr = robot::rightmid.get_target_velocity();
         int rightBackpwr = robot::rightback.get_target_velocity();
-        int intakepwr = robot::intake.get_target_velocity();
-        int conveyorpwr = robot::conveyor.get_target_velocity();
+        int intakepwr = robot::intakeL.get_target_velocity();
+        int conveyorpwr = robot::intakeR.get_target_velocity();
 
         if (robot::master.get_digital(DIGITAL_R1)) {
           int mogo = 1;

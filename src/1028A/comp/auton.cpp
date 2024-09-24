@@ -10,7 +10,7 @@
 using namespace okapi;
 enum intakeSTS { OFF, Intake, Outtake, Index, FIntake, FOuttake };
 intakeSTS intake = OFF;
-
+/*
 void intakeJam() {
   while (1) {
     if (_1028A::robot::conveyor.get_target_velocity() > 0 &&
@@ -115,7 +115,13 @@ void deploy() {
   _1028A::robot::conveyor.move(0);
 }
 ASSET(path_txt);
+*/
+ASSET(path_txt);
 void _1028A::comp::auton() {
+  pros::delay(2000);
+  robot::chassis.setPose(-58.502, 0.137, 90);
+  robot::chassis.follow(path_txt, 30, 100000);
+  /*
   // autonSelect = 7;
   //  task::Async JamDetect(intakeJam);
   pros::delay(2000);
@@ -185,6 +191,7 @@ void _1028A::comp::auton() {
     legacy::turn(240, 127, 1, 1000, 0, 0);
     legacy::forward(200, 127, 1, 1000, 0, 0);
     */
+  /*
   } else if (autonSelect == 3) {
     pros::delay(3000);
     robot::HGlift.set_value(1);
@@ -235,6 +242,7 @@ void _1028A::comp::auton() {
     legacy::forward(-400, 127, 1, 1000, 0, 0);
     legacy::turn(-380, 127, 1, 1000, 0, 0);
     */
+   /*
   } else if (autonSelect == 7) {
     task::Async goalGrab(grabGoal2);
     legacy::forward(-370, 0, 127, 1, 700, 0, 0);
@@ -287,6 +295,7 @@ void _1028A::comp::auton() {
     pros::delay(400);
     legacy::forward(-200, 127, 1, 1000, 0, 0);
     */
+   /*
   } else if (autonSelect == 16) {
     // Skills
     robot::HGlift.set_value(1);
@@ -329,4 +338,3 @@ void _1028A::comp::auton() {
     legacy::turn(-35, 127, 1, 1000, 0, 0);
     */
   }
-}

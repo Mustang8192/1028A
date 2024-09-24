@@ -70,7 +70,8 @@ lv_res_t _1028A::ui::callbacks::lockCB(lv_obj_t *btn) {
   } else if (!uiLock) {
     uiLock = true;
     pros::delay(2000);
-    robot::inertial.reset(false);
+    robot::inertialReg.reset(false);
+    robot::inertialOdom.reset(false);
     pros::delay(3000);
     robot::master.rumble("-.");
   }

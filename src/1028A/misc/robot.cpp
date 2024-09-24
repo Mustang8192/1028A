@@ -19,18 +19,17 @@ pros::Motor _1028A::robot::rightback(rightbackpt, pros::E_MOTOR_GEARSET_06,
                                      false, pros::E_MOTOR_ENCODER_DEGREES);
 pros::Motor_Group _1028A::robot::rightMtrs({rightfrontpt, rightmidpt,
                                             rightbackpt});
-pros::Motor _1028A::robot::intake(intakept, pros::E_MOTOR_GEARSET_06, false,
+pros::Motor _1028A::robot::intakeL(intakeLpt, pros::E_MOTOR_GEARSET_06, true,
                                   pros::E_MOTOR_ENCODER_DEGREES);
-pros::Motor _1028A::robot::conveyor(conveyorpt, pros::E_MOTOR_GEARSET_06, false,
+pros::Motor _1028A::robot::intakeR(intakeRpt, pros::E_MOTOR_GEARSET_06, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIDigitalOut _1028A::robot::mogo('h');
-pros::ADIDigitalOut _1028A::robot::Ilift('a');
-pros::ADIDigitalOut _1028A::robot::HGlift('e');
-pros::Motor_Group _1028A::robot::intakeMtrs({intakept, conveyorpt});
-pros::IMU _1028A::robot::inertial(inertialpt);
+pros::Motor_Group _1028A::robot::intakeMtrs({intakeLpt, intakeRpt});
+pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
+pros::IMU _1028A::robot::inertialReg(inertialRegpt);
 pros::Rotation _1028A::robot::horizontalencod(horizontalencodpt);
-pros::Distance _1028A::robot::ringSenseL(ringLpt);
-pros::Distance _1028A::robot::ringSenseH(ringHpt);
+pros::Distance _1028A::robot::ringL(ringLpt);
+pros::Distance _1028A::robot::ringH(ringHpt);
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 
@@ -45,7 +44,7 @@ lemlib::Drivetrain
 
 lemlib::TrackingWheel
     _1028A::robot::horizontalEncoder(&horizontalencod,
-                                     lemlib::Omniwheel::NEW_275, -1);
+                                     lemlib::Omniwheel::NEW_2, -1);
 
 lemlib::OdomSensors _1028A::robot::sensors(
     nullptr, // vertical tracking wheel 1, set to null
@@ -53,11 +52,11 @@ lemlib::OdomSensors _1028A::robot::sensors(
     &horizontalEncoder, // horizontal tracking wheel 1
     nullptr,  // horizontal tracking wheel 2, set to nullptr as we don't have a
               // second one
-    &inertial // inertial sensor
+    &inertialOdom // inertial sensor
 );
 
 lemlib::ControllerSettings _1028A::robot::lateral_controller(
-    8,   // proportional gain (kP)
+    10,   // proportional gain (kP)
     0,   // integral gain (kI)
     4,   // derivative gain (kD)
     3,   // anti windup

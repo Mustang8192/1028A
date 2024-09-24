@@ -36,12 +36,14 @@ void _1028A::ui::utils::stylesInit() {
   style_standby.text.color = LV_COLOR_YELLOW;
 
   lv_style_copy(&style_blue, &lv_style_plain);
-  style_blue.text.color = LV_COLOR_BLUE;
+  style_blue.text.color = LV_COLOR_WHITE;
+  style_blue.body.grad_color = LV_COLOR_BLUE;
   style_blue.body.radius = 10;
   style_blue.body.main_color = LV_COLOR_BLUE;
 
   lv_style_copy(&style_red, &lv_style_plain);
-  style_red.text.color = LV_COLOR_RED;
+  style_red.text.color = LV_COLOR_WHITE;
+  style_red.body.grad_color = LV_COLOR_RED;
   style_red.body.radius = 10;
   style_red.body.main_color = LV_COLOR_RED;
 }

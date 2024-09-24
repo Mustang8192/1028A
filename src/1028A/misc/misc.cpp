@@ -152,12 +152,14 @@ void _1028A::utils::checks() {
       pros::c::registry_get_plugged_type((rightmidpt - 1));
   pros::c::v5_device_e_t RightBackcheck =
       pros::c::registry_get_plugged_type((rightbackpt - 1));
-  pros::c::v5_device_e_t intakecheck =
-      pros::c::registry_get_plugged_type((intakept - 1));
-  pros::c::v5_device_e_t conveyorcheck =
-      pros::c::registry_get_plugged_type((conveyorpt - 1));
-  pros::c::v5_device_e_t Inertialcheck =
-      pros::c::registry_get_plugged_type((inertialpt - 1));
+  pros::c::v5_device_e_t intakeLcheck =
+      pros::c::registry_get_plugged_type((intakeLpt - 1));
+  pros::c::v5_device_e_t intakeRcheck =
+      pros::c::registry_get_plugged_type((intakeRpt - 1));
+  pros::c::v5_device_e_t InertialOdomcheck =
+      pros::c::registry_get_plugged_type((inertialOdompt - 1));
+      pros::c::v5_device_e_t InertialRegcheck =
+      pros::c::registry_get_plugged_type((inertialRegpt - 1));
 
   if (LeftFrontcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Left Front Motor not found");
@@ -183,15 +185,19 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor not found");
     ports = false;
   }
-  if (intakecheck != pros::c::E_DEVICE_MOTOR) {
+  if (intakeLcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Intake Motor not found");
     ports = false;
   }
-  if (conveyorcheck != pros::c::E_DEVICE_MOTOR) {
+  if (intakeRcheck != pros::c::E_DEVICE_MOTOR) {
     _1028A::logger::fatal("Conveyor Motor not found");
     ports = false;
   }
-  if (Inertialcheck != pros::c::E_DEVICE_IMU) {
+  if (InertialOdomcheck != pros::c::E_DEVICE_IMU) {
+    _1028A::logger::fatal("Inertial Sensor not found");
+    ports = false;
+  }
+  if (InertialRegcheck != pros::c::E_DEVICE_IMU) {
     _1028A::logger::fatal("Inertial Sensor not found");
     ports = false;
   }
@@ -220,11 +226,11 @@ void _1028A::utils::checks() {
     _1028A::logger::fatal("Right Back Motor overheating");
     overTemp = true;
   }
-  if (_1028A::robot::intake.is_over_temp()) {
+  if (_1028A::robot::intakeL.is_over_temp()) {
     _1028A::logger::fatal("Intake Motor overheating");
     overTemp = true;
   }
-  if (_1028A::robot::conveyor.is_over_temp()) {
+  if (_1028A::robot::intakeR.is_over_temp()) {
     _1028A::logger::fatal("Conveyor Motor overheating");
     overTemp = true;
   }
