@@ -4,6 +4,14 @@ namespace _1028A::ui::callbacks {
 
 extern lv_res_t skillsCB(lv_obj_t *list_btn);
 
+extern lv_res_t RedNegWPCB(lv_obj_t *list_btn);
+
+extern lv_res_t BlueNegWPCB(lv_obj_t *list_btn);
+
+extern lv_res_t RedNegElimsCB(lv_obj_t *list_btn);
+
+extern lv_res_t BlueNegElimsCB(lv_obj_t *list_btn);
+
 extern lv_res_t homeCB(lv_obj_t *list_btn);
 
 extern lv_res_t autonCB(lv_obj_t *list_btn);

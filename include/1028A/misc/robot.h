@@ -15,8 +15,9 @@
 #define inertialOdompt 21
 #define inertialRegpt 4
 #define horizontalencodpt 15
-#define ringLpt 11
-#define ringHpt 5
+#define ringpt 5
+#define ringLpt 16
+#define opticalpt 11
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -34,9 +35,11 @@ extern pros::ADIDigitalOut mogo;
 extern pros::IMU inertialOdom;
 extern pros::IMU inertialReg;
 extern pros::Rotation horizontalencod;
+extern pros::Distance ring;
 extern pros::Distance ringL;
-extern pros::Distance ringH;
+extern pros::Optical optical;
 extern pros::Controller master;
+extern pros::ADIDigitalIn limitSwitch;
 
 extern lemlib::Drivetrain drivetrain;
 extern lemlib::TrackingWheel horizontalEncoder;

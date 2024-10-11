@@ -12,9 +12,21 @@ void _1028A::ui::screens::autonScreen() {
 
   utils::createBox(redBox, autonPG, LV_ALIGN_CENTER, -22, 0, 150, 200);
 
-  utils::createBtn(goalRush, style_red, autonPG,
-                   _1028A::ui::callbacks::do_nothingCB, LV_ALIGN_CENTER, -10,
-                   -40, 100, 50, "Goal Rush");
+  utils::createBtn(RedNegWPBtn, style_red, autonPG,
+                   _1028A::ui::callbacks::RedNegWPCB, LV_ALIGN_CENTER, -10,
+                   -40, 100, 50, "RedNegWP");
+
+  utils::createBtn(RedNegElimsBtn, style_red, autonPG,
+                   _1028A::ui::callbacks::RedNegElimsCB, LV_ALIGN_CENTER, -10,
+                   20, 100, 50, "RedNegElim");
+
+  utils::createBtn(BlueNegWPBtn, style_blue, autonPG,
+                   _1028A::ui::callbacks::RedNegWPCB, LV_ALIGN_CENTER, 140,
+                   -40, 100, 50, "BlueNegWP");
+
+  utils::createBtn(BlueNegElimstn, style_blue, autonPG,
+                   _1028A::ui::callbacks::RedNegElimsCB, LV_ALIGN_CENTER, 140,
+                   20, 100, 50, "BlueNegElim");
 
   utils::listInit(_1028A::ui::callbacks::homeCB,
                   _1028A::ui::callbacks::do_nothingCB,

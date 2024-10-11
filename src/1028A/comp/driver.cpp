@@ -9,6 +9,7 @@
 
 void _1028A::comp::driver::driverCTRL() {
   autonSelect = 0;
+  robot::optical.set_led_pwm(100);
   robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -68,20 +69,23 @@ void _1028A::comp::driver::mogoCTRL() {
   }
 }
 
+int Delay = 0;
+int offset = 0;
+
 void _1028A::comp::driver::HGCTRL(){
   while (1){
     if (macroStart == 1){
       _1028A::robot::intakeMtrs.move(127);
       while (1){
         if (robot::ringL.get()<20){
-          _1028A::robot::intakeMtrs.move(40);
+          _1028A::robot::intakeMtrs.move(60);
           while (1){
-            if (robot::ringH.get()<80){
-              pros::delay(100);
+            if (robot::ring.get()<25){
+              pros::delay(Delay + offset);
               _1028A::robot::intakeMtrs.move(0);
               pros::delay(300);
-              _1028A::robot::intakeMtrs.move(-40);
-              pros::delay(500);
+              _1028A::robot::intakeMtrs.move(-80);
+              pros::delay(200);
               _1028A::robot::intakeMtrs.move(0);
               macroStart = 0;
             }
@@ -100,6 +104,21 @@ void _1028A::comp::driver::HGCTRL(){
     else if (!macroStart && (!_1028A::robot::master.get_digital(DIGITAL_L1) && !_1028A::robot::master.get_digital(DIGITAL_L2) && !_1028A::robot::master.get_digital(DIGITAL_A) && !_1028A::robot::master.get_digital(DIGITAL_B))) {
       _1028A::robot::intakeMtrs.move_velocity(0);
     }
+    pros::delay(20);
+  }
+}
+
+void _1028A::comp::driver::trimCTRL(){
+  while (1){
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
+      offset += 30;
+      pros::delay(500);
+    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
+      offset -= 30;
+      pros::delay(500);
+    }
+    robot::master.print(1, 1, "trim: %i      ", offset);
+    
     pros::delay(20);
   }
 }

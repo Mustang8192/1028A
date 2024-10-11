@@ -15,6 +15,7 @@ lv_style_t style_blue;
 lv_style_t style_red;
 int currentScreen = 0;
 lastAutonSelect selection = null;
+DiskColor diskColor = none;
 
 // General
 lv_obj_t *List;
@@ -27,7 +28,10 @@ lv_obj_t *autonPG;
 lv_obj_t *summary;
 lv_obj_t *summaryTxt;
 lv_obj_t *blueBox;
-lv_obj_t *goalRush;
+lv_obj_t *RedNegWPBtn;
+lv_obj_t *BlueNegWPBtn;
+lv_obj_t *RedNegElimsBtn;
+lv_obj_t *BlueNegElimstn;
 lv_obj_t *redBox;
 lv_obj_t *skills;
 

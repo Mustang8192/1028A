@@ -28,8 +28,10 @@ pros::Motor_Group _1028A::robot::intakeMtrs({intakeLpt, intakeRpt});
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::IMU _1028A::robot::inertialReg(inertialRegpt);
 pros::Rotation _1028A::robot::horizontalencod(horizontalencodpt);
+pros::Distance _1028A::robot::ring(ringpt);
 pros::Distance _1028A::robot::ringL(ringLpt);
-pros::Distance _1028A::robot::ringH(ringHpt);
+pros::Optical _1028A::robot::optical(opticalpt);
+pros::ADIDigitalIn _1028A::robot::limitSwitch('c');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

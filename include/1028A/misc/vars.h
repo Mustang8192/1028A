@@ -17,7 +17,9 @@ extern lv_style_t style_blue;
 extern lv_style_t style_red;
 extern int currentScreen;
 enum lastAutonSelect { goalSide, goalwp, loadingSide, loadingwp, Skills, null };
+enum DiskColor { red, blue, none };
 extern lastAutonSelect selection;
+extern DiskColor diskColor;
 
 // General
 extern lv_obj_t *List;
@@ -30,7 +32,10 @@ extern lv_obj_t *autonPG;
 extern lv_obj_t *summary;
 extern lv_obj_t *summaryTxt;
 extern lv_obj_t *blueBox;
-extern lv_obj_t *goalRush;
+extern lv_obj_t *RedNegWPBtn;
+extern lv_obj_t *BlueNegWPBtn;
+extern lv_obj_t *RedNegElimsBtn;
+extern lv_obj_t *BlueNegElimstn;
 extern lv_obj_t *redBox;
 extern lv_obj_t *skills;
 
