@@ -24,6 +24,7 @@ pros::Motor _1028A::robot::intakeL(intakeLpt, pros::E_MOTOR_GEARSET_06, true,
 pros::Motor _1028A::robot::intakeR(intakeRpt, pros::E_MOTOR_GEARSET_06, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIDigitalOut _1028A::robot::mogo('h');
+pros::ADIDigitalOut _1028A::robot::stick('c');
 pros::Motor_Group _1028A::robot::intakeMtrs({intakeLpt, intakeRpt});
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::IMU _1028A::robot::inertialReg(inertialRegpt);
@@ -31,7 +32,6 @@ pros::Rotation _1028A::robot::horizontalencod(horizontalencodpt);
 pros::Distance _1028A::robot::ring(ringpt);
 pros::Distance _1028A::robot::ringL(ringLpt);
 pros::Optical _1028A::robot::optical(opticalpt);
-pros::ADIDigitalIn _1028A::robot::limitSwitch('c');
 
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

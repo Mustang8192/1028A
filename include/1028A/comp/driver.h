@@ -7,4 +7,5 @@ void HGCTRL();
 void trimCTRL();
 void assistance();
 void macros();
+void stickCTRL();
 } // namespace _1028A::comp::driver

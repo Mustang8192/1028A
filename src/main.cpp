@@ -17,7 +17,7 @@ void opcontrol() {
   _1028A::task::Async IntakeCTRL(_1028A::comp::driver::intakeCTRL);
   _1028A::task::Async MogoCTRL(_1028A::comp::driver::mogoCTRL);
   _1028A::task::Async HGCTLR(_1028A::comp::driver::HGCTRL);
-  _1028A::task::Async TRIMCTRL( _1028A::comp::driver::trimCTRL);
+  _1028A::task::Async Stick (_1028A::comp::driver::stickCTRL);
   _1028A::task::Async Assistance(_1028A::comp::driver::assistance);
   _1028A::task::Async Macros(_1028A::comp::driver::macros);
   while (true) {

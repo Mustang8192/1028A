@@ -15,7 +15,7 @@
 #define inertialOdompt 21
 #define inertialRegpt 4
 #define horizontalencodpt 15
-#define ringpt 5
+#define ringpt 17
 #define ringLpt 16
 #define opticalpt 11
 
@@ -32,6 +32,7 @@ extern pros::Motor intakeL;
 extern pros::Motor intakeR;
 extern pros::Motor_Group intakeMtrs;
 extern pros::ADIDigitalOut mogo;
+extern pros::ADIDigitalOut stick;
 extern pros::IMU inertialOdom;
 extern pros::IMU inertialReg;
 extern pros::Rotation horizontalencod;

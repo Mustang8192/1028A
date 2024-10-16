@@ -38,10 +38,10 @@ void _1028A::comp::driver::intakeCTRL() {
     } else if (_1028A::robot::master.get_digital(DIGITAL_L2)) {
       _1028A::robot::intakeMtrs.move(127);
       macroStart = 0;
-    } else if (_1028A::robot::master.get_digital(DIGITAL_A)) {
+    } else if (_1028A::robot::master.get_digital(DIGITAL_LEFT)) {
       _1028A::robot::intakeMtrs.move(40);
       macroStart = 0;
-    } else if (_1028A::robot::master.get_digital(DIGITAL_B)) {
+    } else if (_1028A::robot::master.get_digital(DIGITAL_RIGHT)) {
       _1028A::robot::intakeMtrs.move(-40);
       macroStart = 0;
     } else if (_1028A::robot::master.get_digital(DIGITAL_R2)) {
@@ -101,7 +101,7 @@ void _1028A::comp::driver::HGCTRL(){
         pros::delay(10);
       }
     }
-    else if (!macroStart && (!_1028A::robot::master.get_digital(DIGITAL_L1) && !_1028A::robot::master.get_digital(DIGITAL_L2) && !_1028A::robot::master.get_digital(DIGITAL_A) && !_1028A::robot::master.get_digital(DIGITAL_B))) {
+    else if (!macroStart && (!_1028A::robot::master.get_digital(DIGITAL_L1) && !_1028A::robot::master.get_digital(DIGITAL_L2) && !_1028A::robot::master.get_digital(DIGITAL_LEFT) && !_1028A::robot::master.get_digital(DIGITAL_RIGHT))) {
       _1028A::robot::intakeMtrs.move_velocity(0);
     }
     pros::delay(20);
@@ -136,6 +136,22 @@ void _1028A::comp::driver::assistance() {
       robot::master.clear_line(1);
     }
     */
+    pros::delay(20);
+  }
+}
+
+void _1028A::comp::driver::stickCTRL(){
+  int toggle = 0;
+  while (1){
+    if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && toggle == 0){
+      toggle = 1;
+      robot::stick.set_value(1);
+      pros::delay(300);
+    } else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) && toggle == 1){
+      toggle = 0;
+      robot::stick.set_value(0);
+      pros::delay(300);
+    }
     pros::delay(20);
   }
 }

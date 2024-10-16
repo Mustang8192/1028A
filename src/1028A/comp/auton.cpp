@@ -85,6 +85,37 @@ void dropGoal(){
   }
 }
 
+void startIntake(){
+  while (1){
+    if (fabs(_1028A::robot::leftfront.get_position() * 100) > 300){
+      _1028A::robot::intakeMtrs.move(127);
+      break;
+    }
+  }
+}
+
+void Macro(){
+    while (1){
+        if (_1028A::robot::ringL.get()<20){
+          _1028A::robot::intakeMtrs.move(60);
+          while (1){
+            if (_1028A::robot::ring.get()<25){
+              _1028A::robot::intakeMtrs.move(0);
+              pros::delay(300);
+              _1028A::robot::intakeMtrs.move(-80);
+              pros::delay(200);
+              _1028A::robot::intakeMtrs.move(0);
+              macroStart = 0;
+            }
+            else if (!macroStart){
+              break;
+            }
+            pros::delay(10);
+          }
+        }
+        pros::delay(20);
+  }
+}
 void _1028A::comp::auton() {
   autonSelect =12;
   if(autonSelect == 1){
@@ -230,6 +261,26 @@ void _1028A::comp::auton() {
     pros::delay(200);
     robot::intakeMtrs.move(127);
     legacy::forward(300, 127, 1, 1000,0,0);
+    pros::delay(500);
+    robot::intakeMtrs.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+    robot::intakeMtrs.move(0);
+    legacy::turn(45, 127, 1, 1000,0,0);
+    task::Async StartIntake(startIntake);
+    pros::delay(200);
+    legacy::forward(500, 45, 127, 1, 1000,0,0);
+    robot::intakeMtrs.move(127);
+    pros::delay(800);
+    robot::intakeMtrs.move(0);
+    legacy::forward(-500, 45, 127, 1, 1000,0,0);
+    robot::intakeMtrs.move(127);
+    StartIntake.stopTask();
+    checkIntake.stopTask();
+    task::Async diskIndex (Macro);
+    pros::delay(200);
+    legacy::turn(-60, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(400, 127, 1, 1000,0,0);
+    /*
     pros::delay(200);
     legacy::turn(-55, 127, 1, 1000,0,0);
     pros::delay(200);
@@ -260,6 +311,7 @@ void _1028A::comp::auton() {
     robot::intakeMtrs.move(0);
     legacy::turn(60, 127,1 ,1000,0,0);
     legacy::forward(190, 127, 1, 1000,0,0);
+    */
 
     /*
     pros::delay(200);
