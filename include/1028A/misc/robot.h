@@ -40,7 +40,6 @@ extern pros::Distance ring;
 extern pros::Distance ringL;
 extern pros::Optical optical;
 extern pros::Controller master;
-extern pros::ADIDigitalIn limitSwitch;
 
 extern lemlib::Drivetrain drivetrain;
 extern lemlib::TrackingWheel horizontalEncoder;

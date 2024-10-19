@@ -111,4 +111,5 @@ void _1028A::ui::init() {
   pros::delay(1000);
   utils::stylesInit();
   _1028A::ui::screens::homeScreen();
+  InitializeD = 1;
 }

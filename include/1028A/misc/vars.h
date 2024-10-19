@@ -20,6 +20,7 @@ enum lastAutonSelect { goalSide, goalwp, loadingSide, loadingwp, Skills, null };
 enum DiskColor { red, blue, none };
 extern lastAutonSelect selection;
 extern DiskColor diskColor;
+extern int InitializeD;
 
 // General
 extern lv_obj_t *List;

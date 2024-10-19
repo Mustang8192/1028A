@@ -16,6 +16,7 @@ lv_style_t style_red;
 int currentScreen = 0;
 lastAutonSelect selection = null;
 DiskColor diskColor = none;
+int InitializeD = 0;
 
 // General
 lv_obj_t *List;

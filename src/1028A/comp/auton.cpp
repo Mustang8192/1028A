@@ -68,8 +68,8 @@ void checkIntakeMotor() {
 }
 
 void liftArms(){
-  _1028A::robot::intakeMtrs.move(-100);
-  pros::delay(520);
+  _1028A::robot::intakeMtrs.move(-127);
+  pros::delay(800);
   _1028A::robot::intakeMtrs.move(0);
 }
 
@@ -95,26 +95,22 @@ void startIntake(){
 }
 
 void Macro(){
-    while (1){
-        if (_1028A::robot::ringL.get()<20){
-          _1028A::robot::intakeMtrs.move(60);
+    _1028A::robot::intakeMtrs.move(127);
+      while (1){
+        if (_1028A::robot::ringL.get() < 40){
+          pros::delay(150);
+          _1028A::robot::intakeMtrs.move(80);
           while (1){
-            if (_1028A::robot::ring.get()<25){
+            if (_1028A::robot::ring.get() < 40){
               _1028A::robot::intakeMtrs.move(0);
-              pros::delay(300);
-              _1028A::robot::intakeMtrs.move(-80);
-              pros::delay(200);
-              _1028A::robot::intakeMtrs.move(0);
-              macroStart = 0;
-            }
-            else if (!macroStart){
               break;
             }
-            pros::delay(10);
+            pros::delay(5);
           }
+          break;
         }
-        pros::delay(20);
-  }
+        pros::delay(5);
+      }
 }
 void _1028A::comp::auton() {
   autonSelect =12;
@@ -249,8 +245,8 @@ void _1028A::comp::auton() {
     task::Async checkIntake(checkIntakeMotor);
     robot::intakeMtrs.move(127);
     pros::delay(1000);
+    legacy::forward(192, 127, 1, 1000,0,0);
     robot::intakeMtrs.move(0);
-    legacy::forward(195, 127, 1, 1000,0,0);
     pros::delay(200);
     legacy::turn(90, 127, 1, 1000,0,0);
     pros::delay(200);
@@ -258,10 +254,11 @@ void _1028A::comp::auton() {
     legacy::forward(-310, 127, 1, 1000,0,0);
     pros::delay(200);
     legacy::turn(0, 127, 1, 1000,0,0);
+    robot::intakeMtrs.move(127);
     pros::delay(200);
     robot::intakeMtrs.move(127);
     legacy::forward(300, 127, 1, 1000,0,0);
-    pros::delay(500);
+    pros::delay(1200);
     robot::intakeMtrs.set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
     robot::intakeMtrs.move(0);
     legacy::turn(45, 127, 1, 1000,0,0);
@@ -269,17 +266,61 @@ void _1028A::comp::auton() {
     pros::delay(200);
     legacy::forward(500, 45, 127, 1, 1000,0,0);
     robot::intakeMtrs.move(127);
-    pros::delay(800);
+    pros::delay(1200);
     robot::intakeMtrs.move(0);
-    legacy::forward(-500, 45, 127, 1, 1000,0,0);
+    legacy::forward(-580, 45, 127, 1, 1000,0,0);
     robot::intakeMtrs.move(127);
+    pros::delay(200);
+    legacy::turn(-27, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(380, 127, 1, 1000,0,0);
     StartIntake.stopTask();
     checkIntake.stopTask();
-    task::Async diskIndex (Macro);
+    task::Async diskIndex (Macro);  
     pros::delay(200);
-    legacy::turn(-60, 127, 1, 1000,0,0);
+    legacy::turn(-90, 127, 1, 1000,0,0);
     pros::delay(200);
-    legacy::forward(400, 127, 1, 1000,0,0);
+    legacy::forward(110, 127, 1, 1000,0,0);
+    diskIndex.waitUntilComplete();
+    task::Async LiftArms(liftArms);
+    LiftArms.waitUntilComplete();
+    legacy::forward(100, 80, 1, 1000,0,0);
+    pros::delay(200);
+    robot::intakeMtrs.move(127);
+    pros::delay(400);
+    legacy::forward(-160, 80, 1, 2000,0,0);
+    pros::delay(200);
+    legacy::turn(-179.5, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(400, 127, 3, 1000,0,0);
+    legacy::forward(350, 20, 1, 3000,0,0);
+    pros::delay(200);
+    legacy::forward(-150, 90, 1, 3000,0,0);
+    pros::delay(200);
+    legacy::turn(-90, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(100, 60, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(-210, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::turn(45, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(-300, 127, 1, 1000,0,0);
+    robot::mogo.set_value(0);
+    legacy::turn(45, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(212, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::turn(-91, 127, 1, 1000,0,0);
+    pros::delay(200);
+    legacy::forward(-800, -91, 127, 1, 3000,0,0);
+
+    
+    //diskIndex.waitUntilComplete();
+    //task::Async LiftArms(liftArms);
+    //LiftArms.waitUntilComplete();
+
+    
     /*
     pros::delay(200);
     legacy::turn(-55, 127, 1, 1000,0,0);
