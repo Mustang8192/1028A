@@ -5,6 +5,7 @@
 #include "1028A/misc/vars.h"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
+#include "1028A/misc/legacy.h"
 #include <string>
 
 void _1028A::comp::driver::driverCTRL() {
@@ -26,13 +27,16 @@ void _1028A::comp::driver::driverCTRL() {
     _1028A::robot::leftMtrs.move(power + turn);
     _1028A::robot::rightMtrs.move(power - turn);
 
+    //int INertial = robot::inertialReg.get_rotation();
+    //_1028A::robot::master.print(1,1, "%i", INertial);
+
     pros::delay(10);
   }
 }
 
 void _1028A::comp::driver::intakeCTRL() {
   while (1) {
-    if (_1028A::robot::master.get_digital(DIGITAL_L1)) {
+    if (_1028A::robot::master.get_digital(DIGITAL_L1) && macroStart != 1) {
      _1028A::robot::intakeMtrs.move(-127);
      macroStart = 2;
     } else if (_1028A::robot::master.get_digital(DIGITAL_L2)) {
@@ -44,6 +48,20 @@ void _1028A::comp::driver::intakeCTRL() {
     } else if (_1028A::robot::master.get_digital(DIGITAL_RIGHT)) {
       _1028A::robot::intakeMtrs.move(-40);
       macroStart = 2;
+    } else if (_1028A::robot::master.get_digital(DIGITAL_UP)){
+      _1028A::robot::intakeMtrs.move(127);
+      while (1){
+        if (_1028A::robot::ring.get() < 30){
+          pros::delay(100);
+          _1028A::robot::intakeMtrs.move(0);
+          break;
+        }
+
+        if (_1028A::robot::master.get_digital(DIGITAL_L2) or _1028A::robot::master.get_digital(DIGITAL_L1)){
+          break;
+        }
+        pros::delay(5);
+      }
     }
     else if (_1028A::robot::master.get_digital(DIGITAL_R2)) {
       macroStart = 1;
@@ -81,24 +99,36 @@ void _1028A::comp::driver::HGCTRL(){
       _1028A::robot::intakeMtrs.move(127);
       while (1){
         if (_1028A::robot::ringL.get() < 40){
-          pros::delay(150);
           _1028A::robot::intakeMtrs.move(80);
           while (1){
-            if (_1028A::robot::ring.get() < 40){
+            if (_1028A::robot::ring.get() < 30){
+              //pros::delay(10);
               _1028A::robot::intakeMtrs.move(0);
+              macroStart = 0;
+              //_1028A::robot::master.rumble(".");
               break;
             }
-            else if (_1028A::robot::master.get_digital(DIGITAL_L1) or _1028A::robot::master.get_digital(DIGITAL_L2)){
+            else if (_1028A::robot::master.get_digital(DIGITAL_L2)){
             break;
             }
             pros::delay(5);
           }
         }
-        else if (_1028A::robot::master.get_digital(DIGITAL_L1) or _1028A::robot::master.get_digital(DIGITAL_L2)){
+        else if (_1028A::robot::master.get_digital(DIGITAL_L2)){
           break;
         }
         pros::delay(5);
       }
+    while (1){
+      if(_1028A::robot::master.get_digital(DIGITAL_L1)){
+        _1028A::robot::intakeMtrs.move(-127);
+      }
+      else{
+        _1028A::robot::intakeMtrs.move(0);
+        break;
+      }
+      pros::delay(5);
+    }
     }
     pros::delay(20);
   }

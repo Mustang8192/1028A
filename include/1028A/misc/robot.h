@@ -13,7 +13,7 @@
 #define intakeLpt 6
 #define intakeRpt 7
 #define inertialOdompt 21
-#define inertialRegpt 4
+#define inertialRegpt 11
 #define horizontalencodpt 15
 #define ringpt 17
 #define ringLpt 16

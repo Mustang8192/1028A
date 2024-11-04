@@ -6,7 +6,7 @@ void initialize() {
   _1028A::robot::chassis.calibrate();
 }
 
-void disabled() { _1028A::robot::mogo.set_value(0); }
+void disabled() { }
 
 void competition_initialize() {}
 
