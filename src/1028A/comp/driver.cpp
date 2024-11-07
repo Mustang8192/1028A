@@ -228,7 +228,8 @@ void _1028A::comp::driver::macros() {
     } else {
     }
 
-    if (startReadout) {
+    if (1) {
+      pros::delay(800);
       std::string message =
           "(" + std::to_string(robot::chassis.getPose().x) + ", " +
           std::to_string(robot::chassis.getPose().y) + ", " +

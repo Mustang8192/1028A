@@ -352,7 +352,7 @@
     },
     "upload_options": {
       "icon": "X",
-      "slot": 1
+      "slot": 2
     },
     "use_early_access": false
   }

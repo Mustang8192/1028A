@@ -66,14 +66,14 @@ lemlib::ControllerSettings _1028A::robot::lateral_controller(
     100, // small error range timeout, in milliseconds
     3,   // large error range, in inches
     500, // large error range timeout, in milliseconds
-    20   // maximum acceleration (slew)
+    5   // maximum acceleration (slew)
 );
 
 lemlib::ControllerSettings _1028A::robot::angular_controller(
     2,   // proportional gain (kP)
-    0,   // integral gain (kI)
-    12,  // derivative gain (kD)
-    6,   // anti windup
+    0.3,   // integral gain (kI)
+    18,  // derivative gain (kD)
+    2,   // anti windup
     1,   // small error range, in degrees
     100, // small error range timeout, in milliseconds
     3,   // large error range, in degrees

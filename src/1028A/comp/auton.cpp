@@ -202,8 +202,12 @@ void stickuponturn(){
     pros::delay(5);
   }
 }
+
+ASSET(path4_txt);
+
 void _1028A::comp::auton() {
-  autonSelect = 3;
+  autonSelect = 100;
+  robot::chassis.follow(path4_txt,3, 10000);
   if(autonSelect == 1){
   //RedNegWP
   task::Async grabGoal(grabOnMove);
