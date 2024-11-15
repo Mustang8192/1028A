@@ -15,12 +15,15 @@ extern void ptturn(double RequestedValue, double spd, double minspd,
                    bool leftlock, bool rightlock);
 extern void forward(double RequestedValue, double spd, double thre, double time,
                     double kpOffset, double kdOffset);
+                    
 extern void forward(double RequestedValue, double spd, double minspd,
                     double thre, double time, double kpOffset, double kdOffset,
                     bool brake);
 extern void forward(double requestedValue, double angle, double spd,
                     double thre, double time, double kpOffset, double kdOffset);
 extern void forward(double spd, double time);
+extern void forwardnoKill(double RequestedValue, double spd, double thre, double time,
+                    double kpOffset, double kdOffset);
 
 extern void curve(std::vector<std::vector<int>> array);
 } // namespace _1028A::legacy

@@ -175,6 +175,63 @@ void _1028A::legacy::ptturn(double RequestedValue, double spd, double minspd,
   robot::master.print(1, 1, "done");
 }
 
+void _1028A::legacy::forwardnoKill(double RequestedValue, double spd, double thre,
+                             double time, double kpOffset, double kdOffset) {
+  float SensorCurrentValue;
+  float error;
+  float lastError = 0;
+
+  float Kp = 1.5 + kpOffset;
+  float Ki = 0;
+  float Kd = 6 + kdOffset;
+  double timeExit = 0;
+  double startTime = pros::millis();
+  while (1) {
+    // Reads the sensor value and scale
+    SensorCurrentValue = _1028A::robot::leftfront.get_position() * 100;
+    double currentTime = pros::millis();
+    std::string print =
+        "Forward: " + std::to_string(_1028A::robot::leftfront.get_position());
+    _1028A::logger::info(print.c_str());
+
+    // calculates error
+    error = (RequestedValue - SensorCurrentValue);
+
+    // calculate drive PID
+    float powerValue = math(error, lastError, Kp, Ki, Kd, spd);
+
+    if (exit(error, thre, currentTime, startTime, time, powerValue,
+             lastError)) {
+      _1028A::robot::leftfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::leftback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightfront.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightmid.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+      _1028A::robot::rightback.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+      _1028A::robot::leftfront.brake();
+      _1028A::robot::leftmid.brake();
+      _1028A::robot::leftback.brake();
+      _1028A::robot::rightfront.brake();
+      _1028A::robot::rightmid.brake();
+      _1028A::robot::rightback.brake();
+      break;
+    }
+
+    // Move Motors with PID
+    _1028A::robot::leftfront.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::leftback.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::leftmid.move((0 * powerValue) + (1 * powerValue));
+
+    _1028A::robot::rightfront.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightback.move((0 * powerValue) + (1 * powerValue));
+    _1028A::robot::rightmid.move((0 * powerValue) + (1 * powerValue));
+
+    lastError = error;
+    pros::delay(5);
+  }
+}
+
 void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
                              double time, double kpOffset, double kdOffset) {
   float SensorCurrentValue;

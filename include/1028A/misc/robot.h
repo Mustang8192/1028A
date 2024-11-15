@@ -33,6 +33,8 @@ extern pros::Motor intakeR;
 extern pros::Motor_Group intakeMtrs;
 extern pros::ADIDigitalOut mogo;
 extern pros::ADIDigitalOut stick;
+extern pros::ADIAnalogIn LineL;
+extern pros::ADIAnalogIn LineR;
 extern pros::IMU inertialOdom;
 extern pros::IMU inertialReg;
 extern pros::Rotation horizontalencod;

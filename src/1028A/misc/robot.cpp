@@ -25,6 +25,8 @@ pros::Motor _1028A::robot::intakeR(intakeRpt, pros::E_MOTOR_GEARSET_06, false,
                                     pros::E_MOTOR_ENCODER_DEGREES);
 pros::ADIDigitalOut _1028A::robot::mogo('h');
 pros::ADIDigitalOut _1028A::robot::stick('c');
+pros::ADIAnalogIn _1028A::robot::LineL ('e');
+pros::ADIAnalogIn _1028A::robot::LineR('f');
 pros::Motor_Group _1028A::robot::intakeMtrs({intakeLpt, intakeRpt});
 pros::IMU _1028A::robot::inertialOdom(inertialOdompt);
 pros::IMU _1028A::robot::inertialReg(inertialRegpt);
@@ -60,20 +62,20 @@ lemlib::OdomSensors _1028A::robot::sensors(
 lemlib::ControllerSettings _1028A::robot::lateral_controller(
     10,   // proportional gain (kP)
     0,   // integral gain (kI)
-    4,   // derivative gain (kD)
+    14,   // derivative gain (kD)
     3,   // anti windup
     1,   // small error range, in inches
     100, // small error range timeout, in milliseconds
     3,   // large error range, in inches
     500, // large error range timeout, in milliseconds
-    5   // maximum acceleration (slew)
+    8   // maximum acceleration (slew)
 );
 
 lemlib::ControllerSettings _1028A::robot::angular_controller(
-    2,   // proportional gain (kP)
-    0.3,   // integral gain (kI)
-    18,  // derivative gain (kD)
-    2,   // anti windup
+    3.5,   // proportional gain (kP)
+    0,   // integral gain (kI)
+    27,  // derivative gain (kD)
+    0,   // anti windup
     1,   // small error range, in degrees
     100, // small error range timeout, in milliseconds
     3,   // large error range, in degrees
