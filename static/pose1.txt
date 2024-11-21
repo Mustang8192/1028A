@@ -1,0 +1,34 @@
+-65.342, 0, 69.879
+-63.371, 0.341, 69.879
+-61.4, 0.679, 69.927
+-59.428, 1.014, 69.991
+-57.457, 1.349, 69.821
+-55.485, 1.687, 69.687
+-53.515, 2.031, 69.52
+-51.547, 2.385, 69.314
+-49.582, 2.759, 68.758
+-47.623, 3.162, 68.397
+-45.674, 3.609, 67.488
+-43.74, 4.118, 66.344
+-41.832, 4.718, 65.074
+-39.968, 5.44, 62.78
+-38.171, 6.316, 60.162
+-36.466, 7.359, 57.425
+-34.872, 8.566, 54.551
+-33.395, 9.914, 51.516
+-32.019, 11.365, 48.29
+-30.723, 12.888, 44.833
+-29.489, 14.462, 41.085
+-28.296, 16.066, 36.959
+-27.133, 17.694, 32.311
+-25.989, 19.334, 26.87
+-24.86, 20.985, 20
+-23.848, 22.48, 0
+-23.848, 22.48, 0
+-12.629, 39.037, 0
+endData
+80.5
+70
+200
+-65.342, 0, -37.071, 4.925, -36.615, 3.557, -23.848, 22.48
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes (Skills)","signature":"V5RC 2025 - High Stakes (Skills)","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"T0gnczgY2V","x":-65.342,"y":0,"lock":false,"visible":true,"heading":90,"__type":"end-point"},{"uid":"dAtBN02Tym","x":-37.071266515414386,"y":4.92459628987055,"lock":false,"visible":true,"__type":"control"},{"uid":"Jmf8DXjNov","x":-36.61528537746341,"y":3.556652876017621,"lock":false,"visible":true,"__type":"control"},{"uid":"7fWJXWVsxL","x":-23.84781351483607,"y":22.479870100983142,"lock":false,"visible":true,"heading":0,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"wFOgboVk2v"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":70},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.145},"maxDecelerationRate":80.5},"name":"Path","uid":"szMRiltUiP","lock":false,"visible":true}]}
