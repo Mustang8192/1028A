@@ -24,7 +24,7 @@ void _1028A::comp::driver::driverCTRL() {
     int power = _1028A::robot::master.get_analog(ANALOG_LEFT_Y);
     int turn = _1028A::robot::master.get_analog(ANALOG_RIGHT_X);
 
-    _1028A::robot::chassis.curvature(power, turn);
+    _1028A::robot::chassis.arcade(power, turn);
 
     //int INertial = robot::inertialReg.get_rotation();
     //_1028A::robot::master.print(1,1, "%i", INertial);
