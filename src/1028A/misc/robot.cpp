@@ -83,9 +83,14 @@ lemlib::ControllerSettings _1028A::robot::angular_controller(
     0    // maximum acceleration (slew)
 );
 
+lemlib::ExpoDriveCurve _1028A::robot::throttleCurve(3,10,1.019);
+lemlib::ExpoDriveCurve _1028A::robot::turnCurve(3,10,1.019);
+
 lemlib::Chassis _1028A::robot::chassis(
     _1028A::robot::drivetrain,         // drivetrain settings
     _1028A::robot::lateral_controller, // lateral PID settings
     _1028A::robot::angular_controller, // angular PID settings
-    _1028A::robot::sensors             // odometry sensors
+    _1028A::robot::sensors, 
+    &_1028A::robot::throttleCurve,
+    &_1028A::robot::turnCurve             // odometry sensors
 );

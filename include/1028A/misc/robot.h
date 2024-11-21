@@ -49,4 +49,6 @@ extern lemlib::OdomSensors sensors;
 extern lemlib::ControllerSettings lateral_controller;
 extern lemlib::ControllerSettings angular_controller;
 extern lemlib::Chassis chassis;
+extern lemlib::ExpoDriveCurve throttleCurve;
+extern lemlib::ExpoDriveCurve turnCurve;
 } // namespace _1028A::robot

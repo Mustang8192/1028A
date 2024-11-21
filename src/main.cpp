@@ -69,7 +69,7 @@ void Load(){
           _1028A::robot::intakeMtrs.move(60);
           while (1){
             if (_1028A::robot::ring.get() < 40){
-              //pros::delay(10);
+              pros::delay(10);
               _1028A::robot::intakeMtrs.move(0);
               pros::delay(200);
             _1028A::robot::intakeMtrs.move(-127);
@@ -85,37 +85,39 @@ void Load(){
       }
 }
 
+void intakeKill(){
+  _1028A::robot::intakeMtrs.move(127);
+  while (1){
+        if (_1028A::robot::ringL.get() < 40){
+          _1028A::robot::intakeMtrs.move(0);
+          
+          break;
+        }
+          pros::delay(5);
+  }
+
+}
+
 
 void opcontrol() {
-  _1028A::task::Async checkIntake(CheckIntakeMotor);
   _1028A::task::Async Macros(_1028A::comp::driver::macros);
 
-  _1028A::robot::intakeMtrs.move(127);
-  pros::delay(210);
-  _1028A::robot::intakeMtrs.move(0);
-  _1028A::robot::chassis.moveToPoint(0, 12, 1000);
-  _1028A::robot::chassis.turnToHeading(90, 1000);
-  _1028A::robot::chassis.moveToPoint(-28, 14, 1000, {.forwards = false}, false);
+  _1028A::task::Async IntakeKill(intakeKill);
+  _1028A::robot::chassis.moveToPose(-24.476562, 36.903278, -49.753448, 3000, {}, false);
+  _1028A::robot::chassis.moveToPose(-25.048130, 16.335558, 31.558695, 3000, {.forwards=false}, false);
   _1028A::robot::mogo.set_value(1);
   pros::delay(200);
-  _1028A::robot::chassis.moveToPose(-27.333029, 35.108574, -35.314808, 3000, {.minSpeed=40}, false);
-  _1028A::robot::chassis.moveToPose(-46.069965, 63.184368, -11.276176, 3000, {.minSpeed=40}, false);
-  _1028A::robot::chassis.moveToPose(-52.281696, 86.281021, -16.772146, 3000, {.minSpeed=40}, false);
-  checkIntake.forceStop();
-  _1028A::robot::chassis.moveToPose(-46.749065, 67.600578, -15.664765, 3000, {.forwards = false}, false);
-  _1028A::robot::chassis.turnToHeading(-90.5, 1000, {}, false);
-  _1028A::task::Async LoadRing(Load);
-  std::string str = "LeftFront Position: " + std::to_string(_1028A::robot::leftfront.get_position());
-  _1028A::logger::info(str.c_str());
-  _1028A::legacy::forwardnoKill(600, 127, 1, 1000, 0, 0);
-  LoadRing.waitUntilComplete();
-  pros::delay(100);
-  _1028A::legacy::forwardnoKill(730, 127, 1, 1000, 0, 0);
   _1028A::robot::intakeMtrs.move(127);
-  pros::delay(500);
-  _1028A::legacy::forwardnoKill(550, 127, 1, 1000,0,0);
-  _1028A::robot::chassis.turnToHeading(-180, 1000, {} , false);
-  
+  _1028A::task::Async checkIntake(CheckIntakeMotor);
+  _1028A::robot::chassis.moveToPose(-48.464626, 35.953781, -72.369186, 3000, {}, false);
+  _1028A::robot::chassis.turnToHeading(-4.747673, 1000);
+  _1028A::robot::chassis.moveToPose(-49.740234, 81.555046, -7.392817, 3000, {}, false);
+  pros::delay(200);
+  _1028A::robot::chassis.moveToPoint(-48.160156, 63.063358, 3000, {.forwards=false}, false);
+  _1028A::robot::chassis.turnToHeading(-90, 1000);
+  checkIntake.stopTask();
+  _1028A::task::Async LoadMacro(Load);
+
 
   while (true) {
     pros::delay(200);
