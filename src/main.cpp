@@ -99,13 +99,9 @@ void intakeKill(){
 
 void opcontrol() {
   _1028A::task::Async Macros(_1028A::comp::driver::macros);
-  _1028A::robot::chassis.setPose(-65.342, 0, 90);
-  _1028A::robot::chassis.follow(pose1_txt, 10, 10000, true, false);
-
-/*
   _1028A::task::Async IntakeKill(intakeKill);
   _1028A::robot::chassis.moveToPose(-24.476562, 36.903278, -49.753448, 3000, {}, false);
-  _1028A::robot::chassis.moveToPose(-25.048130, 16.335558, 31.558695, 3000, {.forwards=false}, false);
+  _1028A::robot::chassis.moveToPose(-22.048130, 12.335558, 31.558695, 3000, {.forwards=false}, false);
   _1028A::robot::mogo.set_value(1);
   pros::delay(200);
   _1028A::robot::intakeMtrs.move(127);
@@ -114,11 +110,10 @@ void opcontrol() {
   _1028A::robot::chassis.turnToHeading(-4.747673, 1000);
   _1028A::robot::chassis.moveToPose(-49.740234, 81.555046, -7.392817, 3000, {}, false);
   pros::delay(200);
-  _1028A::robot::chassis.moveToPoint(-48.160156, 63.063358, 3000, {.forwards=false}, false);
+  _1028A::robot::chassis.moveToPoint(-43.160156, 61.063358, 3000, {.forwards=false}, false);
   _1028A::robot::chassis.turnToHeading(-90, 1000);
   checkIntake.stopTask();
   _1028A::task::Async LoadMacro(Load);
-  */
 
 
   while (true) {

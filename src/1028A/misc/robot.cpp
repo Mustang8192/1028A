@@ -71,7 +71,7 @@ lemlib::ControllerSettings _1028A::robot::lateral_controller(
     8   // maximum acceleration (slew)
 );
 lemlib::ControllerSettings _1028A::robot::angular_controller(
-    5,   // proportional gain (kP)
+    3,   // proportional gain (kP)
     0,   // integral gain (kI)
     27,  // derivative gain (kD)
     0,   // anti windup
