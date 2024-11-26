@@ -214,7 +214,7 @@ void stickuponturn(){
   }
 }
 void _1028A::comp::auton() {
-  autonSelect = 11;
+  autonSelect = 2;
   if(autonSelect == 1){
   //RedNegWP
   task::Async grabGoal(grabOnMove);
@@ -232,6 +232,8 @@ void _1028A::comp::auton() {
   legacy::forward(350, 127, 1, 1000,0,0);
   legacy::turn(-80, 127, 1, 1000,0,0);
   pros::delay(100);
+
+
   legacy::forward(300, 127, 1, 1000,0,0);
   pros::delay(2000);
   legacy::turn(-120, 127,1, 1000,0,0);
@@ -264,25 +266,29 @@ void _1028A::comp::auton() {
   else if(autonSelect == 2){
   //RedNegElim
   task::Async grabGoal(grabOnMove);
-  legacy::forward(-460, 127, 4, 1100,-.3,0);
+  legacy::forward(-475, 127, 4, 1100,-.3,0);
   pros::delay(200);
-  legacy::turn(88, 127, 1, 1000, 0, 0);
+  legacy::turn(85, 127, 1, 1000, 0, 0);
   robot::intakeMtrs.move(127);
   task::Async checkIntake(checkIntakeMotor);
-  legacy::forward(290, 85, 80, 1, 1000, 0, 0);
-  legacy::forward(150, 65, 60, 1, 2000,0,0);
-  pros::delay(800);
-  legacy::forward(-380, -100, 127, 1, 1000,0,0);
-  legacy::turn(-50, 127,1, 2000,0,0);
+  legacy::forward(290, 85, 60, 1, 1500, 0, 0);
+  legacy::forward(150, 65, 50, 1, 2500,0,0);
+  pros::delay(500);
+  legacy::forward(-380, 100, 127, 1, 1000,0,0);
+  legacy::turn(50, 127,1, 2000,0,0);
   pros::delay(200);
   legacy::forward(350, 127, 1, 1000,0,0);
   pros::delay(200);
-  legacy::turn(-90, 127, 1, 1000,0,0);  
-  pros::delay(1000);
-  robot::intakeMtrs.move(0);
-  checkIntake.stopTask();
-  legacy::forward(900, -105, 127, 3, 3000, 0,0);
-  legacy::forward(700, -90, 127, 1, 4000,0,0);
+  legacy::turn(-84, 127, 1, 1000,0,0);
+  pros::delay(100);
+  legacy::forward(465, -84, 127, 1, 1000,0,0);
+  _1028A::robot::stick.set_value(1);
+  pros::delay(800);
+  _1028A::legacy::forward(-200, 70, 1, 2500,0,0);
+  _1028A::robot::stick.set_value(0);
+  pros::delay(1200);
+  _1028A::legacy::forward(150, 127,1 , 1000,0,0);
+
   /*
   pros::delay(800);
   legacy::turn(58, 127, 1, 1000,0,0);
@@ -316,6 +322,7 @@ void _1028A::comp::auton() {
   }
   else if(autonSelect == 4){
   //BlueNegElim
+  /*
   task::Async grabGoal(grabOnMove);
   legacy::forward(-460, 127, 4, 1100,-.3,0);
   pros::delay(200);
@@ -335,6 +342,27 @@ void _1028A::comp::auton() {
   robot::intakeMtrs.move(0);
   legacy::forward(900, 105, 127, 3, 3000, 0,0);
   legacy::forward(600, 90, 127, 1, 4000,0,0);
+  */
+ task::Async grabGoal(grabOnMove);
+  legacy::forward(-460, 127, 4, 1100,-.3,0);
+  pros::delay(200);
+  legacy::turn(-85, 127, 1, 1000, 0, 0);
+  robot::intakeMtrs.move(127);
+  task::Async checkIntake(checkIntakeMotor);
+  legacy::forward(300, -85, 60, 1, 1500, 0, 0);
+  legacy::forward(150, -65, 40, 1, 2500,0,0);
+  pros::delay(500);
+  legacy::forward(-490, -100, 127, 1, 3000,0,0);
+  legacy::turn(-42, 127,1, 1000,0,0);
+  pros::delay(200);
+  legacy::forward(350, 127, 1, 1000,0,0);
+  pros::delay(2000);
+  legacy::turn(120, 127,1, 1000,0,0);
+  pros::delay(200);
+  legacy::forward(450, 80, 1, 2500,0,0);
+  _1028A::robot::intakeMtrs.move(-127);
+  pros::delay(600);
+  _1028A::robot::intakeMtrs.move(0);
   /*
   pros::delay(800);
   legacy::turn(58, 127, 1, 1000,0,0);
@@ -419,7 +447,7 @@ void _1028A::comp::auton() {
     robot::mogo.set_value(1);
     robot::intakeMtrs.move(40);
     pros::delay(100);
-    legacy::turn(52, 127, 1, 600,0,0);
+    legacy::turn(54, 127, 1, 600,0,0);
     pros::delay(50);
     legacy::forward(280, 127, 1, 700,0,0);
     robot::stick.set_value(1);
@@ -427,7 +455,7 @@ void _1028A::comp::auton() {
     legacy::forward(-170, 127, 1, 700,0,0);
     robot::stick.set_value(0);
     pros::delay(200);
-    legacy::turn(179, 127, 1, 900,0,0);
+    legacy::turn(171, 127, 1, 900,0,0);
     pros::delay(50);
     robot::intakeMtrs.move(127);
     legacy::forward(280, 127, 1, 800,0,0);
@@ -644,7 +672,7 @@ void _1028A::comp::auton() {
     robot::intakeMtrs.move(127);
     pros::delay(200);
     robot::leftfront.tare_position();
-    legacy::forward(-190, 127, 1, 1000,0,0);
+    legacy::forward(-230, 127, 1, 1000,0,0);
     checkIntake.startTask();
     pros::delay(200);
     legacy::turn(-181, 127, 1, 1000,0,0);
@@ -656,9 +684,9 @@ void _1028A::comp::auton() {
     pros::delay(200);
     legacy::turn(-90, 127, 1, 800,0,0);
     pros::delay(200);
-    legacy::forward(150, 60, 1, 800,0,0);
+    legacy::forward(170, 60, 1, 800,0,0);
     pros::delay(1000);
-    legacy::forward(-170, 127, 1, 800,0,0);
+    legacy::forward(-190, 127, 1, 800,0,0);
     pros::delay(800);
     robot::intakeMtrs.move(0);
     legacy::turn(45, 127, 1, 1000,0,0);
@@ -723,7 +751,7 @@ void _1028A::comp::auton() {
     pros::delay(200);
     robot::intakeMtrs.move(127);
     pros::delay(400);
-    legacy::forward(-190, 80, 1, 900,0,0);
+    legacy::forward(-230, 80, 1, 900,0,0);
     pros::delay(200);
     checkIntake.startTask();
     legacy::turn(180, 127, 1, 1000,0,0);
@@ -755,6 +783,7 @@ void _1028A::comp::auton() {
     pros::delay(200);
     legacy::forward(-980, robot::inertialReg.get_rotation(), 127, 4, 1200,0,0);
     robot::intakeMtrs.move(127);
+    legacy::turn(-92, 127, 1, 900,0,0);
     legacy::forward(1800, -90, 127, 4, 5000,0,0);
     //legacy::forward(900, -120, 127, 4, 2000,0,0);
      //legacy::forward(900, 120, 127, 4, 2000,0,0);
