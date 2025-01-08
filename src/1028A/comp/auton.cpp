@@ -8,6 +8,7 @@
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
 
+/*
 using namespace okapi;
 enum intakeSTS { OFF, Intake, Outtake, Index, FIntake, FOuttake };
 intakeSTS intake = OFF;
@@ -213,6 +214,7 @@ void stickuponturn(){
     pros::delay(5);
   }
 }
+*/
 void _1028A::comp::auton() {
   autonSelect = 2;
   if(autonSelect == 1){

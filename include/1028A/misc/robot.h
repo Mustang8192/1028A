@@ -3,21 +3,23 @@
 #include "main.h"
 #include "pros/adi.hpp"
 #include "pros/distance.hpp"
+#include "pros/motors.hpp"
 
-#define leftfrontpt 1
-#define leftmidpt 2
-#define leftbackpt 3
-#define rightfrontpt 10
-#define rightmidpt 9
-#define rightbackpt 8
-#define intakeLpt 6
-#define intakeRpt 7
-#define inertialOdompt 21
-#define inertialRegpt 11
-#define horizontalencodpt 15
-#define ringpt 17
-#define ringLpt 16
-#define opticalpt 11
+#define leftFrontPort 18
+#define leftMidPort 19
+#define leftBackPort 20
+#define rightFrontPort 8
+#define rightMidPort 9
+#define rightBackPort 10
+#define intakePort 17
+#define LBLPort 12
+#define LBRPort 11
+#define LBSPort 13
+#define VerticalPort 7
+#define horizontalPort 21
+#define inertialPort 16
+#define inertialOdomPort 1
+#define mogoPort 'g'
 
 namespace _1028A::robot {
 extern pros::Motor leftfront;
@@ -28,25 +30,25 @@ extern pros::Motor rightfront;
 extern pros::Motor rightmid;
 extern pros::Motor rightback;
 extern pros::Motor_Group rightMtrs;
-extern pros::Motor intakeL;
-extern pros::Motor intakeR;
-extern pros::Motor_Group intakeMtrs;
+extern pros::Motor intake;
 extern pros::ADIDigitalOut mogo;
-extern pros::ADIDigitalOut stick;
-extern pros::IMU inertialOdom;
-extern pros::IMU inertialReg;
+extern pros::ADIDigitalIn LBSwitch;
+extern pros::Rotation LBS;
+extern pros::Motor LBL;
+extern pros::Motor LBR;
+extern pros::Motor_Group LB;
+extern pros::IMU inertial;
+extern pros::Rotation verticalencod;
 extern pros::Rotation horizontalencod;
-extern pros::Distance ring;
-extern pros::Distance ringL;
-extern pros::Optical optical;
 extern pros::Controller master;
 
 extern lemlib::Drivetrain drivetrain;
-extern lemlib::TrackingWheel horizontalEncoder;
+extern lemlib::TrackingWheel vertTracking;
+extern lemlib::TrackingWheel horizontalTracking;
 extern lemlib::OdomSensors sensors;
-extern lemlib::ControllerSettings lateral_controller;
-extern lemlib::ControllerSettings angular_controller;
+extern lemlib::ControllerSettings lateralController;
+extern lemlib::ControllerSettings angularController;
 extern lemlib::Chassis chassis;
-extern lemlib::ExpoDriveCurve throttleCurve;
+extern lemlib::ExpoDriveCurve driveCurve;
 extern lemlib::ExpoDriveCurve turnCurve;
 } // namespace _1028A::robot
