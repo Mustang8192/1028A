@@ -1,25 +1,27 @@
 #include "main.h"
 #include "1028A/api.h"
 
+
 void initialize() {
-  _1028A::utils::init();
-  _1028A::robot::chassis.calibrate();
+	_1028A::misc::init();
+	_1028A::robot::chassis.calibrate();
 }
 
-void disabled() { }
+
+void disabled() {}
 
 void competition_initialize() {}
 
-void autonomous() { _1028A::comp::auton(); }
+void autonomous() {}
 
 void opcontrol() {
-  _1028A::task::Async DriveCTRL(_1028A::comp::driver::driveCTRL);
-  _1028A::task::Async IntakeCTRL(_1028A::comp::driver::intakeCTRL);
-  _1028A::task::Async MogoCTRL(_1028A::comp::driver::mogoCTRL);
-  _1028A::task::Async Stick (_1028A::comp::driver::stickCTRL);
-  _1028A::task::Async lbmacro(_1028A::comp::driver::lbMacro);
-  _1028A::task::Async Macros(_1028A::comp::driver::macros);
-  while (true) {
-    pros::delay(200);
-  }
+	pros::Task DriveCTRL(_1028A::driver::driveCTRL);
+	pros::Task IntakeCTRL(_1028A::driver::intakeCTRL);
+	pros::Task MogoCTRL(_1028A::driver::mogoCTRL);
+	pros::Task Lbmacro(_1028A::driver::lbmacro);
+
+	while (true) {
+		                   // Sets right motor voltage
+		pros::delay(20);                               // Run for 20 ms then update
+	}
 }
