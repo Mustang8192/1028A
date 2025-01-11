@@ -33,6 +33,7 @@ namespace _1028A::robot{
     extern pros::Motor LBR;
     extern pros::MotorGroup LB;
     extern pros::Rotation LBS;
+    extern pros::adi::DigitalIn LBSLimit;
     extern pros::Rotation Vertical;
     extern pros::Rotation Horizontal;
     extern pros::Imu inertial;

@@ -17,6 +17,7 @@ pros::Motor _1028A::robot::LBL(LBLPort);
 pros::Motor _1028A::robot::LBR(LBRPort);
 pros::MotorGroup _1028A::robot::LB({-LBLPort, LBRPort});
 pros::Rotation _1028A::robot::LBS(LBSPort);
+pros::adi::DigitalIn _1028A::robot::LBSLimit('f');
 pros::Rotation _1028A::robot::Vertical(-Verticalpt);
 pros::Rotation _1028A::robot::Horizontal(-Horizontalpt);
 pros::Imu _1028A::robot::inertial(inertialpt);

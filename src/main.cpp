@@ -19,9 +19,9 @@ void opcontrol() {
 	pros::Task IntakeCTRL(_1028A::driver::intakeCTRL);
 	pros::Task MogoCTRL(_1028A::driver::mogoCTRL);
 	pros::Task Lbmacro(_1028A::driver::lbmacro);
-
+	pros::Task OdomRead(_1028A::driver::odomRead);
+		
 	while (true) {
-		                   // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
+		pros::delay(20);
 	}
 }
