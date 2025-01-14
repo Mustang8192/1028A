@@ -22,21 +22,24 @@ void _1028A::driver::driveCTRL() {
 }
 
 int wallstake = 0;
+int blocker = 0;
 void _1028A::driver::intakeCTRL() {
   while (1) {
     if (wallstake == 1) {
       _1028A::robot::intake.move(-127);
     } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_L1)) {
+                   pros::E_CONTROLLER_DIGITAL_L1) && blocker == 0) {
       _1028A::robot::intake.move(-127);
     } else if (_1028A::robot::master.get_digital(
-                   pros::E_CONTROLLER_DIGITAL_L2)) {
+                   pros::E_CONTROLLER_DIGITAL_L2) && blocker == 0) {
       _1028A::robot::intake.move(127);
     } else {
-      _1028A::robot::intake.move(0);
+      if (blocker == 0){
+        _1028A::robot::intake.move(0);
+      }
     }
 
-    pros::delay(15);
+    pros::delay(20);
   }
 }
 
@@ -59,7 +62,7 @@ void _1028A::driver::mogoCTRL() {
   }
 }
 double armTarget = 0;
-
+int settled = 0;
 
 void armTask() {
   double rotationValue = 0;
@@ -84,6 +87,10 @@ void armTask() {
 
     if (fabs(armError) <= threshold) {
       armSpeed = 0;
+      settled = 1;
+    }
+    else {
+      settled = 0;
     }
 
     _1028A::robot::LB.move(armSpeed);
@@ -96,13 +103,27 @@ void armTask() {
 
 void _1028A::driver::odomRead (){
     while (1){
-        if (0){
+        if (1){
             std::string data = "(" + std::to_string(_1028A::robot::chassis.getPose().x) + ", " + std::to_string(_1028A::robot::chassis.getPose().y) + ", " + std::to_string(_1028A::robot::chassis.getPose().theta) + ")";
             _1028A::logger::info(data.c_str());
         }
         pros::delay(300);
     }
 }
+
+int rapidLoad = 0;
+void rapidScore(){
+  while (1){
+    if (rapidLoad == 1){
+      armTarget = 630;
+      pros::delay(800);
+      armTarget = 162;
+
+
+    }
+  }
+}
+
 void _1028A::driver::lbmacro() {
   _1028A::robot::LB.move(-20);
   while (1) {
@@ -115,17 +136,68 @@ void _1028A::driver::lbmacro() {
     pros::delay(20);
   }
   pros::Task arm(armTask);
-  const int holdThreshold = 100;
+  pros::Task rapidscore(rapidScore);
+  const int holdThreshold = 150;
     bool buttonPressed = false;
     bool longPressTriggered = false;
     int pressStartTime = 0;
     int loadPosition = 162;
+
+    int state = 0;
+
+    int startTime = pros::millis();
   while (1) {
+    /*
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
+      if (buttonPressed == false){
+      startTime = pros::millis();
+      blocker = 1;
+      buttonPressed = true;
+      } 
+      else if (pros::millis() - startTime <= 150){
+        state = 1;
+      }
+      else if (pros::millis() - startTime > 150 && _1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+        state = 3;
+      }
+      else if (pros::millis() - startTime > 150){
+        state = 2;
+      }
+      
+      if (state == 0 && armTarget == 630){
+        armTarget = 0;
+      }
+      else 
+
+      if (state == 1){
+        armTarget = loadPosition;
+      }
+      else if (state == 2){
+        armTarget = 630;
+      }
+      else if (state == 3){
+         blocker = 0;
+         _1028A::logger::info("Blocker is off");
+      }
+      
+    }
+    else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2 ) == 0){
+       if (armTarget == 630){
+        armTarget = 0;
+        }
+        state = 0;
+        buttonPressed = false;
+        blocker = 0;
+    }
+*/
     if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
             if (!buttonPressed) {
                 buttonPressed = true;
                 pressStartTime = pros::millis();
                 longPressTriggered = false;
+            }
+            if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+                armTarget = 0;
             }
             if (!longPressTriggered && pros::millis() - pressStartTime >= holdThreshold) {
                 armTarget = 630;
@@ -146,6 +218,11 @@ void _1028A::driver::lbmacro() {
                 buttonPressed = false;
             }
         }
+
+      if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+        rapidLoad = 1;
+      }
+      
         pros::delay(20);
   }
 }
