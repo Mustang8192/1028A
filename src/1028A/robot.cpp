@@ -1,6 +1,7 @@
 #include "1028A/robot.h"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "pros/distance.hpp"
 #include "pros/motor_group.hpp"
 #include "pros/motors.hpp"
 
@@ -21,6 +22,8 @@ pros::adi::DigitalIn _1028A::robot::LBSLimit('f');
 pros::Rotation _1028A::robot::Vertical(-Verticalpt);
 pros::Rotation _1028A::robot::Horizontal(-Horizontalpt);
 pros::Imu _1028A::robot::inertial(inertialpt);
+pros::Distance _1028A::robot::distance(distancePort);
+pros::Optical _1028A::robot::optical(opticalPort);
 pros::adi::DigitalOut _1028A::robot::mogo(mogoPort);
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
 

@@ -13,17 +13,21 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+	_1028A::auton::autoRan = 1;
 	_1028A::auton::auton();
 }
 
+
 void opcontrol() {
+	_1028A::auton::autonStop = 1;
 	pros::Task DriveCTRL(_1028A::driver::driveCTRL);
 	pros::Task IntakeCTRL(_1028A::driver::intakeCTRL);
 	pros::Task MogoCTRL(_1028A::driver::mogoCTRL);
 	pros::Task Lbmacro(_1028A::driver::lbmacro);
-	//pros::Task OdomRead(_1028A::driver::odomRead);
-		
+	pros::Task OdomRead(_1028A::driver::odomRead);
+
 	while (true) {
+		
 		pros::delay(20);
 	}
 }

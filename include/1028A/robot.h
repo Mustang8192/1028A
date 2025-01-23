@@ -3,6 +3,8 @@
 #include "main.h"
 #include "pros/adi.hpp"
 #include "lemlib/api.hpp"
+#include "pros/distance.hpp"
+#include "pros/optical.hpp"
 
 #define leftFrontpt 18
 #define leftMidpt 19
@@ -18,6 +20,8 @@
 #define Horizontalpt 21
 #define inertialpt 16
 #define mogoPort 'g'
+#define distancePort 15
+#define opticalPort 3
 
 namespace _1028A::robot{
     extern pros::Motor leftFront;
@@ -37,6 +41,8 @@ namespace _1028A::robot{
     extern pros::Rotation Vertical;
     extern pros::Rotation Horizontal;
     extern pros::Imu inertial;
+    extern pros::Distance distance;
+    extern pros::Optical optical;
     extern pros::adi::DigitalOut mogo;
     extern pros::Controller master;
 
