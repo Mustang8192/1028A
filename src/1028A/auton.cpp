@@ -9,6 +9,7 @@ int _1028A::auton::autoRan = 0;
 int reset = 0;
 int _1028A::auton::autonStop = 0;
 int armOverride = 0;
+int _1028A::auton::autonSelect = 0;
 
 void _1028A::auton::lbTask() {
   double rotationValue = 0;
@@ -159,7 +160,7 @@ void odomRead (){
 
 
 void _1028A::auton::auton(){
-  int autonSelect = 1;
+  autonSelect = 1;
   if (autonSelect == 1){
     pros::Task lbTask(_1028A::auton::lbTask);
     pros::Task odomReadTask(odomRead);
@@ -181,23 +182,6 @@ void _1028A::auton::auton(){
     robot::mogo.set_value(0);
     robot::chassis.moveToPose(3.995605, -45.530689, -210.416855, 2000, {.minSpeed = 40}, false);
     robot::chassis.turnToHeading(-390, 2000, {}, false);
-    /*
-    //RedGoal
-    pros::Task lbTask(_1028A::auton::lbTask);
-    pros::Task IntakeTask(_1028A::auton::intakeTask);
-    armtarget = 300;
-    robot::chassis.moveToPoint(0, 1.1, 2000, {.minSpeed = 40}, false);
-    pros::delay(500);
-    robot::chassis.moveToPose(-22.077450, -27.622503, 90.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
-    robot::mogo.set_value(1);
-    pros::delay(300);
-    intake = ColorSortBlue;
-    robot::chassis.moveToPose(7.948267, -35.059280, -131.862320, 2000, {.minSpeed = 60}, false);
-    //armtarget = -100;
-    robot::chassis.moveToPose(-30.623312, -32.734077, -48.290459, 2000, {.minSpeed = 30}, false);
-    robot::chassis.moveToPose(-38.381786, -27.176008, -45.822693, 2000, {.minSpeed = 115, .earlyExitRange=0.1}, false);
-    //robot::chassis.moveToPoint(-22.032263, -11.680080, 2000, {.minSpeed = 100, .earlyExitRange = 0.1}, false);
-    */
   }
   else if (autonSelect == 2){
     pros::Task lbTask(_1028A::auton::lbTask);

@@ -2,6 +2,7 @@
 #include "1028A/legacy.h"
 #include "1028A/logger.h"
 #include "1028A/robot.h"
+#include "1028A/ui.h"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "1028A/auton.h"
