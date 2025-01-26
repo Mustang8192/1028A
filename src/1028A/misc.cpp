@@ -4,5 +4,7 @@
 
 void _1028A::misc::init(){
     _1028A::logger::init();
-    //_1028A::ui::init();
+    lvgl_init();
+    lv_init();
+    pros::Task startUI(_1028A::ui::init);
 }

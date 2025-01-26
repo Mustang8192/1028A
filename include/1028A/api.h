@@ -4,3 +4,4 @@
 #include "legacy.h"
 #include "logger.h"
 #include "misc.h"
+#include "ui.h"

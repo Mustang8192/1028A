@@ -148,29 +148,17 @@ void armTask() {
 
 void _1028A::driver::odomRead (){
     while (1){
-        if (1){
+        if (_1028A::ui::callbacks::macros::recordPos){
             std::string data = "(" + std::to_string(_1028A::robot::chassis.getPose().x) + ", " + std::to_string(_1028A::robot::chassis.getPose().y) + ", " + std::to_string(_1028A::robot::chassis.getPose().theta) + ")";
             _1028A::logger::info(data.c_str());
+            _1028A::ui::callbacks::macros::recordPos = 0;
         }
         pros::delay(300);
     }
 }
 
-int rapidLoad = 0;
-void rapidScore(){
-  while (1){
-    if (rapidLoad == 1){
-      armTarget = 630;
-      pros::delay(800);
-      armTarget = 162;
-
-
-    }
-  }
-}
 void _1028A::driver::lbmacro() {
   pros::Task arm(armTask);
-  pros::Task rapidscore(rapidScore);
   const int holdThreshold = 150;
     bool buttonPressed = false;
     bool longPressTriggered = false;
@@ -232,13 +220,6 @@ void _1028A::driver::lbmacro() {
                   buttonPressed = false;
               }
           }
-
-        if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-          rapidLoad = 1;
-        }
-        else{
-          rapidLoad = 0;
-        }  
 
         if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
           _1028A::robot::master.rumble("-");
