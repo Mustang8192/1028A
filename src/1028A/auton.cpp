@@ -5,7 +5,6 @@
 #include "1028A/logger.h"
 
 double armtarget = 0;
-int _1028A::auton::autoRan = 0;
 int reset = 0;
 int _1028A::auton::autonStop = 0;
 int armOverride = 0;

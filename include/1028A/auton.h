@@ -6,6 +6,5 @@ namespace _1028A::auton{
     extern pros::Task intaketask();
     extern pros::Task lbtask();
     extern int autonStop;
-    extern int autoRan;
     extern int autonSelect;
 }

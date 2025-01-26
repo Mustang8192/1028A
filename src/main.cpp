@@ -8,18 +8,24 @@ void initialize() {
 }
 
 
-void disabled() {}
+void disabled() {
+	_1028A::logger::info("Disabled");
+}
 
-void competition_initialize() {}
+void competition_initialize() {
+	_1028A::logger::info("Competition Initialize");
+	_1028A::misc::waitForCalibrate();
+}
 
 void autonomous() {
-	_1028A::auton::autoRan = 1;
+	_1028A::logger::info("Auton");
 	_1028A::auton::auton();
 }
 
 
 void opcontrol() {
 	_1028A::auton::autonStop = 1;
+	_1028A::logger::info("Opcontrol");
 	pros::Task DriveCTRL(_1028A::driver::driveCTRL);
 	pros::Task IntakeCTRL(_1028A::driver::intakeCTRL);
 	pros::Task MogoCTRL(_1028A::driver::mogoCTRL);

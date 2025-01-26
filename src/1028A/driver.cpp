@@ -305,7 +305,6 @@ void _1028A::driver::lbmacro() {
 
         if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)){
             Reset = 1;
-            _1028A::auton::autoRan = 1;
             pros::delay(20);
         }
 

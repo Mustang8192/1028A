@@ -38,6 +38,7 @@ namespace _1028A::robot{
     extern pros::MotorGroup LB;
     extern pros::Rotation LBS;
     extern pros::adi::DigitalIn LBSLimit;
+    extern pros::adi::DigitalIn CaliSwitch;
     extern pros::Rotation Vertical;
     extern pros::Rotation Horizontal;
     extern pros::Imu inertial;
