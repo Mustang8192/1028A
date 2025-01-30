@@ -119,7 +119,7 @@ void armTask() {
     else{
       hasReset = 0;
     }
-
+    
     if (Reset){
       _1028A::robot::LB.move(127);
       pros::delay(200);
@@ -163,57 +163,102 @@ void _1028A::driver::lbmacro() {
     bool buttonPressed = false;
     bool longPressTriggered = false;
     int pressStartTime = 0;
+    int offset = 0;
     int loadPosition = 95;
     int waitPosition = 200;
-    int scorePosition = 580;
+    int alliscorePosition = 500;
+    int wallScorePosition = 310;
     int overScorePosition = 820;
+    int wallOverScorePosition = 475;
 
     int state = 0;
-
+    int scoring =0;
     int startTime = pros::millis();
 
     while (1){
-  if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      
+          if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
               if (!buttonPressed) {
                   buttonPressed = true;
                   pressStartTime = pros::millis();
                   longPressTriggered = false;
               }
-              //if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-              //    armTarget = 0;
-              //}
               if (pros::millis() - pressStartTime >= holdThreshold) {
                   if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+                    pauseControl =1;
+                    robot::intake.move(0);
+                      armTarget = wallOverScorePosition + offset;
+                      
+                  }
+                  else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+                    pauseControl =1;
+                    robot::intake.move(0);
+                      armTarget = overScorePosition;
+                      
+                  }
+
+                  else{
+                    if (scoring == 0){
+                      wallstake = 1;
+                      pros::delay(20);
+                      wallstake = 0;
+                      armTarget = wallScorePosition;
+                      longPressTriggered = true;
+                      scoring = 1;
+                    }
+                    else {
+                      wallstake = 0;
+                      armTarget = wallScorePosition;
+                      longPressTriggered = true;
+                    }
+                  }
+              }
+              else{
+                pauseControl = 0;
+              }
+          }
+          else if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
+              if (pros::millis() - pressStartTime >= holdThreshold) {
+                 buttonPressed = 1;
+                  if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) or _1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
                     pauseControl =1;
                     robot::intake.move(0);
                       armTarget = overScorePosition;
                       
                   }
                   else{
+                    if (scoring == 0){
                       wallstake = 1;
                       pros::delay(20);
                       wallstake = 0;
-                      armTarget = scorePosition;
-                      longPressTriggered = true;
+                      armTarget = alliscorePosition;
+                      //longPressTriggered = true;
+                      scoring = 1;
+                    }
+                    else {
+                      wallstake = 0;
+                      armTarget = alliscorePosition;
+                      //longPressTriggered = true;
+                    }
                   }
               }
               else{
                 pauseControl = 0;
               }
           } else {
-            
+            scoring = 0;
               if (buttonPressed) {
                   if (longPressTriggered) {
                     pauseControl = 0;
-                    armTarget = loadPosition;
+                    armTarget = loadPosition + offset;
                       
                   } else {
                     pauseControl = 0;
-                      if ((armTarget == loadPosition) or armTarget == loadPosition - 45){
+                      if ((armTarget == (loadPosition + offset)) or armTarget == loadPosition - 45){
                           armTarget = 0;
                       }
                       else{
-                          armTarget = loadPosition;
+                          armTarget = loadPosition + offset;
                           
                       }
                   }
@@ -224,7 +269,7 @@ void _1028A::driver::lbmacro() {
         if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
           _1028A::robot::master.rumble("-");
           _1028A::robot::optical.set_led_pwm(100);
-          armTarget = loadPosition;
+          armTarget = loadPosition + offset;
           pauseControl = 1;
           robot::intake.move(127);
           pros::delay(900);
@@ -264,11 +309,11 @@ void _1028A::driver::lbmacro() {
                robot::intake.move(0);
             }
             if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-              armTarget = scorePosition;
-              pros::delay(400);
+              armTarget = (wallScorePosition + 180);
+              pros::delay(900);
               armTarget = loadPosition;
               pauseControl = 1;
-              pros::delay(500);
+              pros::delay(300);
               robot::intake.move(127);
               pros::delay(300);
               while (1){
@@ -286,9 +331,7 @@ void _1028A::driver::lbmacro() {
                   pros::delay(10);
                   robot::intake.move(0);
                   pauseControl = 0;
-                  armTarget = scorePosition;
-                  pros::delay(400);
-                  armTarget = 0;
+                  armTarget = (wallScorePosition + 170);
                   break;
                 }
                 pros::delay(20);
@@ -313,6 +356,17 @@ void _1028A::driver::lbmacro() {
             pros::delay(20);
             wallstake = 0;
             armTarget = waitPosition;
+            pros::delay(200);
+        }
+
+        if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
+            offset+=10;
+            robot::master.rumble("-");
+            pros::delay(200);
+        }
+        else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
+            offset-=10;
+            robot::master.rumble("-");
             pros::delay(200);
         }
         pros::delay(20);

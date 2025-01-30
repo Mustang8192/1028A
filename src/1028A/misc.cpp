@@ -14,7 +14,7 @@ void _1028A::misc::waitForCalibrate(){
             _1028A::robot::master.rumble("-");
             _1028A::logger::info("Calibrating");
             _1028A::robot::chassis.calibrate();
-            _1028A::robot::master.rumble("-");
+            _1028A::robot::master.rumble("-.");
             break;
         }
         pros::delay(20);
