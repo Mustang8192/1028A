@@ -6,8 +6,8 @@
 
 double armtarget = 0;
 int reset = 0;
-int _1028A::auton::autonStop = 0;
 int armOverride = 0;
+int _1028A::auton::autonStop = 0;
 int _1028A::auton::autonSelect = 0;
 
 void _1028A::auton::lbTask() {
@@ -19,15 +19,16 @@ void _1028A::auton::lbTask() {
   double threshold = 0.5;
   double armSpeed = 0;
   double rotationRaw = 0;
-
-  _1028A::robot::LBS.set_reversed(4);
+  double derivative = 0;
+  _1028A::robot::LB.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+  _1028A::robot::LBS.set_reversed(1);
 
   while (true) {
-    if (!autonStop){
     rotationRaw = -_1028A::robot::LBS.get_position();
     rotationValue = rotationRaw / 100;
 
     armError = armtarget - rotationValue;
+
     armSpeed = (armError * armP) + (armPrevError * armD);
 
     // lB.move(armSpeed);
@@ -35,30 +36,32 @@ void _1028A::auton::lbTask() {
     if (fabs(armError) <= threshold) {
       armSpeed = 0;
     }
+
     if (reset){
+      _1028A::robot::LB.move(127);
+      pros::delay(200);
       _1028A::robot::LB.move(-40);
       while (1){
         if (_1028A::robot::LBSLimit.get_value()){
+          _1028A::robot::LBS.set_position(0);
           armtarget = 0;
-          _1028A::robot::LBS.reset_position();
-          pros::delay(100);
+          pros::delay(200);
           _1028A::robot::LB.move(0);
           reset = 0;
           break;
         }
+        pros::delay(20);
       }
     }
-    else if (armOverride == 1){
-      pros::delay(100);
-    }
     else{
-      _1028A::robot::LB.move(armSpeed);
+      if (!armOverride or !auton::autonStop){
+        _1028A::robot::LB.move(armSpeed);
+      }
     }
 
     armPrevError = armError;
 
     pros::delay(10);
-  }
   }
 }
 
@@ -75,9 +78,12 @@ void _1028A::auton::intakeTask(){
   bool kickout = false;
    const int timeThreshold = 1000;
   const int velocityThreshold = 5;
+  int count = 0;
+  int lastCount = 0;
   while (1){
     if (!autonStop){
     if (intake == INTAKE){
+      _1028A::robot::optical.set_led_pwm(0);
       _1028A::robot::intake.move(127);
       int initialVelocity = _1028A::robot::intake.get_actual_velocity();
 
@@ -93,14 +99,16 @@ void _1028A::auton::intakeTask(){
       }
     }
     else if (intake == OUTTAKE){
+      _1028A::robot::optical.set_led_pwm(0);
       _1028A::robot::intake.move(-127);
     }
     else if (intake == STOP){
+      _1028A::robot::optical.set_led_pwm(0);
       _1028A::robot::intake.move(0);
     }
     else if (intake == ColorSortBlue){
-     
-      if (_1028A::robot::optical.get_hue()> 140){
+      if (_1028A::robot::optical.get_hue()>= 200 && _1028A::robot::optical.get_hue() <= 250){
+        pros::delay(200);
         kickout = true;
       }
       else{
@@ -120,6 +128,28 @@ void _1028A::auton::intakeTask(){
         }
       }
     }
+    else if (intake == ColorSortRed){
+      if (_1028A::robot::optical.get_hue() <= 10 or _1028A::robot::optical.get_hue() >= 350){
+        pros::delay(200);
+        kickout = true;
+      }
+      else{
+        kickout = false;
+        _1028A::robot::intake.move(127);
+        _1028A::robot::optical.set_led_pwm(100);
+      }
+
+      if (kickout){
+        if (_1028A::robot::distance.get() < 40){
+          _1028A::logger::info("KICKOUT");
+          pros::delay(80);
+          _1028A::robot::intake.move(0);
+          pros::delay (300);
+          _1028A::robot::intake.move(127);
+          kickout = false;
+        }
+      }
+    }
   }
 }
 }
@@ -129,7 +159,7 @@ void checkIntake(){
   const int timeThreshold = 500;
   const int velocityThreshold = 5;
   while (1){
-    if (!pause){
+    if (!pause or !_1028A::auton::autonStop){
     int initialVelocity = _1028A::robot::intake.get_actual_velocity();
 
       if (abs(initialVelocity) < velocityThreshold) {
@@ -157,90 +187,144 @@ void odomRead (){
     }
 }
 
-
+void Disk(){
+  _1028A::robot::intake.move(127);
+  while (1){
+    if (_1028A::robot::optical.get_proximity() > 253){
+               _1028A::robot::intake.move(0);
+               break;
+            }
+    pros::delay(20);
+  }
+}
 void _1028A::auton::auton(){
   autonSelect = 1;
+  robot::leftMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+  robot::rightMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   if (autonSelect == 1){
+    //RedRush
     pros::Task lbTask(_1028A::auton::lbTask);
     pros::Task odomReadTask(odomRead);
-    pros::Task checkIntakeTask(checkIntake);
-    //pros::Task intakeTask(_1028A::auton::intakeTask);
-     armtarget = 400;
-
-    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 40}, false);
-    pros::delay(200);
-    robot::chassis.moveToPose(22.077450, -27.622503, -90.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
-    robot::mogo.set_value(1);
     reset = 1;
-    robot::chassis.moveToPose(7.925098, -39.530811, -132.770615, 2000, {.minSpeed = 40}, false);
-    checkIntakeTask.suspend();
-    pros::delay(2000);
-    robot::intake.move(0);
-    robot::chassis.moveToPose(-16.820389, -39.958199, -300.666565, 2000, {.forwards = false, .minSpeed = 40}, false);
-    //robot::chassis.moveToPose(-23.514460, -21.155567, -256.111389, 2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::mogo.set_value(0);
-    robot::chassis.moveToPose(3.995605, -45.530689, -210.416855, 2000, {.minSpeed = 40}, false);
-    robot::chassis.turnToHeading(-390, 2000, {}, false);
-  }
-  else if (autonSelect == 2){
-    pros::Task lbTask(_1028A::auton::lbTask);
-    pros::Task odomReadTask(odomRead);
-    pros::Task checkIntakeTask(checkIntake);
-    //pros::Task IntakeTask(_1028A::auton::intakeTask);
-   armtarget = 500;
-    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 40}, false);
-    pros::delay(200);
-    robot::chassis.moveToPose(-22.077450, -27.622503, 78.312889, 2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::mogo.set_value(1);
-    reset = 1;
+    robot::stick.set_value(1);
+    robot::chassis.moveToPoint(0, 34.25, 2000, {.minSpeed=80}, false);
+    armtarget = 100;
+    robot::stick.set_value(0);
+    pros::delay(150);
     robot::intake.move(127);
-    robot::chassis.moveToPose(-18.225252, -52.300167, 204.388962, 2500, {.minSpeed = 40}, false);
-    pros::delay(500);
-    robot::chassis.moveToPose(-17.379702, -25.952803, 158.844330, 2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::chassis.moveToPose(-4.005900, -42.667278, 131.307846, 2000, {.minSpeed = 40}, false);
-    pros::delay(1000);
-    checkIntakeTask.suspend();
+    robot::chassis.moveToPoint(0, 26, 2000, {.forwards = false, .minSpeed=80}, false);
+    robot::stick.set_value(1);
+    robot::chassis.moveToPose(2.200392, 28.575848, 16.070787, 1400, {}, false);
+    robot::intake.move(-127);
+    pros::delay(20);
     robot::intake.move(0);
-    armtarget = 165;
-    armOverride = 1;
-    robot::chassis.moveToPose(-38.839233, -28.592161,  90.065750,  2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::LB.move(-30);
-    pros::delay(600);
-    robot::LB.move(0);
+    armtarget = 820;
+    robot::stick.set_value(0);
+    pros::delay(1300);
+    robot::chassis.moveToPose(1.446242, 33.879444, 12.158765, 2000, {.minSpeed = 50}, false);
+    armtarget = 0;
+    robot::chassis.moveToPose(-18.629443, 27.085499, 78.937820, 2000, {.forwards = false, .minSpeed = 40}, false);
+    robot::mogo.set_value(1);
+    pros::Task intakeTask(_1028A::auton::intakeTask);
+    intake = ColorSortBlue;
+    pros::delay(150);
+    //robot::chassis.moveToPose(9.998731, 31.747925, 100.646179, 2000, {.minSpeed = 50}, false);
+    pros::delay(500);
+    lbTask.suspend();
+    robot::chassis.moveToPose(7.439109, 31.991825, 78.243744, 1300, {.minSpeed = 40}, false);
+    pros::delay(500);
+    robot::chassis.turnToHeading(-90, 1000, {}, false);
+    robot::chassis.moveToPose(23.662140, 24.503874, -74.909660, 1300, {.forwards = false}, false);
+    robot::mogo.set_value(0);
+    robot::chassis.turnToHeading(151, 1000, {}, false);
+    pros::delay(300);
+    robot::chassis.moveToPose(10.957269, 40.802235, -181.791260, 1500, {.forwards = false}, false);
+
 
     /*
-    robot::chassis.moveToPose(-27.376768, -27.053391, 72.227409, 2000, {.forwards = false, .minSpeed = 70}, false);
-    reset = 1;
-    robot::mogo.set_value(1);
-    robot::intake.move(127);
-    robot::chassis.moveToPose(-21.545387, -47.756348, 184.505676, 2000, {.minSpeed = 30}, false);
+    robot::chassis.moveToPose(37.070717, 3.932603, 170.995651, 3000, {.minSpeed = 50}, false);
+    robot::leftMtrs.move(127);
+    robot::rightMtrs.move(127);
     pros::delay(400);
-    robot::chassis.moveToPose(-20.628834, -30.791895, 182.407166, 2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::chassis.moveToPose(-12.914774, -40.164303, 133.656204, 2000, {.minSpeed = 40}, false);
-    pros::delay(800);
-    robot::intake.move(0);
-    robot::chassis.moveToPose(-37.396881, -25.883064, 116.157562, 3000, {.forwards = false, .maxSpeed = 60, .minSpeed = 20}, false);
-    armtarget = 120;
+    robot::leftMtrs.move(0);
+    robot::rightMtrs.move(0);
+    pros::delay(300);
+    robot::chassis.turnToHeading(286.930664, 2000, {.minSpeed = 30}, false);
+    armtarget = 820;
+    robot::chassis.moveToPose(-23.273029, 35.008560, 297.188385, 2000, {.minSpeed = 50}, false);
     */
   }
-  else if (autonSelect == 3){
+  else if(autonSelect == 3){
+    //RedRing
+    robot::intake.move(127);
+    pros::Task disk(Disk);
+    robot::chassis.moveToPoint(1.903392, 38.051418, 2000, {.minSpeed=80}, false);
+    pros::delay(200);
+    robot::chassis.moveToPose(13.372073, 24.500650, -18.979954, 2000, {.forwards = false, .minSpeed=30}, false);
+    robot::mogo.set_value(1);
+    pros::delay(200);
+    robot::intake.move(127);
+    robot::chassis.turnToHeading(-96.865662, 2000, {.minSpeed=30}, false);
+    robot::chassis.moveToPose(-9.318869, 31.881939, -90.184494, 2000, {.minSpeed=70}, false);
+    robot::chassis.moveToPose(-8.514917, 50.322758, 0, 2000, {.minSpeed=40}, false);
+  }
+  else if (autonSelect == 4){
+    //BlueRingSafe
     pros::Task lbTask(_1028A::auton::lbTask);
-    pros::Task odomReadTask(odomRead);
+    //pros::Task odomReadTask(odomRead);
     pros::Task checkIntakeTask(checkIntake);
     //pros::Task IntakeTask(_1028A::auton::intakeTask);
     armtarget = 500;
-    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 40}, false);
+    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 65}, false);
     pros::delay(200);
-    robot::chassis.moveToPose(22.077450, -27.622503, -78.312889, 2000, {.forwards = false, .minSpeed = 40}, false);
+    robot::chassis.moveToPose(-22.077450, -27.622503, 84.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
+    reset = 1;
+    robot::mogo.set_value(1);
+    robot::intake.move(127);
+    robot::chassis.moveToPose(-16.225252, -49.300167, 200.388962, 2500, {.minSpeed = 60, .earlyExitRange = 2}, false);
+    pros::delay(500);
+    robot::chassis.moveToPose(-12.379702, -20.952803, 158.844330, 2000, {.forwards = false, .minSpeed = 50}, false);
+    robot::chassis.moveToPose(-1.466992, -37.725380, 139.093475, 1500, {.minSpeed = 50}, false);
+    pros::delay(2000);
+    robot::intake.move(0);
+    armtarget = 500;
+    robot::chassis.turnToHeading(-90, 1000, {}, false);
+    armtarget = 500;
+    robot::intake.move(0);
+    checkIntakeTask.suspend();
+    lbTask.suspend();
+    robot::chassis.moveToPose(-29.837498, -26.188953, -45, 2000, {.minSpeed = 10}, false);
+  }
+  else if (autonSelect == 5){
+    //ringRedSafe
+    pros::Task lbTask(_1028A::auton::lbTask);
+    //pros::Task odomReadTask(odomRead);
+    //pros::Task checkIntakeTask(checkIntake);
+    //pros::Task IntakeTask(_1028A::auton::intakeTask);
+    armtarget = 500;
+    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 65}, false);
+    pros::delay(200);
+    robot::chassis.moveToPose(22.077450, -27.622503, -78.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
     robot::mogo.set_value(1);
     reset = 1;
     robot::intake.move(127);
-    robot::chassis.moveToPose(18.225252, -51.300167, -204.388962, 2500, {.minSpeed = 40}, false);
+    robot::chassis.moveToPose(18.225252, -51.300167, -204.388962, 2500, {.minSpeed = 60}, false);
     pros::delay(500);
-    robot::chassis.moveToPose(17.379702, -25.952803, -158.844330, 2000, {.forwards = false, .minSpeed = 40}, false);
-    robot::chassis.moveToPose(4.005900, -42.667278, -131.307846, 2000, {.minSpeed = 40}, false);
+    robot::chassis.moveToPose(14.379702, -25.952803, -158.844330, 2000, {.forwards = false, .minSpeed = 50}, false);
+    robot::chassis.moveToPose(-2.505900, -37.667278, -20.307846, 2000, {.minSpeed = 60}, false);
     pros::delay(2000);
     robot::intake.move(0);
+    armtarget = 500;
+    robot::chassis.turnToHeading(90, 1000, {}, false);
+    armtarget = 500;
+    robot::LB.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+    robot::intake.move(0);
+    lbTask.suspend();
+    robot::LB.move(0);
+    //checkIntakeTask.suspend();
+    robot::chassis.moveToPose(29.837498, -26.188953, 45, 2000, {.minSpeed = 10}, false);
+  
+    /*
     checkIntakeTask.suspend();
      armtarget = 155;
      armOverride = 1;
@@ -248,25 +332,70 @@ void _1028A::auton::auton(){
      robot::LB.move(-30);
     pros::delay(600);
     robot::LB.move(0);
+    */
   }
-  else if (autonSelect == 4){
+  else if (autonSelect == 6){
+    //ringReddouble
     pros::Task lbTask(_1028A::auton::lbTask);
     pros::Task odomReadTask(odomRead);
     pros::Task checkIntakeTask(checkIntake);
-    //pros::Task intakeTask(_1028A::auton::intakeTask);
-     armtarget = 400;
-
-    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 40}, false);
+    //pros::Task IntakeTask(_1028A::auton::intakeTask);
+    armtarget = 500;
+    robot::chassis.moveToPoint(0, 1.5, 2000, {.minSpeed = 65}, false);
     pros::delay(200);
-    robot::chassis.moveToPose(-22.077450, -27.622503, 90.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
+    robot::chassis.moveToPose(24.077450, -25.622503, -78.312889, 2000, {.forwards = false, .minSpeed = 60}, false);
     robot::mogo.set_value(1);
     reset = 1;
-    robot::chassis.turnToHeading(175, 1000, {}, false);
     robot::intake.move(127);
-    robot::chassis.moveToPose(-10.782574, -52.131386, 140.292114, 2000, {.minSpeed = 60}, false);
+    robot::chassis.turnToHeading(-175.274719, 600, {.earlyExitRange = 2}, false);
+    robot::chassis.moveToPose(11.504578, -48.746521, -137.243942, 2000, {.minSpeed = 50}, false);
+    robot::leftMtrs.move(40);
+    robot::rightMtrs.move(40);
+    pros::delay(600);
+    robot::leftMtrs.move(0);
+    robot::rightMtrs.move(0);
+    pros::delay(300);
+    robot::chassis.moveToPose(18.194513, -23.494789, -190.345177, 1800, {.forwards = false, .minSpeed = 50}, false);
+    robot::chassis.turnToHeading(-120, 800, {.minSpeed = 30, .earlyExitRange = 2}, false);
+    robot::chassis.moveToPose(3.239918, -39.607533, -133.559631, 1500, {.minSpeed = 50}, false);
+    pros::delay(800);
+    checkIntakeTask.suspend();
+    robot::chassis.turnToHeading(-70, 800, {.earlyExitRange = 1.5}, false);
+    robot::intake.move(127);
+    pros::Task IntakeTask(_1028A::auton::intakeTask);
+    intake = ColorSortBlue;
+    robot::chassis.moveToPose(-39.771255, -28.904354, -46.379337, 1700, {.minSpeed = 65}, false);
+    pros::delay(500);
+    robot::leftMtrs.move(127);
+    robot::rightMtrs.move(127);
     pros::delay(1000);
+    robot::leftMtrs.move(0);
+    robot::rightMtrs.move(0);
+    
 
+    //robot::chassis.moveToPose(18.225252, -51.300167, -204.388962, 2500, {.minSpeed = 60}, false);
 
+    /*
+    pros::delay(500);
+    robot::chassis.moveToPose(17.379702, -25.952803, -158.844330, 2000, {.forwards = false, .minSpeed = 60}, false);
+    robot::chassis.moveToPose(4.005900, -42.667278, -131.307846, 2000, {.minSpeed = 60}, false);
+    pros::delay(2000);
+    robot::intake.move(0);
+    armtarget = 820;
+    robot::chassis.turnToHeading(90, 1000, {}, false);
+    robot::intake.move(0);
+    checkIntakeTask.suspend();
+    robot::chassis.moveToPose(34.837498, -26.188953, 89, 2000, {.minSpeed = 50}, false);
+    */
+    /*
+    checkIntakeTask.suspend();
+     armtarget = 155;
+     armOverride = 1;
+    robot::chassis.moveToPose(38.839233, -28.592161, -90.065750,  2000, {.forwards = false, .minSpeed = 40}, false);
+     robot::LB.move(-30);
+    pros::delay(600);
+    robot::LB.move(0);
+    */
   }
   else if (autonSelect == 100){
     pros::Task lbTask(_1028A::auton::lbTask);

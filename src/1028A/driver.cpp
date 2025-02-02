@@ -66,6 +66,24 @@ void _1028A::driver::mogoCTRL() {
     pros::delay(15);
   }
 }
+
+void _1028A::driver::stickCTRL(){
+  int status = 0;
+  while (1) {
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
+        status == 0) {
+      _1028A::robot::stick.set_value(1);
+      status = 1;
+      pros::delay(300);
+    } else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) &&
+               status == 1) {
+      _1028A::robot::stick.set_value(0);
+      status = 0;
+      pros::delay(300);
+    }
+    pros::delay(20);
+  }
+}
 double armTarget = 0;
 int settled = 0;
 int Reset = 0;
@@ -146,9 +164,10 @@ void armTask() {
   }
 }
 
+int odomOverride = 0;
 void _1028A::driver::odomRead (){
     while (1){
-        if (_1028A::ui::callbacks::macros::recordPos){
+        if (_1028A::ui::callbacks::macros::recordPos or odomOverride){
             std::string data = "(" + std::to_string(_1028A::robot::chassis.getPose().x) + ", " + std::to_string(_1028A::robot::chassis.getPose().y) + ", " + std::to_string(_1028A::robot::chassis.getPose().theta) + ")";
             _1028A::logger::info(data.c_str());
             _1028A::ui::callbacks::macros::recordPos = 0;
@@ -166,7 +185,7 @@ void _1028A::driver::lbmacro() {
     int offset = 0;
     int loadPosition = 95;
     int waitPosition = 200;
-    int alliscorePosition = 500;
+    int alliscorePosition = 520;
     int wallScorePosition = 310;
     int overScorePosition = 820;
     int wallOverScorePosition = 475;
@@ -364,7 +383,7 @@ void _1028A::driver::lbmacro() {
             robot::master.rumble("-");
             pros::delay(200);
         }
-        else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
+        else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
             offset-=10;
             robot::master.rumble("-");
             pros::delay(200);
