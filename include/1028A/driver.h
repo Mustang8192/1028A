@@ -5,4 +5,5 @@ namespace _1028A::driver{
     extern void lbmacro();
     extern void stickCTRL();
     extern void odomRead();
+    extern int skills;
 }

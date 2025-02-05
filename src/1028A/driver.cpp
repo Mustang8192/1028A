@@ -88,6 +88,7 @@ double armTarget = 0;
 int settled = 0;
 int Reset = 0;
 int hasReset = 0;
+int _1028A::driver::skills = 0;
 void armTask() {
   double rotationValue = 0;
   double armP = 0.0005;
@@ -100,7 +101,7 @@ void armTask() {
   _1028A::robot::LB.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   _1028A::robot::LBS.set_reversed(1);
   _1028A::robot::LB.move(-40);
-      while (1){
+      while (_1028A::driver::skills != 1){
         if (_1028A::robot::LBSLimit.get_value()){
           _1028A::robot::LBS.set_position(0);
           armTarget = 0;
@@ -140,7 +141,7 @@ void armTask() {
     
     if (Reset){
       _1028A::robot::LB.move(127);
-      pros::delay(200);
+      pros::delay(100);
       _1028A::robot::LB.move(-40);
       while (1){
         if (_1028A::robot::LBSLimit.get_value()){
@@ -167,7 +168,7 @@ void armTask() {
 int odomOverride = 0;
 void _1028A::driver::odomRead (){
     while (1){
-        if (_1028A::ui::callbacks::macros::recordPos or odomOverride){
+        if (_1028A::ui::callbacks::macros::recordPos or odomOverride or _1028A::robot::CaliSwitch.get_value()){
             std::string data = "(" + std::to_string(_1028A::robot::chassis.getPose().x) + ", " + std::to_string(_1028A::robot::chassis.getPose().y) + ", " + std::to_string(_1028A::robot::chassis.getPose().theta) + ")";
             _1028A::logger::info(data.c_str());
             _1028A::ui::callbacks::macros::recordPos = 0;
@@ -175,7 +176,6 @@ void _1028A::driver::odomRead (){
         pros::delay(300);
     }
 }
-
 void _1028A::driver::lbmacro() {
   pros::Task arm(armTask);
   const int holdThreshold = 150;
@@ -185,7 +185,8 @@ void _1028A::driver::lbmacro() {
     int offset = 0;
     int loadPosition = 95;
     int waitPosition = 200;
-    int alliscorePosition = 520;
+    int alliscorePosition = 500;
+    int goalscorePosition = 620;
     int wallScorePosition = 310;
     int overScorePosition = 820;
     int wallOverScorePosition = 475;
@@ -193,11 +194,14 @@ void _1028A::driver::lbmacro() {
     int state = 0;
     int scoring =0;
     int startTime = pros::millis();
-
+    if (skills == 0){
     while (1){
       
           if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            _1028A::robot::intake.move(0);
+            pauseControl =1;
               if (!buttonPressed) {
+                pauseControl =1;
                   buttonPressed = true;
                   pressStartTime = pros::millis();
                   longPressTriggered = false;
@@ -243,6 +247,12 @@ void _1028A::driver::lbmacro() {
                     pauseControl =1;
                     robot::intake.move(0);
                       armTarget = overScorePosition;
+                      
+                  }
+                  else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+                    pauseControl =1;
+                    robot::intake.move(0);
+                      armTarget = goalscorePosition;
                       
                   }
                   else{
@@ -297,6 +307,7 @@ void _1028A::driver::lbmacro() {
               if (armTarget > 600){
                     armTarget = 0;
                   }
+
               doubleMacro = 0;
               pauseControl = 0;
               break;
@@ -388,7 +399,14 @@ void _1028A::driver::lbmacro() {
             robot::master.rumble("-");
             pros::delay(200);
         }
+    }
         pros::delay(20);
+  }
+  if (skills == 1){
+    armTarget = 400;
+    pros::delay(700);
+    Reset = 1;
+    skills = 0;
   }
 }
 
