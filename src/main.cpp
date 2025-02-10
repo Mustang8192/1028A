@@ -25,13 +25,13 @@ void autonomous() {
 void opcontrol() {
 	_1028A::auton::autonStop = 1;
 	_1028A::logger::info("Opcontrol");
+
 	pros::Task DriveCTRL(_1028A::driver::driveCTRL);
 	pros::Task IntakeCTRL(_1028A::driver::intakeCTRL);
 	pros::Task MogoCTRL(_1028A::driver::mogoCTRL);
 	pros::Task Lbmacro(_1028A::driver::lbmacro);
 	pros::Task StickCTRL(_1028A::driver::stickCTRL);
 	pros::Task OdomRead(_1028A::driver::odomRead);
-
 	while (true) {
 		
 		pros::delay(20);

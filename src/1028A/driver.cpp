@@ -19,6 +19,8 @@ void _1028A::driver::driveCTRL() {
         _1028A::robot::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
     _1028A::robot::chassis.arcade(power, turn);
+    //_1028A::robot::leftMtrs.move(power + turn);
+    //_1028A::robot::rightMtrs.move(power - turn);
 
     pros::delay(10);
   }
@@ -92,7 +94,7 @@ int _1028A::driver::skills = 0;
 void armTask() {
   double rotationValue = 0;
   double armP = 0.0005;
-  double armD = 0.565;
+  double armD = 0.43;
   double armError = 0;
   double armPrevError = 0;
   double threshold = 0.5;
@@ -100,8 +102,9 @@ void armTask() {
   double rotationRaw = 0;
   _1028A::robot::LB.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   _1028A::robot::LBS.set_reversed(1);
-  _1028A::robot::LB.move(-40);
-      while (_1028A::driver::skills != 1){
+  if (_1028A::driver::skills != 1){
+   _1028A::robot::LB.move(-40);
+      while (1){
         if (_1028A::robot::LBSLimit.get_value()){
           _1028A::robot::LBS.set_position(0);
           armTarget = 0;
@@ -112,6 +115,7 @@ void armTask() {
         }
         pros::delay(20);
       }
+  }
 
 
   while (true) {
@@ -131,7 +135,7 @@ void armTask() {
       settled = 0;
     }
 
-    if (_1028A::robot::LBSLimit.get_value() && armTarget == 0 && settled == 1 && hasReset == 0){
+    if (_1028A::robot::LBSLimit.get_value() && hasReset == 0){
       _1028A::robot::LBS.reset_position();
       hasReset = 1;
     }
@@ -139,7 +143,23 @@ void armTask() {
       hasReset = 0;
     }
     
-    if (Reset){
+    if (Reset && _1028A::driver::skills == 1){
+      _1028A::robot::LB.move(127);
+      pros::delay(100);
+      _1028A::robot::LB.move(-90);
+      while (1){
+        if (_1028A::robot::LBSLimit.get_value()){
+          _1028A::robot::LBS.set_position(0);
+          armTarget = 0;
+          pros::delay(200);
+          _1028A::robot::LB.move(0);
+          Reset = 0;
+          break;
+        }
+        pros::delay(20);
+      }
+    }
+    else if (Reset && _1028A::driver::skills == 0){
       _1028A::robot::LB.move(127);
       pros::delay(100);
       _1028A::robot::LB.move(-40);
@@ -183,7 +203,7 @@ void _1028A::driver::lbmacro() {
     bool longPressTriggered = false;
     int pressStartTime = 0;
     int offset = 0;
-    int loadPosition = 95;
+    int loadPosition = 110;
     int waitPosition = 200;
     int alliscorePosition = 500;
     int goalscorePosition = 620;
@@ -194,7 +214,14 @@ void _1028A::driver::lbmacro() {
     int state = 0;
     int scoring =0;
     int startTime = pros::millis();
-    if (skills == 0){
+
+    if (skills == 1){
+    armTarget = 500;
+    pros::delay(700);
+    Reset = 1;
+    skills = 0;
+  }
+
     while (1){
       
           if (robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -402,11 +429,4 @@ void _1028A::driver::lbmacro() {
     }
         pros::delay(20);
   }
-  if (skills == 1){
-    armTarget = 400;
-    pros::delay(700);
-    Reset = 1;
-    skills = 0;
-  }
-}
 
