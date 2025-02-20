@@ -134,14 +134,6 @@ void armTask() {
     else {
       settled = 0;
     }
-
-    if (_1028A::robot::LBSLimit.get_value() && hasReset == 0){
-      _1028A::robot::LBS.reset_position();
-      hasReset = 1;
-    }
-    else{
-      hasReset = 0;
-    }
     
     if (Reset && _1028A::driver::skills == 1){
       _1028A::robot::LB.move(127);
@@ -186,12 +178,18 @@ void armTask() {
 }
 
 int odomOverride = 0;
+int driverCheck = 0;
 void _1028A::driver::odomRead (){
     while (1){
         if (_1028A::ui::callbacks::macros::recordPos or odomOverride or _1028A::robot::CaliSwitch.get_value()){
             std::string data = "(" + std::to_string(_1028A::robot::chassis.getPose().x) + ", " + std::to_string(_1028A::robot::chassis.getPose().y) + ", " + std::to_string(_1028A::robot::chassis.getPose().theta) + ")";
             _1028A::logger::info(data.c_str());
             _1028A::ui::callbacks::macros::recordPos = 0;
+        }
+
+        if (driverCheck){
+          std::string data = "(" + std::to_string(robot::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y)) + ", " + std::to_string(robot::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X)) + ")";
+          _1028A::logger::info(data.c_str());
         }
         pros::delay(300);
     }

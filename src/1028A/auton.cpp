@@ -69,6 +69,10 @@ void _1028A::auton::lbTask() {
       }
     }
 
+    if (!pros::competition::is_autonomous() && !pros::competition::is_disabled() && pros::competition::is_connected()){
+      break;
+    }
+
     armPrevError = armError;
 
     pros::delay(10);
@@ -91,6 +95,9 @@ void _1028A::auton::intakeTask(){
   int count = 0;
   int lastCount = 0;
   while (1){
+    if (!pros::competition::is_autonomous() && !pros::competition::is_disabled() && pros::competition::is_connected()){
+      break;
+    }
     if (!autonStop){
     if (intake == INTAKE){
       _1028A::robot::optical.set_led_pwm(0);
@@ -169,6 +176,10 @@ void checkIntake(){
   const int timeThreshold = 500;
   const int velocityThreshold = 5;
   while (1){
+    if (!pros::competition::is_autonomous() && !pros::competition::is_disabled() && pros::competition::is_connected()){
+      break;
+    }
+    
     if (Pause != 1 or !_1028A::auton::autonStop){
     int initialVelocity = _1028A::robot::intake.get_actual_velocity();
 
@@ -593,74 +604,5 @@ else if (autonSelect == 100){
  robot::leftMtrs.move(0);
  robot::rightMtrs.move(0);
 
-  /*
-  robot::chassis.moveToPose(42, -113, -86, 2000, {.minSpeed = 50}, false);
-  robot::mogo.set_value(0);
-  */
-  //robot::chassis.moveToPose(30, -85, -295, 1800, {.minSpeed = 60}, false);
-  //robot::chassis.moveToPose(43, -125, -70, 3000, {.minSpeed = 60}, false);
-  //robot::chassis.turnToHeading(-70, 800, {}, false);
-  /*
-  robot::chassis.turnToPoint(-6, 100, 500, {.minSpeed = 70}, false);
-  robot::chassis.moveToPose(-1, -105, -325.5, 2000, {.forwards = false, .minSpeed = 40}, false);
-  robot::mogo.set_value(1);
-  robot::intake.move(127);
-  checkintake.resume();
-  robot::chassis.moveToPose(47, -90, -224, 2000, {.minSpeed = 50}, false);
-  robot::chassis.moveToPose(59, -112, -180, 2500, {.minSpeed = 70}, false);
-  robot::chassis.turnToHeading(-45, 500, {}, false);
-  pros::delay(1000);
-  robot::mogo.set_value(0);
-  robot::chassis.moveToPoint(47, -100, 1300, {.minSpeed = 70}, false);
-  robot::chassis.turnToHeading(-130, 500, {}, false);
-  robot::chassis.moveToPose(-58, -122, -90, 3500, {.minSpeed = 75}, false);
-  checkintake.suspend();
-  robot::intake.move(0);
-  robot::chassis.moveToPose(3, -70, -135, 4000, {.forwards = false, .minSpeed = 60}, true);
-  robot::chassis.waitUntil(15);
-  armtarget = 600;
- robot::chassis.waitUntilDone();
- robot::leftMtrs.move(27);
- robot::rightMtrs.move(27);
- pros::delay(100);
- robot::leftMtrs.move(0);
- robot::rightMtrs.move(0);
- */
-
-  /*
-  robot::chassis.turnToHeading(-155, 600, {}, false);
-  pros::delay(100);
-  robot::chassis.moveToPoint(22, -94, 1400, {.minSpeed = 70, .earlyExitRange = 2}, false); 
-  robot::chassis.moveToPoint(73, -109, 2000, {.minSpeed = 70}, false);
-  robot::chassis.moveToPose(-3, -93, -270, 2000, {.forwards = false, .minSpeed = 70}, false);
-  robot::mogo.set_value(1);
-  robot::intake.move(127);
-  checkintake.resume();
-  robot::chassis.turnToHeading(-397, 500, {}, false);
-  robot::chassis.moveToPoint(-8, -75, 1000, {.minSpeed = 80}, false);
-  robot::chassis.turnToPoint(-35, -69, 500, {.earlyExitRange = 2}, false);
-  robot::chassis.moveToPoint(-35, -99, 2000, {.minSpeed = 70}, false);
-  robot::chassis.turnToHeading(-190, 500, {}, false);
-  
-  pros::delay(300);
-  robot::chassis.turnToHeading(0, 500, {}, false);
-  robot::mogo.set_value(0);
-  robot::leftMtrs.move(-127);
-  robot::rightMtrs.move(-127);
-  pros::delay(200);
-  robot::leftMtrs.move(0);
-  robot::rightMtrs.move(0);
-  robot::chassis.moveToPoint(-4, -85, 2000, {.minSpeed = 70}, false);  
-  robot::chassis.turnToHeading(robot::chassis.getPose().theta - 170, 500, {}, false);
-  armtarget = 600;
-  robot::leftMtrs.move(-60);
-  robot::rightMtrs.move(-60);
-  pros::delay(1000);
-  robot::leftMtrs.move(20);
-  robot::rightMtrs.move(20);
-  pros::delay(100);
-  robot::leftMtrs.move(0);
-  robot::rightMtrs.move(0);
-  */
 }
 }
