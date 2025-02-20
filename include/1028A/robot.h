@@ -5,6 +5,7 @@
 #include "lemlib/api.hpp"
 #include "pros/distance.hpp"
 #include "pros/optical.hpp"
+#include "1028A/mcl.h"
 
 #define leftFrontpt 18
 #define leftMidpt 19
@@ -47,6 +48,8 @@ namespace _1028A::robot{
     extern pros::adi::DigitalOut mogo;
     extern pros::adi::DigitalOut stick;
     extern pros::Controller master;
+
+    extern MonteCarloLocalizer localizer;
 
     extern lemlib::Drivetrain drivetrain;
     extern lemlib::TrackingWheel vertical;

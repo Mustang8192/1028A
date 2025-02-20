@@ -207,7 +207,7 @@ void _1028A::driver::lbmacro() {
     int goalscorePosition = 620;
     int wallScorePosition = 310;
     int overScorePosition = 820;
-    int wallOverScorePosition = 475;
+    int wallOverScorePosition = 485;
 
     int state = 0;
     int scoring =0;

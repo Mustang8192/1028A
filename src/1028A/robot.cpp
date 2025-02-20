@@ -1,6 +1,7 @@
 #include "1028A/robot.h"
 #include "lemlib/chassis/chassis.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "mcl.h"
 #include "pros/adi.hpp"
 #include "pros/distance.hpp"
 #include "pros/motor_group.hpp"
@@ -29,6 +30,8 @@ pros::Optical _1028A::robot::optical(opticalPort);
 pros::adi::DigitalOut _1028A::robot::mogo(mogoPort);
 pros::adi::DigitalOut _1028A::robot::stick('e');
 pros::Controller _1028A::robot::master(pros::E_CONTROLLER_MASTER);
+
+_1028A::MonteCarloLocalizer _1028A::robot::localizer(1,2,3,4,getX, getY, getTheta, 144, 144, 300);
 
 lemlib::Drivetrain _1028A::robot::drivetrain(&leftMtrs, &rightMtrs, 10, lemlib::Omniwheel::OLD_325, 450, 2);
 lemlib::TrackingWheel _1028A::robot::vertical(&Vertical, 1.99, -1.5);
