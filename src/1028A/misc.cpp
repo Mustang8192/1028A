@@ -6,6 +6,7 @@
 void _1028A::misc::init(){
     _1028A::logger::init();
     pros::Task startUI(_1028A::ui::init);
+    //_1028A::robot::localizer.startTask();
 }
 
 void _1028A::misc::waitForCalibrate(){

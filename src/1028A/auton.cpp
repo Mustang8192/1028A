@@ -3,6 +3,8 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/rtos.hpp"
 #include "1028A/logger.h"
+#include <queue>
+#include <cmath>
 
 double armtarget = 0;
 int reset = 0;
@@ -124,48 +126,10 @@ void _1028A::auton::intakeTask(){
       _1028A::robot::intake.move(0);
     }
     else if (intake == ColorSortBlue){
-      if (_1028A::robot::optical.get_hue()>= 200 && _1028A::robot::optical.get_hue() <= 250){
-        pros::delay(200);
-        kickout = true;
-      }
-      else{
-        kickout = false;
-        _1028A::robot::intake.move(127);
-        _1028A::robot::optical.set_led_pwm(100);
-      }
-
-      if (kickout){
-        if (_1028A::robot::distance.get() < 60){
-          _1028A::logger::info("KICKOUT");
-          pros::delay(80);
-          _1028A::robot::intake.move(0);
-          pros::delay (300);
-          _1028A::robot::intake.move(127);
-          kickout = false;
-        }
-      }
+      
     }
     else if (intake == ColorSortRed){
-      if (_1028A::robot::optical.get_hue() <= 10 or _1028A::robot::optical.get_hue() >= 350){
-        pros::delay(200);
-        kickout = true;
-      }
-      else{
-        kickout = false;
-        _1028A::robot::intake.move(127);
-        _1028A::robot::optical.set_led_pwm(100);
-      }
-
-      if (kickout){
-        if (_1028A::robot::distance.get() < 40){
-          _1028A::logger::info("KICKOUT");
-          pros::delay(80);
-          _1028A::robot::intake.move(0);
-          pros::delay (300);
-          _1028A::robot::intake.move(127);
-          kickout = false;
-        }
-      }
+      
     }
   }
 }
@@ -229,8 +193,196 @@ void queueDisk(){
     pros::delay(5);
   }
 }
+enum class DiskColor {
+  NONE,
+  BLUE,
+  RED,
+  UNKNOWN
+};
+
+struct DiskInfo {
+  DiskColor color;
+  uint32_t  entryTime;
+};
+
+enum class IntakeState {
+  INTAKE,
+  EXPEL,
+  COLOR_SORT_BLUE,
+  COLOR_SORT_RED,
+  STOP
+};
+
+static IntakeState g_currentState = IntakeState::STOP;
+static bool g_lastSawDisc = false;
+static std::queue<DiskInfo> g_diskQueue;
+static bool     g_jamTimerActive = false;
+static uint32_t g_jamStartTime   = 0;
+static bool     g_seenTopDisc         = false;
+static uint32_t g_topDiscFirstSeenTime = 0;
+constexpr int    INTAKE_SPEED          = 127;
+constexpr int    EXPEL_SPEED           = 127;
+constexpr int    REVERSE_SPEED         = 127;
+constexpr int    EJECT_TIME_MS         = 300;
+constexpr double TOP_DETECTION_THRESH  = 50.0;
+constexpr int    COLOR_SORT_DELAY_MS   = 0; 
+constexpr double JAM_VELOCITY_DIFF     = 50.0;
+constexpr int    JAM_TIME_THRESHOLD_MS = 500;  
+constexpr int    DEJAM_REVERSE_TIME_MS = 300;  
+constexpr double BLUE_HUE_MIN = 80.0;
+constexpr double BLUE_HUE_MAX = 300.0;
+constexpr double RED_HUE_MIN  =   0.0;
+constexpr double RED_HUE_MAX  =  70.0;
+constexpr uint32_t DISC_TIMEOUT_MS     = 400;
+
+
+void setIntakeState(IntakeState newState) {
+  g_currentState = newState;
+}
+
+
+static DiskColor getDiskColor() {
+  double hue = _1028A::robot::optical.get_hue();
+
+  if (hue >= BLUE_HUE_MIN && hue <= BLUE_HUE_MAX) {
+    return DiskColor::BLUE;
+  }
+  else if ((hue >= RED_HUE_MIN && hue <= RED_HUE_MAX)
+        || (hue >= 330.0 && hue <= 360.0)) {
+    // Red often appears near 0 or 360
+    return DiskColor::RED;
+  }
+  return DiskColor::UNKNOWN;
+}
+
+static const char* colorToString(DiskColor c) {
+  switch (c) {
+    case DiskColor::BLUE:    return "BLUE";
+    case DiskColor::RED:     return "RED";
+    case DiskColor::UNKNOWN: return "UNKNOWN";
+    default:                 return "NONE";
+  }
+}
+
+
+void intakeControlTask(void* param) {
+  _1028A::robot::optical.set_led_pwm(100);
+
+  while (true) {
+    if (!pros::competition::is_autonomous() && !pros::competition::is_disabled()) {
+      break;
+    }
+
+    bool seesDisc = (_1028A::robot::optical.get_proximity() > 200); 
+
+    if (seesDisc && !g_lastSawDisc) {
+      DiskColor c = getDiskColor();
+      if (c == DiskColor::BLUE || c == DiskColor::RED) {
+        DiskInfo newDisk{c, pros::millis()};
+        g_diskQueue.push(newDisk);
+
+        std::cout << "[DEBUG] ** New Disc Detected **  Color=" 
+                  << colorToString(c) 
+                  << "  entryTime=" << newDisk.entryTime << "\n";
+      } else {
+        std::cout << "[DEBUG] Detected UNKNOWN color disc; not adding.\n";
+      }
+    }
+    g_lastSawDisc = seesDisc;
+
+    int targetVelocity = 0;
+    int direction      = 1;
+
+    switch (g_currentState) {
+      case IntakeState::INTAKE:
+        targetVelocity = INTAKE_SPEED;
+        direction      = +1;
+        break;
+      case IntakeState::EXPEL:
+        targetVelocity = EXPEL_SPEED;
+        direction      = -1;
+        break;
+      case IntakeState::COLOR_SORT_BLUE:
+      case IntakeState::COLOR_SORT_RED:
+        targetVelocity = INTAKE_SPEED;
+        direction      = +1;
+        break;
+      case IntakeState::STOP:
+      default:
+        targetVelocity = 0;
+        direction      = 0;
+        break;
+    }
+
+    _1028A::robot::intake.move(targetVelocity * direction);
+
+    if (g_currentState == IntakeState::COLOR_SORT_BLUE
+     || g_currentState == IntakeState::COLOR_SORT_RED) 
+    {
+      double topDist = _1028A::robot::distance.get();
+      bool   topHasDisc = (topDist < TOP_DETECTION_THRESH);
+
+      if (topHasDisc && !g_seenTopDisc && !g_diskQueue.empty()) {
+        g_seenTopDisc          = true;
+        g_topDiscFirstSeenTime = pros::millis();
+
+        std::cout << "[DEBUG] Top disc first seen at time=" 
+                  << g_topDiscFirstSeenTime << "\n";
+      }
+
+      if (!topHasDisc) {
+        g_seenTopDisc = false;
+      }
+
+      if (g_seenTopDisc 
+          && (pros::millis() - g_topDiscFirstSeenTime >= COLOR_SORT_DELAY_MS)
+          && !g_diskQueue.empty()) 
+      {
+        DiskColor colorToEject = (g_currentState == IntakeState::COLOR_SORT_BLUE)
+                                   ? DiskColor::BLUE
+                                   : DiskColor::RED;
+
+        DiskInfo frontInfo = g_diskQueue.front(); 
+        std::cout << "[DEBUG] Checking front disc: color=" 
+                  << colorToString(frontInfo.color)
+                  << "  in queue for=" 
+                  << (pros::millis() - frontInfo.entryTime) << " ms\n";
+
+        if (frontInfo.color == colorToEject) {
+          std::cout << "[DEBUG] --> Ejecting disc color=" 
+                    << colorToString(frontInfo.color) << "\n";
+          pros::delay(80);
+
+          _1028A::robot::intake.move(-EXPEL_SPEED);
+          pros::delay(EJECT_TIME_MS);
+
+          _1028A::robot::intake.move(targetVelocity);
+
+          g_diskQueue.pop();
+        } else {
+          std::cout << "[DEBUG] --> Disc color doesn't match target; not ejecting.\n";
+        }
+
+        g_seenTopDisc = false;
+      }
+    }
+
+    while (!g_diskQueue.empty()) {
+      DiskInfo &front = g_diskQueue.front();
+      if (pros::millis() - front.entryTime > DISC_TIMEOUT_MS) {
+        std::cout << "[DEBUG] Removing disc due to time limit. Color="
+                  << colorToString(front.color) << "\n";
+        g_diskQueue.pop();
+      } else {
+        break;
+      }
+    }
+    pros::delay(20);
+  }
+}
+
 void _1028A::auton::auton(){
-  autonSelect = 6;
+  autonSelect = 100;
   robot::leftMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   robot::rightMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -460,6 +612,44 @@ else if (autonSelect == 6){
   robot::chassis.moveToPoint(3, 0, 1500, {}, false);
   robot::chassis.turnToHeading(-90, 500, {}, false);
 
+}
+else if (autonSelect == 7){
+   //redRingRush5
+  robot::chassis.setPose(0,0,0);
+  robot::chassis.moveToPoint(-13, 40, 2000, {.earlyExitRange = 3}, true);
+  pros::Task lbTask(_1028A::auton::lbTask);
+   robot::LBS.set_position(100);
+   armtarget = 180;
+  robot::chassis.waitUntil(30);
+  pros::Task disk(queueDisk);
+  robot::chassis.waitUntilDone();
+  pros::delay(300);
+  robot::chassis.moveToPoint(10, 29, 2000, {.forwards = false, .earlyExitRange = 1.5}, true);
+  robot::chassis.waitUntil(23);
+  robot::mogo.set_value(1);
+  robot::chassis.waitUntilDone();
+  pros::Task intakeTask(intakeControlTask);
+  setIntakeState(IntakeState::COLOR_SORT_BLUE);
+  robot::chassis.moveToPoint(16.5, -5, 2000, {}, false);
+  robot::chassis.turnToHeading(-227, 500, {}, false);
+  armtarget = 500;
+  pros::delay(800);
+  robot::chassis.moveToPoint(0, 18, 1000, {.forwards = false}, false);
+  robot::chassis.turnToPoint(-27, -4, 1000, {}, false);
+  robot::chassis.moveToPoint(-27, -4, 1000, {}, true);
+  robot::leftMtrs.move(127);
+  robot::rightMtrs.move(127);
+  pros::delay(300);
+  robot::leftMtrs.move(0);
+  robot::rightMtrs.move(0);
+  pros::delay(500);
+  robot::chassis.moveToPoint(-11, 3, 1000, {.forwards = false}, false);
+  reset = 1;
+  robot::chassis.turnToPoint(-16, 28, 500, {}, false);
+  robot::chassis.moveToPoint(-20, 28, 2000, {.minSpeed = 40}, false);
+  robot::chassis.moveToPoint(-20, 38.5, 2000, {.minSpeed = 40}, false);
+  
+  
 }
 else if (autonSelect == 100){
   //skills
