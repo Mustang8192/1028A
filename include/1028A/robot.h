@@ -22,6 +22,7 @@
 #define inertialpt 16
 #define mogoPort 'g'
 #define distancePort 14
+#define LdistancePort 2
 #define opticalPort 4
 
 namespace _1028A::robot{
@@ -44,9 +45,11 @@ namespace _1028A::robot{
     extern pros::Rotation Horizontal;
     extern pros::Imu inertial;
     extern pros::Distance distance;
+    extern pros::Distance Ldistance;
     extern pros::Optical optical;
     extern pros::adi::DigitalOut mogo;
-    extern pros::adi::DigitalOut stick;
+    extern pros::adi::DigitalOut stickR;
+    extern pros::adi::DigitalOut stickL;
     extern pros::Controller master;
 
     extern lemlib::Drivetrain drivetrain;

@@ -88,9 +88,9 @@ void _1028A::legacy::forward(double RequestedValue, double spd, double thre,
   float error;
   float lastError = 0;
 
-  float Kp = 1.5 + kpOffset;
+  float Kp = 1 + kpOffset;
   float Ki = 0;
-  float Kd = 6 + kdOffset;
+  float Kd = 0 + kdOffset;
   double timeExit = 0;
   double startTime = pros::millis();
   _1028A::robot::leftFront.tare_position();
