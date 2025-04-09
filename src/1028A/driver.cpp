@@ -7,20 +7,23 @@
 #include "pros/rtos.hpp"
 #include "1028A/auton.h"
 
+int chassisOverride = 0;
 void _1028A::driver::driveCTRL() {
   _1028A::robot::leftMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   _1028A::robot::rightMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   _1028A::robot::LB.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   while (1) {
-    _1028A::robot::leftMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  _1028A::robot::rightMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-    int power =
-        _1028A::robot::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int turn =
-        _1028A::robot::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    if (chassisOverride == 0){
+      _1028A::robot::leftMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      _1028A::robot::rightMtrs.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+      int power =
+          _1028A::robot::master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+      int turn =
+          _1028A::robot::master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-    _1028A::robot::chassis.arcade(power, turn);
+      _1028A::robot::chassis.arcade(power, turn);
+    }
     //_1028A::robot::leftMtrs.move(power + turn);
     //_1028A::robot::rightMtrs.move(power - turn);
 
@@ -92,6 +95,8 @@ void _1028A::driver::mogoCTRL() {
 void _1028A::driver::stickCTRL(){
   int statusR = 0;
   int statusL = 0;
+  robot::stickL.set_value(0);
+  robot::stickR.set_value(0);
   while (1) {
     if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
         statusR == 0) {
@@ -233,6 +238,7 @@ void _1028A::driver::lbmacro() {
   pros::Task arm(armTask);
   const int holdThreshold = 150;
     bool buttonPressed = false;
+    bool buttonPressed2 = false;
     bool longPressTriggered = false;
     int pressStartTime = 0;
     int offset = 0;
@@ -386,6 +392,21 @@ void _1028A::driver::lbmacro() {
             Reset = 1;
             pros::delay(20);
         }
+        if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+          chassisOverride = 1;
+          robot::leftMtrs.move(0);
+          robot::rightMtrs.move(0);
+          buttonPressed2 = 1;
+          armTarget = 650;
+          legacy::forward(-8, NAN, 127, 600, 2);
+          chassisOverride = 0;
+        }
+        else if (buttonPressed2 == 1 && chassisOverride == 0){
+          pros::delay(200);
+          armTarget = 0;
+          buttonPressed2 = 0;
+        }
+
 
         // if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
         //     wallstake = 1;

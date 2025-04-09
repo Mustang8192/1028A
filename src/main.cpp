@@ -32,7 +32,7 @@ void opcontrol() {
 	pros::Task Lbmacro(_1028A::driver::lbmacro);
 	pros::Task StickCTRL(_1028A::driver::stickCTRL);
 	pros::Task OdomRead(_1028A::driver::odomRead);
-	//pros::Distance disk(5);
+	
 	while (true) {
 		// _1028A::Particle bestParticle = _1028A::robot::localizer.updateLocalization();
 		// std::string l = "X: " + std::to_string(bestParticle.x) + " Y: " + std::to_string(bestParticle.y) + " Theta: " + std::to_string(bestParticle.theta) + " Weight: " + std::to_string(bestParticle.weight);

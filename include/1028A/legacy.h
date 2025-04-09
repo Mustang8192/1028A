@@ -1,7 +1,12 @@
+#include <cmath>
 namespace _1028A::legacy{
-    extern int math(float Error, float lastError, float Kp, float Ki, float Kd, double maxSpd);
-    extern bool exit(float Error, float Threshold, float currTime, float startTime, float timeExit, float powerValue, float lastError);
-    extern void turn(double requestedValue, double spd, double thre, double time, double kpOffset, double kdOffset);
-    extern void forward(double RequestedValue, double spd, double thre, double time, double kpOffset, double kdOffset);
-    extern void forward(double RequestedValue, double angle, double spd, double thre, double time, double kpOffset, double kdOffset);
+    extern void forward(double target_distance, double heading, double maxSpd, double timeout, double thre);
+
+    struct PIDGains {
+        double kP;
+        double kI;
+        double kD;
+    };
+
+    extern PIDGains autoTuneDrive(double max_distance , int settle_threshold);
 }

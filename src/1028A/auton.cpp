@@ -236,25 +236,59 @@ constexpr double BLUE_HUE_MAX = 300.0;
 constexpr double RED_HUE_MIN  =   0.0;
 constexpr double RED_HUE_MAX  =  90.0;
 constexpr uint32_t DISC_TIMEOUT_MS     = 600;
-
+constexpr uint32_t SECOND_SENSOR_DELAY_MS = 200;
 
 void setIntakeState(IntakeState newState) {
   g_currentState = newState;
 }
 
-
 static DiskColor getDiskColor() {
-  double hue = _1028A::robot::optical.get_hue();
+  double hue1 = _1028A::robot::optical.get_hue();
 
-  if (hue >= BLUE_HUE_MIN && hue <= BLUE_HUE_MAX) {
+  if (hue1 >= BLUE_HUE_MIN && hue1 <= BLUE_HUE_MAX) {
     return DiskColor::BLUE;
   }
-  else if ((hue >= RED_HUE_MIN && hue <= RED_HUE_MAX)
-        || (hue >= 330.0 && hue <= 360.0)) {
-    // Red often appears near 0 or 360
+  else if ((hue1 >= RED_HUE_MIN && hue1 <= RED_HUE_MAX)
+        || (hue1 >= 330.0 && hue1 <= 360.0)) {
     return DiskColor::RED;
   }
+
+  // Fallback to second sensor
+  double hue2 = _1028A::robot::opticalH.get_hue();
+
+  if (hue2 >= BLUE_HUE_MIN && hue2 <= BLUE_HUE_MAX) {
+    std::cout << "[DEBUG] Second sensor used: Detected BLUE\n";
+    return DiskColor::BLUE;
+  }
+  else if ((hue2 >= RED_HUE_MIN && hue2 <= RED_HUE_MAX)
+        || (hue2 >= 330.0 && hue2 <= 360.0)) {
+    std::cout << "[DEBUG] Second sensor used: Detected RED\n";
+    return DiskColor::RED;
+  }
+
+  std::cout << "[DEBUG] Second sensor used: Still UNKNOWN\n";
   return DiskColor::UNKNOWN;
+}
+
+void tryUpdateUnknownDiskColor() {
+  if (g_diskQueue.empty()) return;
+
+  DiskInfo& frontDisk = g_diskQueue.front();
+
+  if (frontDisk.color == DiskColor::UNKNOWN &&
+      pros::millis() - frontDisk.entryTime >= SECOND_SENSOR_DELAY_MS) {
+    double hue2 = _1028A::robot::opticalH.get_hue();
+
+    if (hue2 >= BLUE_HUE_MIN && hue2 <= BLUE_HUE_MAX) {
+      frontDisk.color = DiskColor::BLUE;
+      std::cout << "[DEBUG] Updated UNKNOWN to BLUE via second sensor\n";
+    } 
+    else if ((hue2 >= RED_HUE_MIN && hue2 <= RED_HUE_MAX)
+          || (hue2 >= 330.0 && hue2 <= 360.0)) {
+      frontDisk.color = DiskColor::RED;
+      std::cout << "[DEBUG] Updated UNKNOWN to RED via second sensor\n";
+    }
+  }
 }
 
 static const char* colorToString(DiskColor c) {
@@ -266,41 +300,31 @@ static const char* colorToString(DiskColor c) {
   }
 }
 
-
 void intakeControlTask(void* param) {
-  // Turn on the Optical sensor's LED, if needed
   _1028A::robot::optical.set_led_pwm(100);
+  _1028A::robot::opticalH.set_led_pwm(100);
 
   while (true) {
-    // End the task if no longer in autonomous (if that's your intended behavior)
     if (!pros::competition::is_autonomous() && !pros::competition::is_disabled()) {
       break;
     }
 
-    // A) Detect new disc at the bottom sensor
     bool seesDisc = (_1028A::robot::optical.get_proximity() > 200); 
     if (seesDisc && !g_lastSawDisc) {
       DiskColor c = getDiskColor();
-      if (c == DiskColor::BLUE || c == DiskColor::RED) {
-        DiskInfo newDisk { c, pros::millis() };
-        g_diskQueue.push(newDisk);
+      DiskInfo newDisk { c, pros::millis() };
+      g_diskQueue.push(newDisk);
 
-        std::cout << "[DEBUG] ** New Disc Detected **  Color=" 
-                  << colorToString(c) 
-                  << "  entryTime=" << newDisk.entryTime << "\n";
-      } else {
-        // Even if it's unknown, we still add it to the queue so we can eventually eject it
-        DiskInfo newDisk { DiskColor::UNKNOWN, pros::millis() };
-        g_diskQueue.push(newDisk);
-
-        std::cout << "[DEBUG] Detected UNKNOWN color disc; adding to queue for forced ejection.\n";
-      }
+      std::cout << "[DEBUG] ** New Disc Detected **  Color=" 
+                << colorToString(c) 
+                << "  entryTime=" << newDisk.entryTime << "\n";
     }
     g_lastSawDisc = seesDisc;
 
-    // B) Determine motor power based on current intake state
+    tryUpdateUnknownDiskColor();
+
     int targetVelocity = 0;
-    int direction      = 1; // +1 for intake, -1 for outtake
+    int direction      = 1;
 
     switch (g_currentState) {
       case IntakeState::INTAKE:
@@ -324,14 +348,12 @@ void intakeControlTask(void* param) {
     }
     _1028A::robot::intake.move(targetVelocity * direction);
 
-    // C) Color-sorting logic (only if COLOR_SORT_BLUE or COLOR_SORT_RED)
     if (g_currentState == IntakeState::COLOR_SORT_BLUE
      || g_currentState == IntakeState::COLOR_SORT_RED) 
     {
       double topDist    = _1028A::robot::distance.get();
       bool   topHasDisc = (topDist < TOP_DETECTION_THRESH);
 
-      // Detect first time we see a disc at top
       if (topHasDisc && !g_seenTopDisc && !g_diskQueue.empty()) {
         g_seenTopDisc          = true;
         g_topDiscFirstSeenTime = pros::millis();
@@ -340,29 +362,24 @@ void intakeControlTask(void* param) {
                   << g_topDiscFirstSeenTime << "\n";
       }
 
-      // If we no longer see a disc, reset
       if (!topHasDisc) {
         g_seenTopDisc = false;
       }
 
-      // After the delay, decide if we eject
       if (g_seenTopDisc 
           && (pros::millis() - g_topDiscFirstSeenTime >= COLOR_SORT_DELAY_MS)
           && !g_diskQueue.empty()) 
       {
-        // Which color are we trying to eject?
         DiskColor colorToEject = (g_currentState == IntakeState::COLOR_SORT_BLUE)
                                    ? DiskColor::BLUE
                                    : DiskColor::RED;
 
-        // Check the front of the queue
         DiskInfo frontInfo = g_diskQueue.front(); 
         std::cout << "[DEBUG] Checking front disc: color=" 
                   << colorToString(frontInfo.color)
                   << "  in queue for=" 
                   << (pros::millis() - frontInfo.entryTime) << " ms\n";
 
-        // If it matches the color we want to eject OR it's UNKNOWN, eject it
         if (frontInfo.color == colorToEject || frontInfo.color == DiskColor::UNKNOWN) {
           std::cout << "[DEBUG] --> Ejecting disc color=" 
                     << colorToString(frontInfo.color) << "\n";
@@ -373,7 +390,6 @@ void intakeControlTask(void* param) {
 
           _1028A::robot::intake.move(targetVelocity);
 
-          // Remove from queue
           g_diskQueue.pop();
         } else {
           std::cout << "[DEBUG] --> Disc color doesn't match target; not ejecting.\n";
@@ -383,7 +399,6 @@ void intakeControlTask(void* param) {
       }
     }
 
-    // D) Remove any discs older than the time limit
     while (!g_diskQueue.empty()) {
       DiskInfo &front = g_diskQueue.front();
       if (pros::millis() - front.entryTime > DISC_TIMEOUT_MS) {
@@ -391,7 +406,6 @@ void intakeControlTask(void* param) {
                   << colorToString(front.color) << "\n";
         g_diskQueue.pop();
       } else {
-        // The front disc has not expired, so we stop checking further
         break;
       }
     }
@@ -401,7 +415,7 @@ void intakeControlTask(void* param) {
 }
 
 void _1028A::auton::auton(){
-  autonSelect = 6;
+  autonSelect = 8;
   robot::leftMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
   robot::rightMtrs.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
 
@@ -489,7 +503,7 @@ else if (autonSelect == 5){
   pros::Task intakeTask(intakeControlTask);
   setIntakeState(IntakeState::COLOR_SORT_RED);
   robot::chassis.turnToHeading(-182.5, 500, {}, false);
-  robot::chassis.moveToPose(0, -58.5, -132, 1400, {.minSpeed = 60, .earlyExitRange = 6}, false);
+  robot::chassis.moveToPose(0, -59, -132, 1400, {.minSpeed = 60, .earlyExitRange = 6}, false);
   robot::chassis.turnToHeading(-150, 800, {}, false);
   robot::chassis.moveToPoint(16, -28, 1000, {.forwards = false, .minSpeed = 60}, false);
   robot::chassis.turnToHeading(-124, 500, {}, false);
@@ -503,7 +517,7 @@ else if (autonSelect == 5){
   robot::leftMtrs.move(0);
   robot::rightMtrs.move(0);
   robot::chassis.turnToPoint(17, -15, 1000, {}, false);
-  robot::chassis.moveToPoint(19.23, -20, 1300, {}, true);
+  robot::chassis.moveToPoint(20, -20, 1300, {}, true);
   pros::delay(500);
   armtarget = 0;
   robot::chassis.waitUntilDone();
@@ -513,6 +527,7 @@ else if (autonSelect == 5){
 
 else if (autonSelect == 6){
   //red5Ring
+  //pros::delay(2000);
  pros::Task lbTask(_1028A::auton::lbTask);
   pros::Task odo(odomRead);
   armtarget = 500;
@@ -528,7 +543,7 @@ else if (autonSelect == 6){
   pros::Task intakeTask(intakeControlTask);
   setIntakeState(IntakeState::COLOR_SORT_BLUE);
   robot::chassis.turnToHeading(182.5, 500, {}, false);
-  robot::chassis.moveToPose(0, -59, 132, 1000, {.minSpeed = 60, .earlyExitRange = 6}, false);
+  robot::chassis.moveToPose(1.5, -57, 130, 1000, {.minSpeed = 60, .earlyExitRange = 6}, false);
   robot::chassis.turnToHeading(150, 800, {}, false);
   robot::chassis.moveToPoint(-16, -28, 1000, {.forwards = false, .minSpeed = 60}, false);
   robot::chassis.turnToHeading(124, 500, {}, false);
@@ -542,7 +557,7 @@ else if (autonSelect == 6){
   robot::leftMtrs.move(0);
   robot::rightMtrs.move(0);
   robot::chassis.turnToPoint(-17, -15, 1000, {}, false);
-  robot::chassis.moveToPoint(-17, -15, 1300, {}, true);
+  robot::chassis.moveToPoint(-19, -15, 1300, {}, true);
   pros::delay(500);
   armtarget = 0;
   robot::chassis.waitUntilDone();
@@ -661,72 +676,58 @@ else if (autonSelect == 7){
 }
 else if (autonSelect == 8){
   //redSoloSigAWP
+  
   pros::Task checkintake{checkIntake};
   pros::Task lbTask(_1028A::auton::lbTask);
   robot::LBS.set_position(100);
   armtarget = 520;
   robot::chassis.moveToPoint(0, 5, 500, {}, false);
-  robot::chassis.moveToPose(-26, -29, 78, 3000, {.forwards = false, .minSpeed = 60}, true);
+  robot::chassis.moveToPose(-22, -24.5, 60, 3000, {.forwards = false, .minSpeed = 80}, true);
   robot::chassis.waitUntil(45);
   robot::mogo.set_value(1);
   robot::chassis.waitUntilDone();
-  robot::chassis.moveToPoint(0, -39, 1000, {}, false);
-  checkintake.suspend();
-  pros::delay(300);
-  robot::chassis.moveToPoint(-10, -36, 500, {.forwards = false, .earlyExitRange = 5}, false);
-  robot::chassis.turnToPoint(-12, 0, 800, {.earlyExitRange = 3}, false);
-  robot::chassis.moveToPose(-20, 6, -38, 2000, {.minSpeed = 50, .earlyExitRange = 6}, true);
-  robot::chassis.waitUntil(35);
-  robot::mogo.set_value(0);
-  checkintake.suspend();
-  pros::delay(600);
-  robot::intake.move(127);
-  pros::Task disk(queueDisk);
-  robot::chassis.waitUntilDone();
-  robot::chassis.moveToPoint(-44, 19, 1500, {}, false);
-  robot::chassis.turnToPoint(-58, 3, 800, {.forwards = false}, false);
-  robot::chassis.moveToPoint(-62.5, 3, 1000, {.forwards = false}, true);
-  reset = 1;
-  robot::chassis.waitUntil(20);
-  robot::mogo.set_value(1);
-  robot::chassis.waitUntilDone();
-  pros::delay(300);
-  robot::intake.move(127);
-  robot::chassis.turnToPoint(-71, 11, 1000, {}, false);
-  robot::chassis.moveToPoint(-71, 11, 1400, {.earlyExitRange = 3}, false);
-  pros::delay(400);
-  robot::chassis.turnToPoint(-68, -12, 1300, {}, false);
-  robot::chassis.moveToPoint(-68, -12, 1300, {}, false);
-  
-  
-
-
-  /*
+  robot::chassis.moveToPoint(8, -28, 1000, {.earlyExitRange = 2}, false);
   pros::Task intakeTask(intakeControlTask);
   setIntakeState(IntakeState::COLOR_SORT_BLUE);
-  robot::chassis.waitUntilDone();
-  robot::chassis.moveToPoint(7, -38, 700, {}, true);
-  checkintake.suspend();
-  robot::chassis.waitUntilDone();
-  pros::delay(500);
-  robot::chassis.turnToPoint(-12, 8, 900, {}, false);
-  robot::chassis.moveToPoint(-30, 25, 3500, {.maxSpeed = 70}, true);
-  robot::chassis.waitUntil(45);
+  //legacy::forward(-12, NAN, 127, 1000, 1);
+  robot::chassis.moveToPoint(40, -21, 2000, {.minSpeed = 60}, false);
+  robot::leftMtrs.move(127);
+  robot::rightMtrs.move(127);
+  pros::delay(300);
+  robot::leftMtrs.move(0);
+  robot::rightMtrs.move(0);
+  robot::chassis.turnToPoint(-22, 30, 800, {.earlyExitRange = 2}, false);
+  robot::chassis.moveToPoint(-32, 42, 4000, {.maxSpeed = 60, .earlyExitRange = 2}, true);
+  reset = 1;
+  robot::chassis.waitUntil(40);
   robot::mogo.set_value(0);
   intakeTask.suspend();
-  pros::delay(600);
-  robot::intake.move(127);
+  checkintake.suspend();
+  int St = pros::millis();
+  robot::intake.move(-127);
+  pros::delay(100);
+  robot::intake.move(0);
+  pros::delay(1000);
+  while (1){
+    if (pros::millis() - St > 2000){
+      break;
+    }
+    else if (robot::distance.get() < 50){
+      break;
+    }
+    pros::delay(20);
+  }
   pros::Task disk(queueDisk);
   robot::chassis.waitUntilDone();
-  robot::chassis.moveToPoint(-57, -4, 1000, {.forwards = false}, false);
+  robot::chassis.turnToHeading(23, 800, {}, false);
+  legacy::forward(-29, NAN, 127, 1000, 1);
   robot::mogo.set_value(1);
-  intakeTask.resume();
-  setIntakeState(IntakeState::COLOR_SORT_BLUE);
-  robot::chassis.turnToPoint(-70, 16, 800, {}, false);
-  robot::chassis.moveToPoint(-70, 16, 1000, {}, false);
-  pros::delay(500);
-  robot::chassis.moveToPoint(-45, -16, 2500, {.forwards = false, .maxSpeed = 70}, false); 
-  */
+  pros::delay(100);
+  robot::chassis.turnToPoint(-58, 42, 800, {}, false);
+  robot::intake.move(127);
+  robot::chassis.moveToPoint(-58, 42, 1000, {}, false);
+  robot::chassis.turnToPoint(-41, 15, 800, {}, false);
+  robot::chassis.moveToPoint(-49, 14, 1000, {.maxSpeed = 80}, false);
 }
 else if (autonSelect == 9){
   //redRing3+1+touch
@@ -997,6 +998,76 @@ else if (autonSelect == 17){
   lbTask.suspend();
 
 }
+else if (autonSelect == 19){
+  //GoalScoreRushRedModd39K
+  robot::chassis.moveToPose(5.2, 38.5, 23, 1000, {.minSpeed = 100}, true);
+  robot::chassis.waitUntil(25);
+  pros::Task lbTask(_1028A::auton::lbTask);
+  armtarget = 750;
+  robot::chassis.turnToHeading(34.5, 400, {}, false);
+  pros::delay(200);
+  robot::chassis.moveToPoint(-14, 30, 1000, {.forwards = false, .minSpeed = 70}, true);
+  robot::chassis.waitUntil(30);
+  robot::mogo.set_value(1);
+  pros::Task checkINTAke(checkIntake);
+  pros::delay(200);
+  checkINTAke.suspend();
+  pros::Task intakeTask(intakeControlTask);
+  setIntakeState(IntakeState::COLOR_SORT_BLUE);
+  robot::chassis.moveToPose(13, 32, 80, 1500, {.minSpeed = 70}, false);
+  robot::chassis.turnToPoint(5, 23, 800, {}, false);
+  reset = 1;
+  robot::chassis.moveToPoint(5, 0, 1000, {.earlyExitRange = 8}, false);
+  robot::chassis.moveToPose(53, -14, 90, 1400, {.minSpeed = 60}, true);
+  robot::chassis.waitUntil(20);
+  intakeTask.suspend();
+  armtarget = 610;
+  pros::Task que(queueDisk);
+  robot::chassis.waitUntilDone();
+  robot::leftMtrs.move(127);
+  robot::rightMtrs.move(127);
+  pros::delay(600);
+  robot::leftMtrs.move(0);
+  robot::rightMtrs.move(0);
+
+  robot::leftMtrs.move(-80);
+  robot::rightMtrs.move(-80);
+  pros::delay(400);
+  robot::leftMtrs.move(0);
+  robot::rightMtrs.move(0);
+  pros::delay(300);
+  //robot::chassis.moveToPoint(24, -8, 800, {.forwards =false, .minSpeed = 60}, false);
+  robot::stickR.set_value(1);
+  robot::leftMtrs.move(50);
+  robot::rightMtrs.move(50);
+  pros::delay(550);
+  robot::leftMtrs.move(0);
+  robot::rightMtrs.move(0);
+  robot::chassis.turnToHeading(-30, 1000, {}, true);
+  pros::delay(100);
+  armtarget = 105;
+  robot::chassis.waitUntilDone();
+  // robot::chassis.moveToPose(59, 30,42, 1300, {.lead = 0.65, .minSpeed = 70}, true);
+  intakeTask.resume();
+  setIntakeState(IntakeState::COLOR_SORT_BLUE);
+  
+  robot::chassis.moveToPose(57, 34,45, 2300, {.lead = 0.65, .minSpeed = 70}, true);
+  pros::delay(400);
+  robot::stickR.set_value(0);
+  pros::delay(100);
+  robot::chassis.waitUntilDone();
+  intakeTask.suspend();
+  robot::intake.move(-127);
+  pros::delay(20);
+  robot::intake.move(0);
+  robot::chassis.turnToHeading(45, 400, {}, true);
+  armtarget = 450;
+  pros::delay(2500);
+  lbTask.suspend();
+  robot::LB.set_brake_mode_all(pros::E_MOTOR_BRAKE_HOLD);
+
+  
+}
 else if (autonSelect == 100){
   //skills
   pros::Task odo(odomRead);
@@ -1010,37 +1081,38 @@ else if (autonSelect == 100){
   robot::chassis.moveToPose(30, -5, -108, 1800, {.forwards = false, .minSpeed = 70}, false);
   robot::mogo.set_value(1);
   pros::delay(100);
-  robot::chassis.moveToPoint(37, -37, 2000, {.minSpeed = 70}, true);
+  robot::chassis.moveToPoint(37, -38, 2000, {.minSpeed = 70}, true);
   robot::intake.move(127);
   robot::chassis.waitUntilDone();
   robot::chassis.moveToPose(54, -74, -200, 1700, {.minSpeed = 70}, false);
-  pros::delay(900);
+  robot::chassis.moveToPoint(59, -89, 2000, {.minSpeed = 40}, true);
+  pros::delay(500);
   armtarget = 120;
-  robot::chassis.moveToPoint(59, -89, 2000, {.minSpeed = 40}, false);
   checkintake.suspend();
+  robot::chassis.waitUntilDone();
   pros::delay(300);
-  robot::chassis.moveToPose(43, -46, -196, 2300, {.forwards = false, .minSpeed = 40}, false);
-  robot::chassis.turnToHeading(-265, 1000, {}, false);
+  robot::chassis.moveToPose(47, -46.9, -196, 2200, {.forwards = false, .minSpeed = 60}, false);
+  pros::delay(200);
+  robot::chassis.turnToHeading(-265, 800, {}, false);
   robot::intake.move(-127);
   pros::delay(20);
   robot::intake.move(0);
   armtarget = 200;
   pros::delay(200);
-  
   pros::Task queue(queueDisk);
-  robot::chassis.moveToPoint(robot::chassis.getPose().x + 20, robot::chassis.getPose().y, 1800, {.maxSpeed = 50, .earlyExitRange = 2}, false);
-  armtarget = 580;
+  legacy::forward(17.5, -265, 127, 1100, 1);
+  armtarget = 610;
   pros::delay(600);
   armtarget = 120;
-  pros::delay(600);
+  pros::delay(400);
   robot::intake.move(127);
   pros::delay(600);
   robot::intake.move(-127);
   pros::delay(20);
   robot::intake.move(0);
-  armtarget = 580;
+  armtarget = 610;
   pros::delay(600);
-  robot::chassis.moveToPoint(robot::chassis.getPose().x - 10, robot::chassis.getPose().y, 1800, {.forwards = false, .earlyExitRange = 2}, false);
+  legacy::forward(-12.5, -265, 127, 950, 1);
   robot::chassis.turnToHeading(-353, 500, {}, false);
   robot::intake.move(127);
   checkintake.resume();
@@ -1056,12 +1128,59 @@ else if (autonSelect == 100){
   robot::mogo.set_value(0);
   robot::intake.move(-60);
   robot::chassis.moveToPoint(65, -3, 1000, {.earlyExitRange = 1}, false);
+
+
+
+  
   robot::chassis.turnToHeading(-267, 1000, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE}, false);
-  robot::chassis.moveToPose(-22, -1, -269, 3500, {.forwards = false, .maxSpeed = 100, .minSpeed = 40, . earlyExitRange = 1}, false);
+  robot::chassis.moveToPose(-24, 0, -269, 4000, {.forwards = false, .maxSpeed = 100, .minSpeed = 40, . earlyExitRange = 1}, false);
   robot::mogo.set_value(1);
   pros::delay(100);
   robot::intake.move(127);
-  robot::chassis.moveToPoint(-12, 0, 3500, {.minSpeed = 50, .earlyExitRange = 1}, false);
+  robot::chassis.moveToPoint(-8, 0, 3500, {.minSpeed = 50, .earlyExitRange = 1}, false);
+  robot::chassis.moveToPoint(-32, -38, 2000, {.minSpeed = 70, .earlyExitRange = 3}, true);
+  robot::chassis.moveToPoint(-40, -62, 1700, {.maxSpeed = 75, .minSpeed = 40, .earlyExitRange = 3}, false);
+  robot::chassis.moveToPoint(-52, -89, 2000, {.maxSpeed = 75, .minSpeed = 40, .earlyExitRange = 4}, true);
+  pros::delay(800);
+  armtarget = 120;
+  checkintake.suspend();
+  robot::chassis.waitUntilDone();
+  robot::chassis.moveToPose(-34, -44, -154, 2000, {.forwards = false, .minSpeed = 60}, false);
+  pros::delay(200);
+  robot::chassis.turnToHeading(-90, 1000, {}, false);
+  robot::intake.move(-127);
+  pros::delay(20);
+  robot::intake.move(0);
+  armtarget = 200;
+  pros::delay(200);
+  pros::Task quEue(queueDisk);
+  legacy::forward(17.5, -90, 127, 1100, 1);
+  armtarget = 610;
+  pros::delay(600);
+  armtarget = 120;
+  pros::delay(400);
+  robot::intake.move(127);
+  pros::delay(600);
+  robot::intake.move(-127);
+  pros::delay(20);
+  robot::intake.move(0);
+  armtarget = 610;
+  pros::delay(600);
+  legacy::forward(-12.5, -90, 127, 950, 1);
+  pros::delay(100);
+  robot::chassis.turnToHeading(0, 500, {}, false);
+  robot::intake.move(127);
+  checkintake.resume();
+  robot::chassis.moveToPoint(-41, 8, 2500, {.maxSpeed = 75}, false);
+  robot::chassis.turnToHeading(-110, 700, {}, false);
+  robot::chassis.moveToPose(-48, -20, -188, 1500, {.minSpeed = 60}, false);
+  robot::mogo.set_value(0);
+  robot::chassis.moveToPoint(-51, 11, 1000, {.forwards = false, .minSpeed = 60, .earlyExitRange = 1.5}, false);
+  robot::intake.move(-20);
+
+
+
+  /*
   //checkintake.suspend();
   robot::chassis.moveToPose(-17, -24, -135, 2000, {.minSpeed = 40}, false);
   checkintake.suspend();
@@ -1140,7 +1259,7 @@ else if (autonSelect == 100){
  pros::delay(100);
  robot::leftMtrs.move(0);
  robot::rightMtrs.move(0);
- 
+ */
 }
 else if (autonSelect == 101){
   //skills

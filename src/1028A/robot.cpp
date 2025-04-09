@@ -28,6 +28,7 @@ pros::Imu _1028A::robot::inertial(inertialpt);
 pros::Distance _1028A::robot::distance(distancePort);
 pros::Distance _1028A::robot::Ldistance(LdistancePort);
 pros::Optical _1028A::robot::optical(opticalPort);
+pros::Optical _1028A::robot::opticalH(opticalPortH);
 pros::adi::DigitalOut _1028A::robot::mogo(mogoPort);
 pros::adi::DigitalOut _1028A::robot::stickR('e');
 pros::adi::DigitalOut _1028A::robot::stickL('f');
