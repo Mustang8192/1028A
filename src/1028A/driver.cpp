@@ -98,24 +98,24 @@ void _1028A::driver::stickCTRL(){
   robot::stickL.set_value(0);
   robot::stickR.set_value(0);
   while (1) {
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
         statusR == 0) {
       _1028A::robot::stickR.set_value(1);
       statusR = 1;
       pros::delay(300);
-    } else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
+    } else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
                statusR == 1) {
       _1028A::robot::stickR.set_value(0);
       statusR = 0;
       pros::delay(300);
     }
 
-    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
+    if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
         statusL == 0) {
       _1028A::robot::stickL.set_value(1);
       statusL = 1;
       pros::delay(300);
-    } else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
+    } else if (_1028A::robot::master.get_digital(pros::E_CONTROLLER_DIGITAL_A) &&
                statusL == 1) {
       _1028A::robot::stickL.set_value(0);
       statusL = 0;
@@ -128,7 +128,7 @@ double armTarget = 0;
 int settled = 0;
 int Reset = 0;
 int hasReset = 0;
-int _1028A::driver::skills = 0;
+int _1028A::driver::skills = 1;
 void armTask() {
   double rotationValue = 0;
   double armP = 0.0005;
@@ -397,13 +397,13 @@ void _1028A::driver::lbmacro() {
           robot::leftMtrs.move(0);
           robot::rightMtrs.move(0);
           buttonPressed2 = 1;
-          armTarget = 650;
-          legacy::forward(-8, NAN, 127, 600, 2);
+          armTarget = 690;
+          legacy::forward(-9.25, NAN, 127, 600, 2);
           chassisOverride = 0;
         }
         else if (buttonPressed2 == 1 && chassisOverride == 0){
-          pros::delay(200);
-          armTarget = 0;
+          pros::delay(450);
+          armTarget = loadPosition;
           buttonPressed2 = 0;
         }
 
