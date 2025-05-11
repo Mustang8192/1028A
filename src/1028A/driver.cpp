@@ -128,7 +128,7 @@ double armTarget = 0;
 int settled = 0;
 int Reset = 0;
 int hasReset = 0;
-int _1028A::driver::skills = 1;
+int _1028A::driver::skills = 0;
 void armTask() {
   double rotationValue = 0;
   double armP = 0.0005;

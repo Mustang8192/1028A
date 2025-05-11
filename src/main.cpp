@@ -3,8 +3,9 @@
 
 
 void initialize() {
-	_1028A::misc::init();
-	_1028A::robot::chassis.calibrate();
+	pros::Task UIStart(_1028A::misc::init);
+	//pros::delay(5000);
+	_1028A::robot::chassis.calibrate(true);
 }
 
 

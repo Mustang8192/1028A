@@ -9,7 +9,6 @@
 
 void _1028A::ui::init(){
     screens::home();
-    lvgl_init();
 }
 
 void _1028A::ui::utils::createList(lv_obj_t *parent, void (*homeCB)(lv_event_t *), void (*posautoCB)(lv_event_t *), void (*negautoCB)(lv_event_t *), void (*macroCB)(lv_event_t *), void (*skillsCB)(lv_event_t *)){
